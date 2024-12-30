@@ -11,6 +11,11 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        sidebarBg: "#F7F8FA",
+        headerBg: "#F7F8FA",
+        activeColor: "#ADB8CC",
+        unActiveColor: "#ADB8CC",
+        logoColor: "#C9D439",
       },
     },
   },
