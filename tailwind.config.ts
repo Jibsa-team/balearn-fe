@@ -16,6 +16,7 @@ const config: Config = {
         activeColor: "#ADB8CC",
         unActiveColor: "#ADB8CC",
         logoColor: "#C9D439",
+        notifyColor: "#C7C7C71A",
       },
     },
   },
