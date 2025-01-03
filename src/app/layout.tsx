@@ -14,7 +14,7 @@ export default function RootLayout({
           <Sidebar />
           <div className="flex flex-col w-full bg-sidebarBg">
             <Header />
-            <main className="w-[95%] h-[90vh] bg-white shadow-md p-10">
+            <main className="p-10 flex flex-1 justify-center items-center">
               {children}
             </main>
           </div>

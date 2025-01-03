@@ -15,11 +15,11 @@ const categories = [
     icon: <FaRegCalendarMinus className="text-[20px]" />,
   },
   {
-    name: "Files",
+    name: "Message",
     icon: <TbMessage2Filled className="text-[20px]" />,
   },
   {
-    name: "Message",
+    name: "Files",
     icon: <FaCloud className="text-[20px]" />,
   },
   {
