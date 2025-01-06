@@ -1,6 +1,7 @@
 import Empty from "@/components/empty/empty";
 import useFileStore from "@/store/useFileStore";
 import { fileSize } from "@/utils/file";
+import Image from "next/image";
 import React from "react";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 
@@ -15,13 +16,23 @@ function RecentFile() {
           recentFiles.map((e, i) => {
             return (
               <a href={e.preview} target="_blank" key={i}>
-                <div className="flex flex-col items-start bg-white rounded-xl min-w-[200px] p-[10px] shadow-lg mr-[20px]">
-                  <span className="flex items-center">
-                    <BsFileEarmarkPdfFill className="text-red-500 text-xl mr-[5px]" />
-                    {e.name}
-                  </span>
-                  <span>{fileSize(e.size)}</span>
-                  <span>{e.owner}</span>
+                <div className="flex items-start justify-between bg-white rounded-xl min-w-[200px] p-[10px] shadow-lg mr-[20px]">
+                  <div className="flex flex-col">
+                    <span className="flex items-center">
+                      <BsFileEarmarkPdfFill className="text-red-500 text-xl mr-[5px]" />
+                      {e.name}
+                    </span>
+                    <span>{fileSize(e.size)}</span>
+                  </div>
+                  {/* <span>{e.owner}</span> */}
+
+                  <Image
+                    src={"/Avatar.png"}
+                    alt="유저 이미지"
+                    width={20}
+                    height={20}
+                    className="rounded-full mt-[10px] ml-[20px]"
+                  />
                 </div>
               </a>
             );
