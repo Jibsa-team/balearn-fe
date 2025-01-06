@@ -13,7 +13,7 @@ function Notify() {
   };
   return (
     <div
-      className={`mb-2 w-[500px] p-2 cursor-pointer transition-all duration-200 bg-notifyColor`}
+      className={`mb-[40px] w-[500px] p-2 cursor-pointer transition-all duration-200 bg-notifyColor`}
     >
       <div
         className="flex items-center justify-between"

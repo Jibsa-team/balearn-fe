@@ -2,7 +2,7 @@ import React from "react";
 
 function WeeklyStudy() {
   return (
-    <div className="mt-[80px] mb-[20px]">
+    <div>
       <h1 className="text-2xl font-semibold text-gray-700">Weekly Study</h1>
       <div className="overflow-x-auto mt-4">
         <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">

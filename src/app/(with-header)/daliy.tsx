@@ -2,7 +2,7 @@ import React from "react";
 
 function Daliy() {
   return (
-    <div className="mt-[40px]">
+    <div className="mb-[80px] ">
       <h1 className="text-2xl font-semibold text-gray-700 mb-[20px]">
         Daliy Study
       </h1>
