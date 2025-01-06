@@ -59,7 +59,7 @@ function Page() {
   };
 
   return (
-    <div className="w-[95%] justify-center items-center bg-white shadow-md p-10 relative">
+    <div className="w-[95%] justify-center items-center bg-white shadow-md px-10 relative">
       <div className="w-[100%]">
         <div className="flex justify-between mb-4 items-center">
           <div></div>
