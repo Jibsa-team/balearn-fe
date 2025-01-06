@@ -3,7 +3,7 @@ import React from "react";
 
 function Member() {
   return (
-    <div className="mt-[80px] mb-[20px]">
+    <div className="mb-[80px]">
       <h1 className="text-2xl font-semibold text-gray-700">Study Member</h1>
       <div className="mt-[20px] flex">
         <div className="flex flex-col items-center mr-[20px]">
