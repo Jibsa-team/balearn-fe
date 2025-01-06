@@ -14,19 +14,16 @@ function RecentFile() {
         {recentFiles.length > 0 ? (
           recentFiles.map((e, i) => {
             return (
-              <div
-                key={i}
-                className="flex flex-col items-start bg-white rounded-xl min-w-[200px] p-[10px] shadow-lg mr-[20px]"
-              >
-                <a href={e.preview} target="_blank">
+              <a href={e.preview} target="_blank" key={i}>
+                <div className="flex flex-col items-start bg-white rounded-xl min-w-[200px] p-[10px] shadow-lg mr-[20px]">
                   <span className="flex items-center">
                     <BsFileEarmarkPdfFill className="text-red-500 text-xl mr-[5px]" />
                     {e.name}
                   </span>
-                </a>
-                <span>{fileSize(e.size)}</span>
-                <span>{e.owner}</span>
-              </div>
+                  <span>{fileSize(e.size)}</span>
+                  <span>{e.owner}</span>
+                </div>
+              </a>
             );
           })
         ) : (
