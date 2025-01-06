@@ -5,7 +5,7 @@ import WeeklyStudy from "./weeklyStudy";
 
 export default function Home() {
   return (
-    <div className="w-[100%]  bg-white shadow-md p-10 ">
+    <div className="w-[95%] p-[30px] bg-white shadow-md overflow-y-scroll">
       <Notify />
       <Daliy />
       <Member />
