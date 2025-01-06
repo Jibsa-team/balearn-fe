@@ -9,7 +9,7 @@ function RecentFile() {
 
   return (
     <div className="mb-[40px]">
-      <div className="text-xl flex justify-start mb-[10px]">Recent Files</div>
+      <div className="text-xl flex justify-start mb-[10px]">최근 파일</div>
       <div className="mt-[20px] w-full rounded-2xl flex">
         {recentFiles.length > 0 ? (
           recentFiles.map((e, i) => {

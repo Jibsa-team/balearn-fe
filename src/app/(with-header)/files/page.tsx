@@ -43,7 +43,7 @@ const FileUploadPage: React.FC = () => {
     <div className="w-full p-[30px]">
       <RecentFile />
       <div className="mb-[20px] shadow-sm">
-        <div className="text-xl flex justify-start mb-[10px]">Upload Files</div>
+        <div className="text-xl flex justify-start mb-[10px]">업로드</div>
         <div
           {...getRootProps()}
           className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-[20px] text-center cursor-pointer mb-[40px]"
@@ -52,7 +52,7 @@ const FileUploadPage: React.FC = () => {
           <div className="flex justify-center text-5xl text-sky-500">
             <IoIosCloudUpload />
           </div>
-          <p>Drag and drop files here, or click to select files</p>
+          <p>파일을 업로드 해주세요.</p>
         </div>
       </div>
       <MyFiles files={files} DeleteFile={DeleteFile} />

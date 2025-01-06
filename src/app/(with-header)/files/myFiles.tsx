@@ -40,7 +40,7 @@ function MyFiles({
 
   return (
     <div>
-      <div className="text-xl flex justify-start mb-[10px]">My Files</div>
+      <div className="text-xl flex justify-start mb-[10px]">모든 파일</div>
       <div className="mt-[20px] w-full bg-white">
         {files.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-200">
