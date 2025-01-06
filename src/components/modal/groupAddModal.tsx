@@ -4,6 +4,7 @@ import { FaLayerGroup } from "react-icons/fa";
 import { IoIosCheckmark } from "react-icons/io";
 import { FiPlus } from "react-icons/fi";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface GroupAddModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ const GroupAddModal: React.FC<GroupAddModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const router = useRouter();
   if (!isOpen) return null;
 
   const handleBackgroundClick = (e: React.MouseEvent) => {
@@ -27,6 +29,10 @@ const GroupAddModal: React.FC<GroupAddModalProps> = ({
 
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+  };
+
+  const handleMoveGroup = () => {
+    router.push(`/group`);
   };
 
   return (
@@ -75,7 +81,10 @@ const GroupAddModal: React.FC<GroupAddModalProps> = ({
         </div>
 
         {/**모임 생성 버튼 */}
-        <div className="flex items-center cursor-pointer">
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={handleMoveGroup}
+        >
           <FiPlus className="w-[30px] h-[30px] p-[7px] rounded-full bg-gray-100 mr-[10px]" />
           <span>모임 생성</span>
         </div>
