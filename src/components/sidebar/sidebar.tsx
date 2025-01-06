@@ -14,8 +14,8 @@ function Sidebar() {
   const openDeleteModal = (e: React.MouseEvent<HTMLDivElement>) => {
     const headerRect = e.currentTarget.getBoundingClientRect();
     setModalPosition({
-      top: headerRect.bottom, // 헤더 아래에 모달을 배치
-      left: headerRect.left, // 헤더의 왼쪽 정렬
+      top: headerRect.bottom,
+      left: headerRect.left,
     });
     setIsModalOpen(true);
   };
