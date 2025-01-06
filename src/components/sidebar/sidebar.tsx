@@ -1,11 +1,42 @@
+"use client";
+
 import Image from "next/image";
 import { BsThreeDots } from "react-icons/bs";
+import { IoIosArrowDown } from "react-icons/io";
 import SidebarItem from "./sidebar.item";
+import { useState } from "react";
+import GroupAddModal from "../modal/groupAddModal";
 
 function Sidebar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+
+  const openDeleteModal = (e: React.MouseEvent<HTMLDivElement>) => {
+    const headerRect = e.currentTarget.getBoundingClientRect();
+    setModalPosition({
+      top: headerRect.bottom,
+      left: headerRect.left,
+    });
+    setIsModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const confirmDelete = () => {
+    closeDeleteModal();
+  };
+
   return (
     <div className="h-screen w-3/12 p-[20px] pt-[40px] flex flex-col items-center bg-sidebarBg">
-      <header className="text-2xl text-gray-600">OurMeeting</header>
+      <header
+        className="text-2xl text-gray-600 flex items-center cursor-pointer"
+        onClick={openDeleteModal}
+      >
+        <span>OurMeeting</span>
+        <IoIosArrowDown className="ml-[10px] mt-[5px] text-[1.3rem]" />
+      </header>
       <section className="mt-[100px] flex flex-col items-center">
         <div>
           <div className="flex justify-between">
@@ -30,6 +61,13 @@ function Sidebar() {
       <main className="mt-[10px] flex flex-col items-center">
         <SidebarItem />
       </main>
+
+      <GroupAddModal
+        isOpen={isModalOpen}
+        position={modalPosition} // 모달 위치 전달
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
