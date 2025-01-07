@@ -4,6 +4,7 @@ import { FaRegCalendarMinus } from "react-icons/fa";
 import { FaCloud } from "react-icons/fa";
 import { TbMessage2Filled } from "react-icons/tb";
 import { HiMiniWrenchScrewdriver } from "react-icons/hi2";
+import { GrAchievement } from "react-icons/gr";
 import Link from "next/link";
 
 const categories = [
@@ -31,6 +32,11 @@ const categories = [
     name: "Setting",
     icon: <HiMiniWrenchScrewdriver className="text-[20px]" />,
     url: "/setting",
+  },
+  {
+    name: "Achieve",
+    icon: <GrAchievement className="text-[20px]" />,
+    url: "/achieve",
   },
 ];
 
