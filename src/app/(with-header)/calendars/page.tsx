@@ -1,17 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Calendar,
-  momentLocalizer,
-  SlotInfo,
-  View,
-  DayProps,
-} from "react-big-calendar";
+import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { calendarTime } from "@/utils/calendarTime";
+import { calendarTime } from "@/utils/calendar";
 import CanlendarSideModal from "@/components/calendar/sideModal";
 
 const localizer = momentLocalizer(moment);
@@ -55,6 +49,7 @@ const Page: React.FC = () => {
     //     },
     //   ]);
     // }
+    console.log(slotInfo);
     setIsOpen((prev) => !prev);
   };
 
@@ -190,7 +185,7 @@ const Page: React.FC = () => {
           }}
         />
       </div>
-      <CanlendarSideModal isOpen={isOpen} />
+      <CanlendarSideModal isOpen={isOpen} currentDate={currentDate} />
     </div>
   );
 };

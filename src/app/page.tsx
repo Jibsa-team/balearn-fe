@@ -3,9 +3,9 @@
 import Image from "next/image";
 
 function Page() {
-  const onClickKakaoLogin = () => {
+  const onClickKLogin = (word: string) => {
     // 카카오 로그인 경로로 리다이렉트
-    window.location.href = "http://localhost:8080/oauth2/authorization/kakao";
+    window.location.href = `http://localhost:8080/oauth2/authorization/${word}`;
   };
 
   return (
@@ -19,19 +19,21 @@ function Page() {
             alt="카카로 로그인 버튼"
             width={50}
             height={50}
-            onClick={onClickKakaoLogin}
+            onClick={() => onClickKLogin("kakao")}
           />
           <Image
             src={"/google.png"}
             alt="구글 로그인 버튼"
             width={50}
             height={50}
+            onClick={() => onClickKLogin("google")}
           />
           <Image
             src={"/naver.png"}
             alt="네이버 로그인 버튼"
             width={50}
             height={50}
+            onClick={() => onClickKLogin("naver")}
           />
         </div>
       </div>
