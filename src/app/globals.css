@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.rbc-allday-cell {
+  display: none !important;
+}
+
+.rbc-time-header {
+  padding-top: 20px !important;
+}
+.rbc-day {
+  white-space: pre-wrap; /* 줄바꿈을 제대로 표시 */
+}
+
+.rbc-button-link {
+  color: rgba(0, 0, 0, 0.8) !important;
+  font-weight: 500;
+}
+
+.rbc-timeslot-group > div:nth-child(2) {
+  display: none !important;
+}
+
+.rbc-off-range-bg {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+.rbc-event-label {
+  display: none !important;
+}
