@@ -11,7 +11,7 @@ const categories = [
   {
     name: "Dashboard",
     icon: <MdDashboard className="text-[20px]" />,
-    url: "/",
+    url: "/dashboard",
   },
   {
     name: "Calendars",

@@ -40,7 +40,7 @@ const FileUploadPage: React.FC = () => {
   // };
 
   return (
-    <div className="w-full px-[30px]">
+    <div className="w-full pt-[100px] p-[30px]">
       <RecentFile />
       <div className="mb-[20px] shadow-sm">
         <div className="text-xl flex justify-start mb-[10px]">업로드</div>

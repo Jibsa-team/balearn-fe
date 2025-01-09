@@ -4,6 +4,9 @@ import React, { useState } from "react";
 import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { calendarTime } from "@/utils/calendar";
+import CanlendarSideModal from "@/components/calendar/sideModal";
 
 const localizer = momentLocalizer(moment);
 
@@ -13,33 +16,45 @@ interface Event {
   end: Date;
 }
 
-function Page() {
-  const [view, setView] = useState<View>("week"); // 현재 뷰 상태
-  const [events, setEvents] = useState<Event[]>([]); // 이벤트 데이터
-  const [currentDate, setCurrentDate] = useState<Date>(new Date()); // 현재 날짜 상태
+const daysInKorean = {
+  Sun: "일",
+  Mon: "월",
+  Tue: "화",
+  Wed: "수",
+  Thu: "목",
+  Fri: "금",
+  Sat: "토",
+};
+
+const Page: React.FC = () => {
+  const [view, setView] = useState<View>("week");
+  const [events, setEvents] = useState<Event[]>([]);
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    const title = prompt("Enter event title:");
-    if (title) {
-      // 특정 시간 (예: 3시 ~ 4시)으로 설정
-      const startTime = moment(slotInfo.start)
-        .set({ hour: 8, minute: 0, second: 0 })
-        .toDate(); // 3시 0분 0초
-      const endTime = moment(startTime).add(3, "hour").toDate(); // 4시 0분 0초
+    // const title = prompt("Enter event title:");
+    // if (title) {
+    //   const startTime = moment(slotInfo.start)
+    //     .set({ hour: 8, minute: 0, second: 0 })
+    //     .toDate();
+    //   const endTime = moment(startTime).add(3, "hour").toDate();
 
-      setEvents([
-        ...events,
-        {
-          start: startTime,
-          end: endTime,
-          title,
-        },
-      ]);
-    }
+    //   setEvents([
+    //     ...events,
+    //     {
+    //       start: startTime,
+    //       end: endTime,
+    //       title,
+    //     },
+    //   ]);
+    // }
+    console.log(slotInfo);
+    setIsOpen((prev) => !prev);
   };
 
   const handleNavigate = (date: Date) => {
-    setCurrentDate(date); // 현재 날짜 업데이트
+    setCurrentDate(date);
   };
 
   const navigateToPrevious = () => {
@@ -59,49 +74,46 @@ function Page() {
   };
 
   return (
-    <div className="w-[95%] justify-center items-center bg-white shadow-md px-10 relative">
-      <div className="w-[100%]">
-        <div className="flex justify-between mb-4 items-center">
+    <div className="w-full bg-white flex">
+      <div className="w-full">
+        <div className="flex justify-between mb-4 items-center p-[10px]">
           <div></div>
           <div className="flex items-center">
-            {/* 왼쪽 화살표 */}
             <button
-              className="w-10 h-10  flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+              className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
               onClick={navigateToPrevious}
             >
-              &#8249;
+              <IoIosArrowBack />
             </button>
 
-            {/* 현재 날짜 */}
             <div className="text-lg font-bold mx-[10px]">
-              {moment(currentDate).format("MMMM YYYY")}
+              {moment(currentDate).format("YYYY년 MM월")}
             </div>
 
-            {/* 오른쪽 화살표 */}
             <button
-              className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+              className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
               onClick={navigateToNext}
             >
-              &#8250;
+              <IoIosArrowForward />
             </button>
           </div>
 
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center">
             <button
-              className={`border border-gray-300 rounded-full px-4 py-2 mr-2 ${
+              className={`border border-gray-300 rounded-lg px-[16px] py-[4px] mr-2 ${
                 view === "week" ? "text-blue-500" : ""
               }`}
               onClick={() => setView("week")}
             >
-              Week
+              주간
             </button>
             <button
-              className={`border border-gray-300 rounded-full px-4 py-2 ${
+              className={`border border-gray-300 rounded-lg px-[16px] py-[4px] ${
                 view === "month" ? "text-blue-500" : ""
               }`}
               onClick={() => setView("month")}
             >
-              Month
+              월간
             </button>
           </div>
         </div>
@@ -111,30 +123,42 @@ function Page() {
           events={events}
           defaultView={view}
           view={view}
-          onView={(newView) => setView(newView)} // 뷰 변경
+          onView={(newView) => setView(newView)}
           selectable
-          date={currentDate} // 현재 날짜 설정
-          onNavigate={handleNavigate} // 날짜 변경 이벤트
-          onSelectSlot={handleSelectSlot} // 날짜 선택 이벤트
-          style={{ height: "calc(100vh - 200px)" }} // 캘린더 높이
-          toolbar={false} // 기본 툴바 비활성화
-          formats={{
-            timeGutterFormat: "HH", // 24시간 형식
-            dayFormat: "ddd\nD", // 요일과 날짜를 두 줄로 표시 (예: "Sun\n29")
+          date={currentDate}
+          onNavigate={handleNavigate}
+          onSelectSlot={handleSelectSlot}
+          style={{
+            height: "calc(100vh - 140px)",
+            width: "100%",
           }}
-          step={30} // 30분 간격
+          toolbar={false}
+          formats={{
+            timeGutterFormat: (date) => calendarTime(moment(date).hour()),
+            dayFormat: (date) => {
+              const day = moment(date).format("ddd");
+              const dayOfMonth = moment(date).date();
+              return `${daysInKorean[day]} ${dayOfMonth}일`;
+            },
+            weekdayFormat: (date) => {
+              const day = moment(date).format("ddd");
+              return daysInKorean[day]; // 월간 뷰에서 요일을 한국어로 출력
+            },
+          }}
+          step={30}
           components={{
             timeSlotWrapper: (props) => (
               <div
                 {...props}
                 style={{
-                  padding: "10px", // 적당한 padding 설정
+                  padding: "20px 16px",
                   color: "#ADB8CC",
                   fontWeight: "600",
+                  fontSize: "0.8rem",
                   height: "40px",
-                  display: "flex", // 가운데 정렬을 위한 flex 설정
-                  justifyContent: "center", // 시간 텍스트 가운데 정렬
-                  alignItems: "center", // 세로로도 가운데 정렬
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 {props.children}
@@ -144,7 +168,8 @@ function Page() {
           eventPropGetter={() => ({
             style: {
               backgroundColor: "rgba(201, 212, 57, 0.2)",
-              border: "3px solid #C9D439",
+              border: "none",
+              borderLeft: "2px solid #C9D439",
               color: "black",
             },
           })}
@@ -160,8 +185,9 @@ function Page() {
           }}
         />
       </div>
+      <CanlendarSideModal isOpen={isOpen} currentDate={currentDate} />
     </div>
   );
-}
+};
 
 export default Page;

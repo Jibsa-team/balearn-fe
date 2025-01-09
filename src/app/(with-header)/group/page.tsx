@@ -46,7 +46,7 @@ function Page() {
   };
 
   return (
-    <div className="w-[95%] h-[100%] p-[30px] bg-white">
+    <div className="w-[100%] h-[100%] p-[30px] bg-white">
       <h1 className="text-xl font-semibold mb-[40px]">모임 관리</h1>
       <div className="flex w-full justify-between">
         <div className="w-[48%]">

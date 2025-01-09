@@ -1,74 +1,71 @@
-"use client";
-
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { BsThreeDots } from "react-icons/bs";
-import { IoIosArrowDown } from "react-icons/io";
 import SidebarItem from "./sidebar.item";
-import { useState } from "react";
-import GroupAddModal from "../modal/groupAddModal";
+import { IoIosArrowForward } from "react-icons/io";
 
-function Sidebar() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+interface SidebarProps {
+  isSidebarOpen: boolean;
+}
 
-  const openDeleteModal = (e: React.MouseEvent<HTMLDivElement>) => {
-    const headerRect = e.currentTarget.getBoundingClientRect();
-    setModalPosition({
-      top: headerRect.bottom,
-      left: headerRect.left,
-    });
-    setIsModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const confirmDelete = () => {
-    closeDeleteModal();
-  };
-
+function Sidebar({ isSidebarOpen }: SidebarProps) {
   return (
-    <div className="h-screen w-3/12 p-[20px] pt-[40px] flex flex-col items-center bg-sidebarBg">
-      <header
-        className="text-2xl text-gray-600 flex items-center cursor-pointer"
-        onClick={openDeleteModal}
-      >
-        <span>OurMeeting</span>
-        <IoIosArrowDown className="ml-[10px] mt-[5px] text-[1.3rem]" />
-      </header>
-      <section className="mt-[100px] flex flex-col items-center">
-        <div>
-          <div className="flex justify-between">
-            <div></div>
-            <BsThreeDots className="cursor-pointer text-unActiveColor" />
+    <motion.div
+      initial={{ x: "-100%" }} // 초기 위치 (화면 밖)
+      animate={{ x: isSidebarOpen ? "0%" : "-100%" }} // 열리고 닫히는 애니메이션
+      transition={{ type: "spring", stiffness: 200, damping: 30 }} // 애니메이션 효과
+      className="fixed w-[300px] z-40 bg-white shadow-xl"
+      style={{
+        height: "calc(100vh - 70px)", // 헤더 높이를 제외한 높이
+        top: "70px", // 헤더 아래로 이동
+      }}
+    >
+      <div className="p-[20px] flex flex-col items-center">
+        {/* 모임명 */}
+        <section className="w-full flex flex-col items-start mb-[20px]">
+          <div className="w-full flex items-center justify-between cursor-pointer">
+            <div className="w-full flex items-center">
+              <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px]">
+                <Image
+                  src="/Avatar.png"
+                  width={50}
+                  height={50}
+                  alt="group profile"
+                  className="object-cover"
+                />
+              </div>
+              <span className="text-[1.1rem] mt-[3px]">OurMeeting</span>
+            </div>
+            <IoIosArrowForward className="text-[1.1rem] mt-[3px]" />
           </div>
-          <div className="rounded-full p-2 border-[2.5px] border-logoColor w-[150px] h-[150px]">
-            <Image
-              src="/Avatar.png"
-              width={140}
-              height={140}
-              alt="profile image"
-              className="object-cover"
-            />
+          <div className="w-full flex items-center justify-between cursor-pointer">
+            <div className="w-full flex items-center">
+              <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px]">
+                <Image
+                  src="/Avatar.png"
+                  width={50}
+                  height={50}
+                  alt="group profile"
+                  className="object-cover"
+                />
+              </div>
+              <span className="text-[1.1rem] mt-[3px]">OurMeeting</span>
+            </div>
+            <IoIosArrowForward className="text-[1.1rem] mt-[3px]" />
           </div>
-          <div className="mt-[20px] flex flex-col justify-center text-center">
-            <span>Hello JaeIn</span>
-            <span className="text-gray-400">ysy06053@gmail.com</span>
-          </div>
-        </div>
-      </section>
-      <main className="mt-[10px] flex flex-col items-center">
-        <SidebarItem />
-      </main>
+        </section>
+        <div className="w-full border-[1px] border-gray-[rgba(0,0,0,0.05)] mt-[10px]"></div>
 
-      <GroupAddModal
-        isOpen={isModalOpen}
-        position={modalPosition} // 모달 위치 전달
-        onClose={closeDeleteModal}
-        onConfirm={confirmDelete}
-      />
-    </div>
+        <main className="w-[80%] flex flex-col items-center">
+          <SidebarItem />
+        </main>
+        <button
+          className="mt-[10px] px-[15px] py-[8px] text-sm text-white bg-logoColor rounded-md hover:bg-blue-600 transition"
+          onClick={() => alert("모임 생성하기 클릭!")}
+        >
+          모임 생성하기
+        </button>
+      </div>
+    </motion.div>
   );
 }
 

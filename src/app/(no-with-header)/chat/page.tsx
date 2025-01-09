@@ -14,7 +14,7 @@ const Chat = [
 
 function page() {
   return (
-    <div className="w-full bg-white h-screen overflow-y-scroll relative">
+    <div className="w-full bg-white h-screen overflow-y-scroll">
       <div className="p-[20px] h-full">
         {Chat.map((e, i) => {
           return (
