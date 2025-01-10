@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.rbc-allday-cell {
+/* .rbc-allday-cell {
   display: none !important;
-}
+} */
 
 .rbc-time-header {
   padding-top: 20px !important;
@@ -28,4 +28,19 @@
 
 .rbc-event-label {
   display: none !important;
+}
+
+.react-date-picker__wrapper,
+.react-date-picker__inputGroup {
+  border: none !important;
+}
+
+/* 메인페이지 멤버 스크롤 처리 */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
