@@ -4,8 +4,7 @@ import Image from "next/image";
 
 function Page() {
   const onClickKLogin = (word: string) => {
-    // 카카오 로그인 경로로 리다이렉트
-    window.location.href = `http://localhost:8080/oauth2/authorization/${word}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/${word}`;
   };
 
   return (
