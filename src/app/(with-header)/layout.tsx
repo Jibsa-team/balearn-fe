@@ -3,7 +3,6 @@
 import Header from "@/components/header/header";
 import Sidebar from "@/components/sidebar/sidebar";
 import { ReactNode, useState } from "react";
-import SidebarClose from "@/components/sidebar/sidebar.close";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,9 +16,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className="w-full bg-sidebarBg">
         <Header toggleSidebar={toggleSidebar} />
         <div className="w-full h-screen flex">
-          <Sidebar isSidebarOpen={isSidebarOpen} />
-          <div className={"w-full mt-[70px] flex"}>
-            {/* <SidebarClose /> */}
+          <div className="mt-[70px] flex w-full">
+            <Sidebar isSidebarOpen={isSidebarOpen} />
             {children}
           </div>
         </div>
