@@ -10,13 +10,16 @@ const KakaoCallbackPage = () => {
 
   const reissueToken = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/auth/reissue", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/reissue`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       try {
         const data = await response.json();
