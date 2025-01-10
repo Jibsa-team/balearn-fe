@@ -7,14 +7,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { calendarTime } from "@/utils/calendar";
 import CanlendarSideModal from "@/components/calendar/sideModal";
+import { Event } from "@/types/calendar/event";
 
 const localizer = momentLocalizer(moment);
-
-interface Event {
-  title: string;
-  start: Date;
-  end: Date;
-}
 
 const daysInKorean = {
   Sun: "일",
@@ -30,27 +25,26 @@ const Page: React.FC = () => {
   const [view, setView] = useState<View>("week");
   const [events, setEvents] = useState<Event[]>([]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
-    // const title = prompt("Enter event title:");
-    // if (title) {
-    //   const startTime = moment(slotInfo.start)
-    //     .set({ hour: 8, minute: 0, second: 0 })
-    //     .toDate();
-    //   const endTime = moment(startTime).add(3, "hour").toDate();
-
-    //   setEvents([
-    //     ...events,
-    //     {
-    //       start: startTime,
-    //       end: endTime,
-    //       title,
-    //     },
-    //   ]);
-    // }
-    console.log(slotInfo);
+    setSelectDate(slotInfo.start);
     setIsOpen((prev) => !prev);
+  };
+
+  const handleAddEvent = (
+    selectedGoal: string,
+    startDate: Date,
+    endDate: Date
+  ) => {
+    const newEvent = {
+      title: selectedGoal,
+      start: startDate,
+      end: endDate,
+    };
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
+    console.log(events);
   };
 
   const handleNavigate = (date: Date) => {
@@ -74,7 +68,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white flex">
+    <div className="w-full bg-white flex relative">
       <div className="w-full">
         <div className="flex justify-between mb-4 items-center p-[10px]">
           <div></div>
@@ -167,10 +161,9 @@ const Page: React.FC = () => {
           }}
           eventPropGetter={() => ({
             style: {
-              backgroundColor: "rgba(201, 212, 57, 0.2)",
+              backgroundColor: "#C9D439",
               border: "none",
-              borderLeft: "2px solid #C9D439",
-              color: "black",
+              color: "white",
             },
           })}
           dayPropGetter={(date) => {
@@ -185,7 +178,12 @@ const Page: React.FC = () => {
           }}
         />
       </div>
-      <CanlendarSideModal isOpen={isOpen} currentDate={currentDate} />
+      <CanlendarSideModal
+        isOpen={isOpen}
+        selectDate={selectDate}
+        view={view}
+        handleAddEvent={handleAddEvent}
+      />
     </div>
   );
 };
