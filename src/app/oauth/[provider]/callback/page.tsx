@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
+import LoginLoading from "@/components/loading/loading";
+import { LoginRes } from "@/types/login/login";
+import useAuthStore from "@/store/useAuthStore";
 
 const KakaoCallbackPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const reissueToken = async () => {
     try {
       const response = await fetch(
@@ -21,9 +22,15 @@ const KakaoCallbackPage = () => {
         }
       );
 
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
+        return;
+      }
+
       try {
-        const data = await response.json();
+        const data: LoginRes = await response.json();
         console.log(data);
+        setAccessToken(data.result.accessToken, data.result.expirationTime);
         router.push("/dashboard");
       } catch (parseError) {
         console.error("Failed to parse JSON:", parseError);
@@ -34,14 +41,12 @@ const KakaoCallbackPage = () => {
   };
 
   useEffect(() => {
-    console.log(searchParams);
-
     reissueToken();
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
-      <h1>로그인 중...</h1>
+      <LoginLoading />
     </div>
   );
 };
