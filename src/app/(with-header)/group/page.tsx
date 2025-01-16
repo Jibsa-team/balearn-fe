@@ -7,33 +7,59 @@ import GoalList from "./goalList";
 import { z } from "zod";
 import GroupAddError from "@/components/error/groupAddError";
 import { formSchema } from "./schema";
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import useGroupStore from "@/store/useGroupStore";
+import { GroupDTO } from "@/types/group/group";
+import { useRouter } from "next/navigation";
 
 function Page() {
-  const [groupName, setGroupName] = useState("");
-  const [groupPurpose, setGroupPurpose] = useState("");
-  const [goals, setGoals] = useState<{ goal: string; color: string }[]>([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [goals, setGoals] = useState<{ detail: string; color: string }[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | null>(null);
+  const setGroupId = useGroupStore((state) => state.setGroupId);
+  const router = useRouter();
 
   const isFormValid = () => {
-    const formData = { groupName, groupPurpose, goals, profileImage };
+    const formData = { name, description, goals, image };
     const result = formSchema.safeParse(formData);
-    return result.success && profileImage !== null;
+    return result.success && image !== null;
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     try {
-      const formData = {
-        groupName,
-        groupPurpose,
-        goals,
-        profileImage,
-      };
-      formSchema.parse(formData);
-      alert("모임이 성공적으로 생성되었습니다!");
-      console.log(formData);
+      const formData = new FormData();
+
+      const blob = new Blob([JSON.stringify({ name, description, goals })], {
+        type: "application/json",
+      });
+
+      formData.append("data", blob);
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/team/create`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result: GroupDTO = await response.json();
+      setGroupId(result.result.teamId);
+      router.push(`/dashboard/${result.result.teamId}`);
       setErrors({});
     } catch (err) {
+      console.error("Error during group creation:", err);
+
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
         err.errors.forEach((error) => {
@@ -56,8 +82,8 @@ function Page() {
             <TextInput
               message={"모임명을 입력해주세요."}
               width={100}
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             {errors.groupName && <GroupAddError errors={errors.groupName} />}
           </div>
@@ -68,8 +94,8 @@ function Page() {
             <TextInput
               message={"모임 목적을 입력해주세요."}
               width={100}
-              value={groupPurpose}
-              onChange={(e) => setGroupPurpose(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
             {errors.groupPurpose && (
               <GroupAddError errors={errors.groupPurpose} />
@@ -95,10 +121,7 @@ function Page() {
           </div>
         </div>
         <div className="w-[48%]">
-          <GroupProfile
-            profileImage={profileImage}
-            setProfileImage={setProfileImage}
-          />
+          <GroupProfile profileImage={image} setProfileImage={setImage} />
         </div>
       </div>
     </div>
