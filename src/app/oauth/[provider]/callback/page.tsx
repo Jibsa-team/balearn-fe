@@ -5,10 +5,34 @@ import { useRouter } from "next/navigation";
 import LoginLoading from "@/components/loading/loading";
 import { LoginRes } from "@/types/login/login";
 import useAuthStore from "@/store/useAuthStore";
+import useGroupStore from "@/store/useGroupStore";
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 
 const KakaoCallbackPage = () => {
   const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const groupId = useGroupStore((state) => state.groupId);
+  const setGroupId = useGroupStore((state) => state.setGroupId);
+
+  const fetchGroupList = async () => {
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/team/list`
+      );
+
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
+        return null;
+      }
+
+      const data = await response.json();
+      return data.result;
+    } catch (error) {
+      console.error("Error fetching group list:", error);
+      return null;
+    }
+  };
+
   const reissueToken = async () => {
     try {
       const response = await fetch(
@@ -27,13 +51,26 @@ const KakaoCallbackPage = () => {
         return;
       }
 
-      try {
-        const data: LoginRes = await response.json();
-        console.log(data);
-        setAccessToken(data.result.accessToken, data.result.expirationTime);
-        router.push("/dashboard");
-      } catch (parseError) {
-        console.error("Failed to parse JSON:", parseError);
+      const data: LoginRes = await response.json();
+      setAccessToken(data.result.accessToken, data.result.expirationTime);
+
+      let currentGroupId = groupId;
+
+      if (!currentGroupId || currentGroupId === 0) {
+        const groups = await fetchGroupList();
+        console.log(groups);
+        if (groups && groups.length > 0) {
+          currentGroupId = groups[0].id;
+          setGroupId(currentGroupId);
+        } else if (groups.length === 0) {
+          router.push("/dashboard");
+        }
+      }
+
+      if (currentGroupId) {
+        router.push(`/dashboard/${currentGroupId}`);
+      } else {
+        console.error("No group ID available to navigate.");
       }
     } catch (error) {
       console.error("Error during token reissue:", error);

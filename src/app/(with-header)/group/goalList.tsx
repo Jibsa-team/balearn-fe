@@ -7,7 +7,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import GroupAddError from "@/components/error/groupAddError";
 
 interface GoalItem {
-  goal: string;
+  detail: string;
   color: string;
 }
 
@@ -31,7 +31,7 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
 
   const handleGoalChange = (index: number, value: string) => {
     const updatedGoals = [...goals];
-    updatedGoals[index].goal = value;
+    updatedGoals[index].detail = value;
     setGoals(updatedGoals);
   };
 
@@ -42,7 +42,7 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
   };
 
   const addGoalItem = () => {
-    setGoals([...goals, { goal: "", color: "#FFCB33" }]);
+    setGoals([...goals, { detail: "", color: "#FFCB33" }]);
   };
 
   const toggleColorPicker = (
@@ -83,7 +83,7 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
           <TextInput
             message={"모임 목표를 입력해주세요."}
             width={80}
-            value={goal.goal}
+            value={goal.detail}
             onChange={(e) => handleGoalChange(index, e.target.value)}
           />
 

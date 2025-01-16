@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { MdOutlineLogout } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,6 +16,7 @@ const modalVariants = {
 };
 
 const ProfileModal = ({ isOpen, onClose, onLogout }: ModalProps) => {
+  const router = useRouter();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -27,6 +28,12 @@ const ProfileModal = ({ isOpen, onClose, onLogout }: ModalProps) => {
           variants={modalVariants}
           transition={{ duration: 0.2 }}
         >
+          <button
+            onClick={() => router.push("/profile")}
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <span>프로필 수정</span>
+          </button>
           <button
             onClick={onLogout}
             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
