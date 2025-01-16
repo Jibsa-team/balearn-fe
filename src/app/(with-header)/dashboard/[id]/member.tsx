@@ -1,0 +1,76 @@
+// Member.tsx
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import { DashboardType } from "@/types/dashboard/dashboard";
+import MemberSkeleton from "@/components/skelton/dashboard/memberSkelton";
+import { useParams } from "next/navigation";
+
+const fetchMemberData = async (
+  groupId: string | string[]
+): Promise<DashboardType> => {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${groupId}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch member details");
+  }
+  return response.json();
+};
+
+function Member() {
+  const { id } = useParams();
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["memberData"],
+    queryFn: () => fetchMemberData(id),
+  });
+
+  if (isError) return <div>오류가 발생했습니다.</div>;
+
+  console.log(data);
+
+  return (
+    <div className="mb-[80px]">
+      <h1 className="text-2xl font-semibold text-gray-700">Study Member</h1>
+      <div className="mt-[20px] flex overflow-x-scroll whitespace-nowrap hide-scrollbar">
+        {!isLoading ? (
+          data &&
+          data.result.teamUser?.map((member) => (
+            <div
+              key={member.id}
+              className="flex flex-col items-center mr-[10px]"
+            >
+              {member.imgUrl ? (
+                <div className="rounded-full p-[5px] border-[2.5px] w-[120px] h-[120px] overflow-hidden relative">
+                  <Image
+                    src={member.imgUrl}
+                    alt={`${member.nickname} img`}
+                    layout="fill"
+                    className="rounded-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-[30px] h-[30px] bg-gray-300 rounded-full" />
+              )}
+              <span className="mt-4 text-gray-700 font-medium text-center">
+                {member.nickname}
+                {member.role === "OWNER" && "(스터디장)"}
+              </span>
+            </div>
+          ))
+        ) : (
+          <>
+            <MemberSkeleton />
+            <MemberSkeleton />
+            <MemberSkeleton />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Member;
