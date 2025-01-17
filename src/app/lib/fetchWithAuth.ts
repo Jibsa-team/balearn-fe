@@ -29,7 +29,7 @@ const reissueToken = async () => {
 };
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const { accessToken, expirationTime } = useAuthStore.getState();
+  const { expirationTime } = useAuthStore.getState();
 
   if (expirationTime && Date.now() >= expirationTime) {
     const success = await reissueToken();

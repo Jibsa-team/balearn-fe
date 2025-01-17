@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 interface GroupAddModalProps {
   isOpen: boolean;
-  position: { top: number; left: number }; // 위치 정보 추가
+  position: { top: number; left: number };
   onClose: () => void;
   onConfirm: () => void;
 }
@@ -17,6 +17,7 @@ const GroupAddModal: React.FC<GroupAddModalProps> = ({
   isOpen,
   position,
   onClose,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onConfirm,
 }) => {
   const router = useRouter();

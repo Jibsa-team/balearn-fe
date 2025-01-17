@@ -9,7 +9,7 @@ import { User } from "@/types/user/user";
 import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ProfileModal from "../modal/profileModal";
 
 interface HeaderProps {
@@ -31,6 +31,7 @@ function Header({ toggleSidebar }: HeaderProps) {
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
   const clearUser = useAuthStore((state) => state.clearUser);
   const router = useRouter();
+  const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery<User>({
     queryKey: ["userData", accessToken],
@@ -66,7 +67,7 @@ function Header({ toggleSidebar }: HeaderProps) {
         />
         <span
           className="text-[#C9D439] text-[1.4rem] cursor-pointer"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push(`/dashboard/${id}`)}
         >
           Balearn
         </span>

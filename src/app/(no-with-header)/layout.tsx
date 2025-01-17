@@ -2,6 +2,7 @@
 
 import Header from "@/components/header/header";
 import Sidebar from "@/components/sidebar/sidebar";
+
 import { ReactNode, useState } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
@@ -16,7 +17,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className="w-full bg-sidebarBg">
         <Header toggleSidebar={toggleSidebar} />
         <div className="flex">
-          <Sidebar isSidebarOpen={isSidebarOpen} />
+          <Sidebar
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
           <div
             className="w-full flex justify-center py-0 overflow-y-auto"
             style={{

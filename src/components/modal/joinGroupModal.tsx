@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { InputOTPControlled } from "./joinGroupModal.input";
 
 interface JoinGroupModalProps {
   isOpen: boolean;
@@ -20,10 +21,6 @@ const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0 } },
-  };
-
-  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCode(e.target.value);
   };
 
   const handleJoinClick = () => {
@@ -48,7 +45,7 @@ const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <header className="flex justify-between items-center mb-4">
+            <header className="flex justify-between items-center mb-[20px]">
               <h2 className="text-[1.1rem] font-semibold text-center">
                 전달받은 코드를 입력해주세요
               </h2>
@@ -57,15 +54,7 @@ const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
                 className="text-2xl cursor-pointer"
               />
             </header>
-
-            <input
-              type="text"
-              value={code}
-              onChange={handleCodeChange}
-              placeholder="코드를 입력하세요"
-              className="w-full border-[1px] border-gray-300 rounded-lg p-2 mb-4"
-            />
-
+            <InputOTPControlled />
             <div className="flex justify-center mt-6">
               <button
                 onClick={handleJoinClick}

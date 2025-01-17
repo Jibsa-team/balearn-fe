@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { DashboardType } from "@/types/dashboard/dashboard";
-import MemberSkeleton from "@/components/skelton/dashboard/memberSkelton";
+import MemberSkeleton from "@/components/skeleton/memberSkelton";
 import { useParams } from "next/navigation";
 
 const fetchMemberData = async (
@@ -33,8 +33,8 @@ function Member() {
   console.log(data);
 
   return (
-    <div className="mb-[80px]">
-      <h1 className="text-2xl font-semibold text-gray-700">Study Member</h1>
+    <div className="mb-[80px] pl-[10px]">
+      <h1 className="text-[1.4rem] font-semibold text-gray-700">스터디 멤버</h1>
       <div className="mt-[20px] flex overflow-x-scroll whitespace-nowrap hide-scrollbar">
         {!isLoading ? (
           data &&
