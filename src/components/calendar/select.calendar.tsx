@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef } from "react";
-import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import { FaRegCalendarMinus } from "react-icons/fa";
+import { DatePicker } from "./datePicker";
 
 function SelectCalendar({
   onDateChange,
