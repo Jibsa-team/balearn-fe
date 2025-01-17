@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import SelectCalendar from "./select.calendar";
-import TimePicker from "./timePicker";
+import { DatePicker } from "./datePicker";
 
 function CalendarDate({
   view,
@@ -78,7 +78,7 @@ function CalendarDate({
           </div>
           <SelectCalendar onDateChange={setStartDate} selectDate={startDate} />
           {view === "week" && (
-            <TimePicker
+            <DatePicker
               onTimeChange={(time) => {
                 setStartTimeValue(time);
                 setStartTime(time);
@@ -93,7 +93,7 @@ function CalendarDate({
           </div>
           <SelectCalendar onDateChange={setEndDate} selectDate={endDate} />
           {view === "week" && (
-            <TimePicker
+            <DatePicker
               onTimeChange={(time) => {
                 setEndTimeValue(time);
                 setEndTime(time);

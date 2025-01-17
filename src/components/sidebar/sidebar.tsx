@@ -3,13 +3,16 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import SidebarItem from "./sidebar.item";
-import useAuthStore from "@/store/useAuthStore";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import JoinGroupModal from "@/components/modal/joinGroupModal"; // Import the modal component
+import JoinGroupModal from "@/components/modal/joinGroupModal";
 import { useParams } from "next/navigation";
-import { fetchWithAuth } from "@/app/lib/fetchWithAuth"; // Assuming you have a fetchWithAuth function
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { DashboardType } from "@/types/dashboard/dashboard";
+import { IoIosArrowDown } from "react-icons/io";
+import SidebarDropdown from "./sidebar.dropdown";
+import { HiPlusCircle } from "react-icons/hi2";
+import { FcInvite } from "react-icons/fc";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -93,51 +96,62 @@ function Content({
   handleOpenModal: () => void;
   teamInfo: { name: string; imageUrl: string } | null;
 }) {
-  const user = useAuthStore((state) => state.user);
-
-  console.log(teamInfo);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
     <div className="h-full p-[20px] flex flex-col items-center justify-between bg-white lg:bg-sidebarBg">
       <div>
         <section className="w-full flex flex-col items-start mb-[20px]">
           <div className="w-full flex items-center justify-between cursor-pointer">
-            <div className="w-full flex items-center justify-center">
-              <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px] relative">
-                {teamInfo?.imageUrl ? (
-                  <Image
-                    src={teamInfo?.imageUrl}
-                    alt="team img"
-                    layout="fill"
-                    className="rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-[30px] h-[30px] bg-gray-300 rounded-full"></div>
-                )}
+            <div
+              className="w-full flex items-center justify-between"
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
+              <div className="flex items-center">
+                <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px] relative">
+                  {teamInfo?.imageUrl ? (
+                    <Image
+                      src={teamInfo?.imageUrl}
+                      alt="team img"
+                      layout="fill"
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-[30px] h-[30px] bg-gray-300 rounded-full"></div>
+                  )}
+                </div>
+                <span className="text-[1.1rem] mt-[3px]">{teamInfo?.name}</span>
               </div>
-              <span className="text-[1.1rem] mt-[3px]">{teamInfo?.name}</span>
+              <IoIosArrowDown />
             </div>
           </div>
         </section>
+        {isOpen && <SidebarDropdown setIsOpen={setIsOpen} />}
         <div className="w-full border-[1px] border-gray-[rgba(0,0,0,0.05)] mt-[10px]"></div>
 
-        <main className="w-[80%] flex flex-col items-center">
+        <main className="w-[100%] flex flex-col items-center">
           <SidebarItem />
         </main>
       </div>
 
-      <div className="w-full flex flex-col items-center">
-        <Link href={"/group"}>
-          <button className="mt-[10px] px-[40px] py-[8px] text-sm text-white bg-logoColor rounded-lg">
-            모임 생성하기
-          </button>
+      <div className="w-full flex flex-col items-start pl-[15px]">
+        <Link href={"/group"} className="cursor-pointer group">
+          <div className="w-full flex justify-evenly items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
+            <HiPlusCircle className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
+            <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
+              모임 생성하기
+            </span>
+          </div>
         </Link>
-        <button
+        <div
           onClick={handleOpenModal}
-          className="mt-[10px] px-[40px] py-[8px] text-sm text-white bg-logoColor rounded-lg cursor-pointer"
+          className="flex justify-evenly items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)] cursor-pointer group"
         >
-          모임 가입하기
-        </button>
+          <FcInvite className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
+          <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
+            모임 가입하기
+          </span>
+        </div>
       </div>
     </div>
   );

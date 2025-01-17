@@ -8,6 +8,8 @@ import { FaCrown } from "react-icons/fa";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { useParams } from "next/navigation";
+import NotifyEmptyLogo from "./notify.empty.logo";
+import { IoIosArrowForward } from "react-icons/io";
 
 const fetchNotifyData = async (
   id: string | string[]
@@ -38,7 +40,7 @@ function Notify() {
     setIsExpanded((prev) => !prev);
   };
 
-  return (
+  return data?.result.notice ? (
     <div
       className={`mb-[40px] lg:w-[500px] sm:w-full p-2 cursor-pointer transition-all duration-200 bg-notifyColor`}
     >
@@ -81,6 +83,16 @@ function Notify() {
           )}
         </div>
       )}
+    </div>
+  ) : (
+    <div className="mb-[30px] flex items-center justify-between md:w-[400px] w-full rounded-full px-[10px] border-[1px] border-[rgba(0,0,0,0.1)] shadow-sm text-[rgba(0,0,0,0.6)] cursor-pointer">
+      <div className="flex items-center">
+        <NotifyEmptyLogo />
+        <span className="text-[1.1rem] ml-[5px] mt-[5px]">
+          등록된 공지가 없어요
+        </span>
+      </div>
+      <IoIosArrowForward className="mt-[5px] text-[#6760DB]" />
     </div>
   );
 }

@@ -1,31 +1,11 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-
-const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
 function Page() {
-  const [loadingAnimation, setLoadingAnimation] = useState(null);
-
   const onClickKLogin = (word: string) => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/${word}`;
   };
-
-  useEffect(() => {
-    const loadAnimation = async () => {
-      try {
-        const response = await fetch("/login_lottie.json");
-        const data = await response.json();
-        setLoadingAnimation(data);
-      } catch (error) {
-        console.error("애니메이션 로딩 오류:", error);
-      }
-    };
-
-    loadAnimation();
-  }, []);
 
   return (
     <div className="w-full h-screen flex justify-center items-center bg-[rgba(0,0,0,0.8)]">

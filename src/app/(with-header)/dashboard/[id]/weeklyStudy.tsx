@@ -4,7 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import WeeklyStudySkeleteon from "@/components/skelton/dashboard/weeklySkelton";
+import WeeklyStudySkeleteon from "@/components/skeleton/weeklySkelton";
 import { useParams } from "next/navigation";
 
 const fetchWeeklyData = async (
@@ -30,32 +30,40 @@ function WeeklyStudy() {
   if (isError) return <div>오류가 발생했습니다.</div>;
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-gray-700">Weekly Study</h1>
+    <div className="pl-[10px]">
+      <h1 className="text-[1.4rem] font-semibold text-gray-700">주간 일정</h1>
       {!isLoading ? (
-        <div className="overflow-x-auto mt-4">
-          <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 px-4 py-2">요일</th>
-                <th className="border border-gray-300 px-4 py-2">주제</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data &&
-                data.result.weekly_schedule?.map((schedule) => (
-                  <tr key={schedule.id}>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {schedule.address}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {schedule.topic}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        data?.result.weekly_schedule ? (
+          <div className="overflow-x-auto mt-4">
+            <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">요일</th>
+                  <th className="border border-gray-300 px-4 py-2">주제</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data.result.weekly_schedule?.map((schedule) => (
+                    <tr key={schedule.id}>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {schedule.address}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {schedule.topic}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-[15px]">
+            <button className="px-[20px] py-[5px] text-white rounded-lg bg-logoColor mt-[10px] w-[200px]">
+              <span className="text-white">일정 등록하러 가기</span>
+            </button>
+          </div>
+        )
       ) : (
         <WeeklyStudySkeleteon />
       )}

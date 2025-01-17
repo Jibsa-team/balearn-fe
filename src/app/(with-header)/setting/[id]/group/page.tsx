@@ -6,11 +6,11 @@ import GroupProfile from "./groupProfile";
 import GoalList from "./goalList";
 import { z } from "zod";
 import GroupAddError from "@/components/error/groupAddError";
-import { formSchema } from "./schema";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import useGroupStore from "@/store/useGroupStore";
 import { GroupDTO } from "@/types/group/group";
 import { useRouter } from "next/navigation";
+import { formSchema } from "./schema";
 
 function Page() {
   const [name, setName] = useState("");

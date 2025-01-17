@@ -3,8 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import DailySkeleton from "@/components/skelton/dashboard/dailySkelton";
-import { useParams, useSearchParams } from "next/navigation"; // useSearchParams import
+import DailySkeleton from "@/components/skeleton/dailySkelton";
+import { useParams } from "next/navigation";
+import Image from "next/image";
 
 const fetchDailyData = async (
   groupId: string | string[]
@@ -30,15 +31,25 @@ function Daily() {
   if (isError) return <div>오류가 발생했습니다.</div>;
 
   return (
-    <div className="mb-[80px]">
-      <h1 className="text-2xl font-semibold text-gray-700 mb-[20px]">
-        Daily Study
+    <div className="mb-[80px] pl-[10px]">
+      <h1 className="flex items-center text-[1.4rem] font-semibold text-gray-700 mb-[20px]">
+        <Image
+          src={"/trophy.png"}
+          alt="트로피"
+          width={45}
+          height={45}
+          className="mr-[10px]"
+        />
+        <span>목표를 달성해보세요</span>
       </h1>
       {!isLoading ? (
         <div>
-          <ol className="list-decimal pl-6">
+          <ol className="list-decimal pl-3">
             {data?.result.goal.map((e, i) => (
-              <li key={i}>{e.detail}</li>
+              <li key={i} className="flex items-center">
+                <div className="w-[20px] h-[20px] rounded-full bg-red-400 mr-[10px]"></div>
+                <span className="text-[1.1rem]">{e.detail}</span>
+              </li>
             ))}
           </ol>
         </div>

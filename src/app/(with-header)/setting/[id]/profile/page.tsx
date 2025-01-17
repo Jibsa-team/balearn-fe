@@ -5,9 +5,10 @@ import React, { useState } from "react";
 import { z } from "zod";
 import GroupAddError from "@/components/error/groupAddError";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+
+import useAuthStore from "@/store/useAuthStore";
 import { formSchema } from "./schema";
 import UserProfile from "./userProfile";
-import useAuthStore from "@/store/useAuthStore";
 
 function Page() {
   const user = useAuthStore((state) => state.user);
@@ -34,6 +35,7 @@ function Page() {
           method: "POST",
         }
       );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await response.json();
       // console.log(result);
 

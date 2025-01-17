@@ -136,7 +136,7 @@ const Page: React.FC = () => {
             },
             weekdayFormat: (date) => {
               const day = moment(date).format("ddd");
-              return daysInKorean[day]; // 월간 뷰에서 요일을 한국어로 출력
+              return daysInKorean[day];
             },
           }}
           step={30}
