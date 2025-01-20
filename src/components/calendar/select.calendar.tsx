@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useRef } from "react";
@@ -8,6 +9,7 @@ import { DatePicker } from "./datePicker";
 
 function SelectCalendar({
   onDateChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   selectDate,
 }: {
   onDateChange: (date: Date | null) => void;
@@ -15,20 +17,21 @@ function SelectCalendar({
 }) {
   const calendarRef = useRef<HTMLDivElement>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDateChange = (date: Date | null) => {
     onDateChange(date); // 선택된 날짜를 부모 컴포넌트로 전달
   };
 
   return (
     <div ref={calendarRef} className="relative">
-      <DatePicker
+      {/* <DatePicker
         onChange={handleDateChange}
         value={selectDate}
         calendarIcon={<FaRegCalendarMinus className="text-logoColor" />}
         clearIcon={null}
         format="yyyy-MM-dd"
         className="w-[200px] border-[1px] h-[41px] border-gray-300 rounded-md text-[0.9rem]"
-      />
+      /> */}
     </div>
   );
 }

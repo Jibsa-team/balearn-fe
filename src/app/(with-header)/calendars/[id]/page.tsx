@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar";
+import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar"; // TimeSlotWrapperProps 추가
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
@@ -11,7 +11,18 @@ import { Event } from "@/types/calendar/event";
 
 const localizer = momentLocalizer(moment);
 
-const daysInKorean = {
+type dayProps = {
+  [key: string]: string; // 여기에 인덱스 시그니처 추가
+  Sun: string;
+  Mon: string;
+  Tue: string;
+  Wed: string;
+  Thu: string;
+  Fri: string;
+  Sat: string;
+};
+
+const daysInKorean: dayProps = {
   Sun: "일",
   Mon: "월",
   Tue: "화",
@@ -68,7 +79,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white flex relative">
+    <div className="w-full bg-white flex">
       <div className="w-full">
         <div className="flex justify-between mb-4 items-center p-[10px]">
           <div></div>
@@ -141,7 +152,8 @@ const Page: React.FC = () => {
           }}
           step={30}
           components={{
-            timeSlotWrapper: (props) => (
+            // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+            timeSlotWrapper: (props: React.PropsWithChildren<{}>) => (
               <div
                 {...props}
                 style={{
@@ -155,7 +167,7 @@ const Page: React.FC = () => {
                   alignItems: "center",
                 }}
               >
-                {props.children}
+                {props.children} {/* children을 올바르게 사용 */}
               </div>
             ),
           }}
