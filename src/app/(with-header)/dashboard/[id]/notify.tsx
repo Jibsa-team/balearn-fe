@@ -28,7 +28,7 @@ function Notify() {
   const { id } = useParams();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["notifyData"],
+    queryKey: ["dashboardData"],
     queryFn: () => fetchNotifyData(id),
     enabled: true,
   });

@@ -23,12 +23,14 @@ function Daily() {
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["dailyData", id],
+    queryKey: ["dashboardData", id],
     queryFn: () => fetchDailyData(id!),
     enabled: !!id,
   });
 
   if (isError) return <div>오류가 발생했습니다.</div>;
+
+  console.log(data?.result.goal[0].color);
 
   return (
     <div className="mb-[80px] pl-[10px]">
@@ -47,7 +49,10 @@ function Daily() {
           <ol className="list-decimal pl-3">
             {data?.result.goal.map((e, i) => (
               <li key={i} className="flex items-center">
-                <div className="w-[20px] h-[20px] rounded-full bg-red-400 mr-[10px]"></div>
+                <div
+                  className="w-[20px] h-[20px] rounded-full mr-[10px]"
+                  style={{ backgroundColor: e.color }}
+                ></div>
                 <span className="text-[1.1rem]">{e.detail}</span>
               </li>
             ))}
