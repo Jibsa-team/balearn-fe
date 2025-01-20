@@ -1,6 +1,5 @@
 import "./globals.css";
 import Providers from "./lib/provides";
-// import { MSWProvider } from "@/app/_components/MSWComponent";
 
 if (
   process.env.NEXT_RUNTIME === "nodejs" &&
@@ -22,8 +21,6 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className="flex w-full">{children}</div>
-          {/* <MSWProvider>
-          </MSWProvider> */}
         </Providers>
       </body>
     </html>

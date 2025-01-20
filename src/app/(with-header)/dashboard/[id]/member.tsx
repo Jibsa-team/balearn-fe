@@ -24,13 +24,24 @@ function Member() {
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["memberData"],
+    queryKey: ["dashboardData"],
     queryFn: () => fetchMemberData(id),
   });
 
   if (isError) return <div>오류가 발생했습니다.</div>;
 
-  console.log(data);
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case "OWNER":
+        return "(스터디장)";
+      case "MEMBER":
+        return "(팀원)";
+      case "ADMIN":
+        return "(관리자)";
+      default:
+        return "(알 수 없음)";
+    }
+  };
 
   return (
     <div className="mb-[80px] pl-[10px]">
@@ -57,7 +68,7 @@ function Member() {
               )}
               <span className="mt-4 text-gray-700 font-medium text-center">
                 {member.nickname}
-                {member.role === "OWNER" && "(스터디장)"}
+                {getRoleLabel(member.role)}
               </span>
             </div>
           ))

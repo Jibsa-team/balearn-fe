@@ -31,7 +31,8 @@ const reissueToken = async () => {
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const { expirationTime } = useAuthStore.getState();
 
-  if (expirationTime && Date.now() >= expirationTime) {
+  if (expirationTime && Date.now() <= expirationTime * 1000) {
+    console.log("Fsafsa");
     const success = await reissueToken();
     if (!success) {
       throw new Error("Failed to reissue token");
@@ -42,8 +43,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const headers = {
     ...options.headers,
     Authorization: `Bearer ${updatedAccessToken}`,
-    credentials: "include",
   };
 
-  return fetch(url, { ...options, headers });
+  return fetch(url, { ...options, headers, credentials: "include" });
 };

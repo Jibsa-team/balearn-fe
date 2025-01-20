@@ -6,6 +6,7 @@ import Image from "next/image";
 import { GroupListDto, GroupListInfo } from "@/types/group/group";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
+import { ClipLoader } from "react-spinners";
 
 const fetchGroups = async (): Promise<GroupListDto["result"]> => {
   const response = await fetchWithAuth(
@@ -44,7 +45,9 @@ function SidebarDropdown({
     <div className="relative w-full">
       <div className="absolute top-[100%] left-0 w-full bg-white shadow-lg border border-gray-200 rounded-lg mt-2 z-50">
         {isLoading ? (
-          <div className="p-4 text-center text-gray-500">Loading...</div>
+          <div className="p-4 text-center text-gray-500">
+            <ClipLoader color="gray" size={15} />
+          </div>
         ) : isError ? (
           <div className="p-4 text-center text-red-500">
             Failed to load groups

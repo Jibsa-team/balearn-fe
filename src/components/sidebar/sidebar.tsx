@@ -4,59 +4,47 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import SidebarItem from "./sidebar.item";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import JoinGroupModal from "@/components/modal/joinGroupModal";
 import { useParams } from "next/navigation";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import { DashboardType } from "@/types/dashboard/dashboard";
 import { IoIosArrowDown } from "react-icons/io";
 import SidebarDropdown from "./sidebar.dropdown";
 import { HiPlusCircle } from "react-icons/hi2";
 import { FcInvite } from "react-icons/fc";
+import { useQuery } from "@tanstack/react-query";
+import { Team } from "@/types/dashboard/dashboard";
+import TeamInfoSkeleton from "../skeleton/teamInfoSkelton";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
+async function fetchTeamInfo(id: string) {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}`
+  );
+  if (!response.ok) throw new Error("Team not found");
+  const data = await response.json();
+  return data.result.team;
+}
+
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
-  const [teamInfo, setTeamInfo] = useState<{
-    name: string;
-    imageUrl: string;
-  } | null>(null);
-
   const { id } = useParams();
 
-  useEffect(() => {
-    const fetchTeamInfo = async () => {
-      if (id) {
-        const response = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}`
-        );
-        if (response.ok) {
-          const data: DashboardType = await response.json();
-          console.log(data);
-          setTeamInfo({
-            name: data.result.team.name,
-            imageUrl: data.result.team.imgUrl,
-          });
-        }
-      }
-    };
-
-    fetchTeamInfo();
-  }, [id]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["teamInfo", id],
+    queryFn: () => fetchTeamInfo(id as string),
+    enabled: !!id,
+  });
 
   const handleOpenModal = () => {
     setIsSidebarOpen(false);
     setIsJoinModalOpen(true);
   };
   const handleCloseModal = () => setIsJoinModalOpen(false);
-  const handleJoinGroup = () => {
-    console.log("모임에 가입했습니다!");
-    setIsJoinModalOpen(false);
-  };
 
   return (
     <>
@@ -64,7 +52,12 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         className="hidden lg:block w-[300px] bg-white shadow-xl"
         style={{ height: "calc(100vh - 70px)" }}
       >
-        <Content handleOpenModal={handleOpenModal} teamInfo={teamInfo} />
+        <Content
+          handleOpenModal={handleOpenModal}
+          teamInfo={data}
+          isLoading={isLoading}
+          isError={isError}
+        />
       </div>
 
       <motion.div
@@ -73,17 +66,22 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
         className="fixed lg:hidden w-[300px] z-40 bg-white shadow-xl"
         style={{
-          height: "calc(100vh - 70px)", // 헤더 높이를 제외한 높이
+          height: "calc(100vh - 70px)",
           top: "70px",
         }}
       >
-        <Content handleOpenModal={handleOpenModal} teamInfo={teamInfo} />
+        <Content
+          handleOpenModal={handleOpenModal}
+          teamInfo={data}
+          isLoading={isLoading}
+          isError={isError}
+        />
       </motion.div>
 
       <JoinGroupModal
         isOpen={isJoinModalOpen}
         onClose={handleCloseModal}
-        onJoin={handleJoinGroup}
+        sidebarModalClose={setIsJoinModalOpen}
       />
     </>
   );
@@ -92,9 +90,12 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
 function Content({
   handleOpenModal,
   teamInfo,
+  isLoading,
 }: {
   handleOpenModal: () => void;
-  teamInfo: { name: string; imageUrl: string } | null;
+  teamInfo: Team | null;
+  isLoading: boolean;
+  isError: boolean;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -107,22 +108,28 @@ function Content({
               className="w-full flex items-center justify-between"
               onClick={() => setIsOpen((prev) => !prev)}
             >
-              <div className="flex items-center">
-                <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px] relative">
-                  {teamInfo?.imageUrl ? (
-                    <Image
-                      src={teamInfo?.imageUrl}
-                      alt="team img"
-                      layout="fill"
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-[30px] h-[30px] bg-gray-300 rounded-full"></div>
-                  )}
-                </div>
-                <span className="text-[1.1rem] mt-[3px]">{teamInfo?.name}</span>
-              </div>
-              <IoIosArrowDown />
+              {isLoading ? (
+                <TeamInfoSkeleton />
+              ) : (
+                teamInfo && (
+                  <>
+                    <div className="flex items-center">
+                      <div className="rounded-full p-[5px] border-[2.5px] w-[40px] h-[40px] overflow-hidden mr-[10px] relative">
+                        <Image
+                          src={teamInfo.imgUrl}
+                          alt="team img"
+                          layout="fill"
+                          className="rounded-full object-cover"
+                        />
+                      </div>
+                      <span className="text-[1.1rem] mt-[3px]">
+                        {teamInfo.name}
+                      </span>
+                    </div>
+                    <IoIosArrowDown />
+                  </>
+                )
+              )}
             </div>
           </div>
         </section>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,8 +9,6 @@ function CalendarDate({
   view,
   setStartDate,
   setEndDate,
-  setStartTime,
-  setEndTime,
   startDate,
   endDate,
 }: {
@@ -79,10 +78,10 @@ function CalendarDate({
           <SelectCalendar onDateChange={setStartDate} selectDate={startDate} />
           {view === "week" && (
             <DatePicker
-              onTimeChange={(time) => {
-                setStartTimeValue(time);
-                setStartTime(time);
-              }}
+            // onTimeChange={(time) => {
+            //   setStartTimeValue(time);
+            //   setStartTime(time);
+            // }}
             />
           )}
         </div>
@@ -94,10 +93,10 @@ function CalendarDate({
           <SelectCalendar onDateChange={setEndDate} selectDate={endDate} />
           {view === "week" && (
             <DatePicker
-              onTimeChange={(time) => {
-                setEndTimeValue(time);
-                setEndTime(time);
-              }}
+            // onTimeChange={(time) => {
+            //   setEndTimeValue(time);
+            //   setEndTime(time);
+            // }}
             />
           )}
         </div>

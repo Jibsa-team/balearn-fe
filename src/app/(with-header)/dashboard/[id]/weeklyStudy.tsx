@@ -23,7 +23,7 @@ function WeeklyStudy() {
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["weeklyData"],
+    queryKey: ["dashboardData"],
     queryFn: () => fetchWeeklyData(id),
   });
 

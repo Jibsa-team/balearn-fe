@@ -41,7 +41,7 @@ function CanlendarSideModal({
   return (
     isOpen && (
       <motion.div
-        className={`bg-white shadow-lg rounded-lg p-4 w-[300px] z-40 absolute right-0 top-0 h-[100%]
+        className={`bg-white shadow-lg rounded-lg p-4 w-[300px] z-20 absolute right-0 top-0 h-[100%]
           lg:w-[500px] lg:z-10 lg:static`}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
