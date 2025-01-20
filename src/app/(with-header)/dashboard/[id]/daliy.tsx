@@ -30,8 +30,6 @@ function Daily() {
 
   if (isError) return <div>오류가 발생했습니다.</div>;
 
-  console.log(data?.result.goal[0].color);
-
   return (
     <div className="mb-[80px] pl-[10px]">
       <h1 className="flex items-center text-[1.4rem] font-semibold text-gray-700 mb-[20px]">
