@@ -98,6 +98,7 @@ function Content({
   isError: boolean;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { id } = useParams();
 
   return (
     <div className="h-full p-[20px] flex flex-col items-center justify-between bg-white lg:bg-sidebarBg">
@@ -142,7 +143,7 @@ function Content({
       </div>
 
       <div className="w-full flex flex-col items-start pl-[15px]">
-        <Link href={"/group"} className="cursor-pointer group">
+        <Link href={`/setting/${id}/group`} className="cursor-pointer group">
           <div className="w-full flex justify-evenly items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
             <HiPlusCircle className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
             <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
