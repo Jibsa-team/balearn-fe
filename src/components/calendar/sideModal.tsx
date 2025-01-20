@@ -1,6 +1,3 @@
-// CanlendarSideModal.tsx
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CalendarGoal from "./goal";
@@ -56,11 +53,13 @@ function CanlendarSideModal({
           <CalendarDate
             view={view}
             setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setStartTime={setStartTime}
-            setEndTime={setEndTime}
             startDate={startDate}
+            setStartTime={setStartTime}
+            startTime={startTime}
+            setEndDate={setEndDate}
             endDate={endDate}
+            setEndTime={setEndTime}
+            endTime={endTime}
           />
           <button
             onClick={handlerUpdateEvent}
