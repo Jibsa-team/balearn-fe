@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { SketchPicker } from "react-color";
 import TextInput from "@/components/group/input/textInput";
 import { IoIosArrowDown } from "react-icons/io";
-import GroupAddError from "@/components/error/groupAddError";
+import GroupAddError from "@/components/error/ErrorMessage";
 
 interface GoalItem {
   detail: string;

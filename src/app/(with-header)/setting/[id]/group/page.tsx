@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import GroupProfile from "./groupProfile";
 import GoalList from "./goalList";
 import { z } from "zod";
-import GroupAddError from "@/components/error/groupAddError";
+import GroupAddError from "@/components/error/ErrorMessage";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import useGroupStore from "@/store/useGroupStore";
 import { GroupDTO } from "@/types/group/group";
