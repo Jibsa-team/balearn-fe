@@ -1,31 +1,24 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { IoMdClose } from "react-icons/io";
 import { InputOTPControlled } from "./joinGroupModal.input";
 
 interface JoinGroupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onJoin: (code: string) => void;
+  sidebarModalClose: Dispatch<SetStateAction<boolean>>;
 }
 
 const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
   isOpen,
   onClose,
-  onJoin,
+  sidebarModalClose,
 }) => {
-  const [code, setCode] = useState("");
-
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0 } },
-  };
-
-  const handleJoinClick = () => {
-    onJoin(code);
-    setCode("");
   };
 
   return (
@@ -54,15 +47,7 @@ const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
                 className="text-2xl cursor-pointer"
               />
             </header>
-            <InputOTPControlled />
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={handleJoinClick}
-                className="w-full bg-logoColor text-white px-4 py-2 rounded-lg"
-              >
-                가입하기
-              </button>
-            </div>
+            <InputOTPControlled sidebarModalClose={sidebarModalClose} />
           </motion.div>
         </motion.div>
       )}
