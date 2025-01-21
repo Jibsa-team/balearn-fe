@@ -17,12 +17,12 @@ function CalendarDate({
   view: string;
   setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
   setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  setStartTime: React.Dispatch<React.SetStateAction<string>>;
-  setEndTime: React.Dispatch<React.SetStateAction<string>>;
+  setStartTime: React.Dispatch<React.SetStateAction<number>>;
+  setEndTime: React.Dispatch<React.SetStateAction<number>>;
   startDate: Date | null;
   endDate: Date | null;
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
 }) {
   return (
     <div>
@@ -34,14 +34,10 @@ function CalendarDate({
             시작
           </div>
           <SelectCalendar onDateChange={setStartDate} selectDate={startDate} />
-          {view === "week" ? (
-            <div className="flex items-center">
-              <DatePicker date={startDate} setDate={setStartDate} />
-              <TimePicker setTime={setStartTime} time={startTime} />
-            </div>
-          ) : (
+          <div className="flex items-center">
             <DatePicker date={startDate} setDate={setStartDate} />
-          )}
+            <TimePicker setTime={setStartTime} time={startTime} />
+          </div>
         </div>
 
         <div className="mb-[10px] flex items-center justify-between">
@@ -49,14 +45,10 @@ function CalendarDate({
             종료
           </div>
           <SelectCalendar onDateChange={setEndDate} selectDate={endDate} />
-          {view === "week" ? (
-            <div className="flex items-center">
-              <DatePicker date={endDate} setDate={setEndDate} />
-              <TimePicker setTime={setEndTime} time={endTime} />
-            </div>
-          ) : (
+          <div className="flex items-center">
             <DatePicker date={endDate} setDate={setEndDate} />
-          )}
+            <TimePicker setTime={setEndTime} time={endTime} />
+          </div>
         </div>
       </div>
     </div>

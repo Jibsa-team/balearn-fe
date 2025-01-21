@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CalendarGoal from "./goal";
 import CalendarDate from "./date";
+import { Goal } from "@/types/dashboard/dashboard";
 
 function CanlendarSideModal({
   isOpen,
@@ -13,18 +14,20 @@ function CanlendarSideModal({
   selectDate: Date;
   view: string;
   handleAddEvent: (
-    selectedGoal: string,
+    selectedGoal: Goal,
     startDate: Date,
     endDate: Date,
-    startTime: string,
-    endTime: string
+    startTime: number,
+    endTime: number,
+    color: string
   ) => void;
 }) {
-  const [selectedGoal, setSelectedGoal] = useState<string>("");
+  const [selectedGoal, setSelectedGoal] = useState<Goal>();
   const [startDate, setStartDate] = useState<Date | null>(selectDate);
   const [endDate, setEndDate] = useState<Date | null>(selectDate);
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
+  const [startTime, setStartTime] = useState<number>(0);
+  const [endTime, setEndTime] = useState<number>(0);
+  const [color, setColor] = useState<string>("");
 
   useEffect(() => {
     setStartDate(selectDate);
@@ -32,7 +35,14 @@ function CanlendarSideModal({
   }, [selectDate]);
 
   const handlerUpdateEvent = () => {
-    handleAddEvent(selectedGoal, startDate!, endDate!, startTime, endTime);
+    handleAddEvent(
+      selectedGoal!,
+      startDate!,
+      endDate!,
+      startTime,
+      endTime,
+      color
+    );
   };
 
   return (
@@ -49,6 +59,7 @@ function CanlendarSideModal({
           <CalendarGoal
             setSelectedGoal={setSelectedGoal}
             selectedGoal={selectedGoal}
+            setColor={setColor}
           />
           <CalendarDate
             view={view}

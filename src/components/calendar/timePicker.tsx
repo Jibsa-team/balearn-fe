@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/select";
 
 interface TimePickerProps {
-  setTime: React.Dispatch<React.SetStateAction<string>>;
-  tiem: string;
+  setTime: React.Dispatch<React.SetStateAction<number>>;
+  time: string;
 }
 
 export function TimePicker({ setTime }: TimePickerProps) {
@@ -24,6 +24,7 @@ export function TimePicker({ setTime }: TimePickerProps) {
   const handleTimeChange = (value: string) => {
     const selectedTime = times.indexOf(value);
     if (selectedTime !== -1) {
+      console.log(selectedTime, value);
       setTime(selectedTime);
     }
   };

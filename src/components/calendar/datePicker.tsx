@@ -30,7 +30,11 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
           )}
         >
           <CalendarIcon />
-          {date ? format(date, "PPP") : <span>날짜를 선택해주세요</span>}
+          {date ? (
+            format(date, "yyyy년 MM월 dd일")
+          ) : (
+            <span>날짜를 선택해주세요</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
