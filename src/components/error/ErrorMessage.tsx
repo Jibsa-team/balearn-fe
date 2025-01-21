@@ -1,4 +1,4 @@
-const GroupAddError = ({ errors }: { errors: string }) => {
+const ErrorMessage = ({ errors }: { errors: string }) => {
   return (
     <span className="text-red-500 text-[0.8rem] mt-[5px] ml-[10px]">
       {errors}
@@ -6,4 +6,4 @@ const GroupAddError = ({ errors }: { errors: string }) => {
   );
 };
 
-export default GroupAddError;
+export default ErrorMessage;

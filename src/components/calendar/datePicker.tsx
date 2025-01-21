@@ -13,9 +13,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+interface DatePickerProps {
+  date: Date | null;
+  setDate: React.Dispatch<React.SetStateAction<Date | null>>;
+}
 
+export function DatePicker({ date, setDate }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -27,7 +30,11 @@ export function DatePicker() {
           )}
         >
           <CalendarIcon />
-          {date ? format(date, "PPP") : <span>날짜를 선택해주세요</span>}
+          {date ? (
+            format(date, "yyyy년 MM월 dd일")
+          ) : (
+            <span>날짜를 선택해주세요</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

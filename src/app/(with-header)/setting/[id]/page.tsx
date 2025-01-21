@@ -3,6 +3,7 @@
 import React from "react";
 import { RiGroupFill } from "react-icons/ri";
 import { MdManageAccounts } from "react-icons/md";
+import { AiFillNotification } from "react-icons/ai";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -22,6 +23,15 @@ const SettingItem = [
       <MdManageAccounts className="mb-[25px] text-[1.5rem] text-gray-700" />
     ),
     url: "userManage",
+  },
+  {
+    title: "공지 관리",
+    subtitle: "공지를 관리해보세요.",
+    description: "공지를 생성하고 관리할 수 있습니다.",
+    icon: (
+      <AiFillNotification className="mb-[25px] text-[1.5rem] text-gray-700" />
+    ),
+    url: "notify",
   },
 ];
 

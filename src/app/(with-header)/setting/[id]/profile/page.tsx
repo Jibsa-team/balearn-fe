@@ -3,7 +3,7 @@
 import TextInput from "@/components/group/input/textInput";
 import React, { useState } from "react";
 import { z } from "zod";
-import GroupAddError from "@/components/error/groupAddError";
+import GroupAddError from "@/components/error/ErrorMessage";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 
 import useAuthStore from "@/store/useAuthStore";

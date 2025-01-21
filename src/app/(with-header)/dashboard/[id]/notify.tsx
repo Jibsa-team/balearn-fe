@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { AiOutlineNotification } from "react-icons/ai";
+import { AiFillNotification } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FaCrown } from "react-icons/fa";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { DashboardType } from "@/types/dashboard/dashboard";
-import { useParams } from "next/navigation";
-import NotifyEmptyLogo from "./notify.empty.logo";
+import { useParams, useRouter } from "next/navigation";
+
 import { IoIosArrowForward } from "react-icons/io";
+import { ClipLoader } from "react-spinners";
+import EmptyLogo from "@/components/empty/EmptyLogo";
 
 const fetchNotifyData = async (
   id: string | string[]
@@ -26,9 +28,10 @@ const fetchNotifyData = async (
 function Notify() {
   const [isExpanded, setIsExpanded] = useState(false);
   const { id } = useParams();
+  const router = useRouter();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["dashboardData"],
+    queryKey: ["dashboardData", id],
     queryFn: () => fetchNotifyData(id),
     enabled: true,
   });
@@ -40,29 +43,27 @@ function Notify() {
     setIsExpanded((prev) => !prev);
   };
 
+  console.log(data);
+
   return data?.result.notice ? (
     <div
-      className={`mb-[40px] lg:w-[500px] sm:w-full p-2 cursor-pointer transition-all duration-200 bg-notifyColor`}
+      className={`mb-[40px] lg:w-[500px] sm:w-full cursor-pointer transition-all duration-200 border-[2px] border-logoColor p-[10px] rounded-md`}
     >
       <div
         className="flex items-center justify-between"
         onClick={toggleDetails}
       >
         <div className="flex items-center">
-          <AiOutlineNotification className="text-logoColor font-bold text-2xl mr-2" />
+          <AiFillNotification className="text-logoColor font-bold text-2xl mr-2" />
           <span>{data && data.result?.notice?.title}</span>
         </div>
-        {isExpanded ? (
-          <IoIosArrowUp className="text-gray-400" />
-        ) : (
-          <IoIosArrowDown className="text-gray-400" />
-        )}
+        {isExpanded ? <IoIosArrowUp /> : <IoIosArrowDown />}
       </div>
       {isExpanded && (
         <div>
           {isLoading && (
             <div className="mt-2 ml-[31px] text-gray-600 animate-pulse">
-              <p>로딩 중...</p>
+              <ClipLoader />
             </div>
           )}
           {isError && (
@@ -72,11 +73,11 @@ function Notify() {
           )}
           {data && (
             <>
-              <div className="mt-2 ml-[31px] text-gray-600">
+              <div className="mt-2 ml-[31px]">
                 <p>{data.result.notice?.detail}</p>
               </div>
-              <div className="flex items-center text-gray-500">
-                <FaCrown className="ml-[31px] mr-[5px]" />
+              <div className="flex items-center">
+                <FaCrown className="ml-[31px] mr-[5px] text-[#FDD24E]" />
                 <span>재인</span>
               </div>
             </>
@@ -85,14 +86,17 @@ function Notify() {
       )}
     </div>
   ) : (
-    <div className="mb-[30px] flex items-center justify-between md:w-[400px] w-full rounded-full px-[10px] border-[1px] border-[rgba(0,0,0,0.1)] shadow-sm text-[rgba(0,0,0,0.6)] cursor-pointer">
+    <div
+      onClick={() => router.push(`/setting/${id}/notify`)}
+      className="mb-[30px] flex items-center justify-between md:w-[400px] w-full rounded-md px-[10px] border-[1px] border-[#6760DB] cursor-pointer"
+    >
       <div className="flex items-center">
-        <NotifyEmptyLogo />
-        <span className="text-[1.1rem] ml-[5px] mt-[5px]">
-          등록된 공지가 없어요
+        <EmptyLogo width={50} height={50} />
+        <span className="md:text-[1.1rem] text-[0.9rem] ml-[5px] mt-[5px]">
+          공지를 등록 해보세요
         </span>
       </div>
-      <IoIosArrowForward className="mt-[5px] text-[#6760DB]" />
+      <IoIosArrowForward className="mt-[5px] text-[#6760DB] font-bold" />
     </div>
   );
 }

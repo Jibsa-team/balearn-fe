@@ -47,7 +47,7 @@ function Header({ toggleSidebar }: HeaderProps) {
     localStorage.removeItem("auth-storage");
     clearAccessToken();
     clearUser();
-    router.push("/"); // 로그아웃 후 이동할 경로
+    router.push("/");
   };
 
   const handleProfileClick = () => {

@@ -2,17 +2,25 @@
 
 import React, { useState } from "react";
 import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar"; // TimeSlotWrapperProps 추가
-import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { calendarTime } from "@/utils/calendar";
 import CanlendarSideModal from "@/components/calendar/sideModal";
-import { Event } from "@/types/calendar/event";
+import { Event, CustomEvent } from "@/types/calendar/event";
+import { Goal } from "@/types/dashboard/dashboard";
+import { useParams } from "next/navigation";
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import moment from "moment-timezone";
+import { hexToRgba } from "@/app/lib/color";
 
 const localizer = momentLocalizer(moment);
 
+type EventWithColor = Event & {
+  color?: string;
+};
+
 type dayProps = {
-  [key: string]: string; // 여기에 인덱스 시그니처 추가
+  [key: string]: string;
   Sun: string;
   Mon: string;
   Tue: string;
@@ -34,32 +42,111 @@ const daysInKorean: dayProps = {
 
 const Page: React.FC = () => {
   const [view, setView] = useState<View>("week");
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<CustomEvent[]>([
+    {
+      start: new Date(),
+      end: new Date(),
+      title: "Test Event",
+      color: "#FF0000",
+    },
+  ]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { id } = useParams();
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     setSelectDate(slotInfo.start);
     setIsOpen((prev) => !prev);
   };
 
+  const createEvent = async (eventData: Event) => {
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(eventData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("이벤트 등록 실패");
+      }
+
+      const result = await response.json();
+
+      const startTime = moment
+        .utc(result.result.startTime)
+        .tz("Asia/Seoul", true)
+        .toDate();
+      const endTime = moment
+        .utc(result.result.endTime)
+        .tz("Asia/Seoul", true)
+        .toDate();
+
+      const newEvent = {
+        ...result,
+        start: startTime,
+        end: endTime,
+        title: result.result.topic,
+        color: result.result.color,
+      };
+
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
+      return result;
+    } catch (error) {
+      console.error("이벤트 등록 에러:", error);
+      throw error;
+    }
+  };
+
   const handleAddEvent = (
-    selectedGoal: string,
+    selectedGoal: Goal,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    startTime: number,
+    endTime: number,
+    color: string
   ) => {
-    const newEvent = {
-      title: selectedGoal,
-      start: startDate,
-      end: endDate,
+    console.log(startDate, startTime, endDate, endTime, color);
+
+    const formatDateTime = (date: Date, time: number) => {
+      const hours = time;
+      const minutes = 0;
+
+      const combinedDate = new Date(date);
+      combinedDate.setHours(hours, minutes, 0, 0);
+
+      return moment(combinedDate).format("YYYY-MM-DDTHH:mm:ss");
     };
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
-    console.log(events);
+
+    const newEvent = {
+      teamId: id,
+      address: "string",
+      startTime: formatDateTime(startDate, startTime),
+      endTime: formatDateTime(endDate, endTime),
+      topic: selectedGoal.detail,
+      color,
+      missions: [
+        {
+          detail: selectedGoal.detail,
+        },
+      ],
+    };
+
+    console.log("newEvent:", newEvent);
+    createEvent(newEvent);
   };
 
   const handleNavigate = (date: Date) => {
     setCurrentDate(date);
+    const startOfMonth = moment(date).startOf("month").toDate();
+    const endOfMonth = moment(date).endOf("month").toDate();
+    console.log(startOfMonth, endOfMonth);
   };
 
   const navigateToPrevious = () => {
@@ -78,6 +165,8 @@ const Page: React.FC = () => {
     setCurrentDate(newDate);
   };
 
+  console.log(events);
+
   return (
     <div className="w-full bg-white flex">
       <div className="w-full">
@@ -92,7 +181,11 @@ const Page: React.FC = () => {
             </button>
 
             <div className="text-lg font-bold mx-[10px]">
-              {moment(currentDate).format("YYYY년 MM월")}
+              {`${moment(currentDate)
+                .startOf("week")
+                .format("YYYY.MM.D")} ~ ${moment(currentDate)
+                .endOf("week")
+                .format("D")}`}
             </div>
 
             <button
@@ -126,7 +219,13 @@ const Page: React.FC = () => {
         <Calendar
           localizer={localizer}
           events={events}
+          onRangeChange={(range, view) => {
+            console.log("onRangeChange triggered");
+            console.log("Current view:", view);
+            console.log("Range:", range);
+          }}
           defaultView={view}
+          culture="ko"
           view={view}
           onView={(newView) => setView(newView)}
           selectable
@@ -142,8 +241,8 @@ const Page: React.FC = () => {
             timeGutterFormat: (date) => calendarTime(moment(date).hour()),
             dayFormat: (date) => {
               const day = moment(date).format("ddd");
-              const dayOfMonth = moment(date).date();
-              return `${daysInKorean[day]} ${dayOfMonth}일`;
+              //const dayOfMonth = moment(date).date();
+              return `${daysInKorean[day]}`;
             },
             weekdayFormat: (date) => {
               const day = moment(date).format("ddd");
@@ -157,35 +256,76 @@ const Page: React.FC = () => {
               <div
                 {...props}
                 style={{
-                  padding: "20px 16px",
                   color: "#ADB8CC",
                   fontWeight: "600",
                   fontSize: "0.8rem",
-                  height: "40px",
+                  height: "80px",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                {props.children} {/* children을 올바르게 사용 */}
+                {props.children}
               </div>
             ),
           }}
-          eventPropGetter={() => ({
-            style: {
-              backgroundColor: "#C9D439",
-              border: "none",
-              color: "white",
-            },
-          })}
+          eventPropGetter={(event: EventWithColor) => {
+            const rgbaColor = hexToRgba(event.color as string, 0.07);
+            return {
+              style: {
+                backgroundColor: rgbaColor,
+                border: "none",
+                borderLeft: `4px solid ${event.color}`,
+                color: event.color,
+                fontSize: "1.1rem",
+                fontWeight: "bord",
+                borderRadius: "4px",
+                padding: "10px",
+              },
+            };
+          }}
           dayPropGetter={(date) => {
-            if (moment(date).isSame(new Date(), "day")) {
-              return {
-                style: {
-                  backgroundColor: "transparent",
-                },
-              };
+            const dayOfWeek = moment(date).day();
+            const isToday = moment(date).isSame(new Date(), "day");
+
+            if (view === "month") {
+              if (dayOfWeek === 0 || dayOfWeek === 6) {
+                return {
+                  style: {
+                    backgroundColor: "transparent",
+                  },
+                };
+              }
+
+              if (isToday) {
+                return {
+                  style: {
+                    backgroundColor: "transparent",
+                    border: "none",
+                  },
+                };
+              }
             }
+
+            if (view === "week") {
+              if (dayOfWeek === 0 || dayOfWeek === 6) {
+                return {
+                  style: {
+                    display: "none",
+                  },
+                };
+              }
+
+              if (isToday) {
+                return {
+                  style: {
+                    backgroundColor: "transparent",
+                    border: "none",
+                  },
+                };
+              }
+            }
+
             return {};
           }}
         />

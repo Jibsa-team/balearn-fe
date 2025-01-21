@@ -1,6 +1,6 @@
 import React from "react";
-import UserAuthority from "./ authority";
 import UserInvite from "./invite";
+import UserAuthority from "./ authority";
 
 function Page() {
   return (

@@ -5,7 +5,12 @@ import { useEffect, useState } from "react";
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
-function NotifyEmptyLogo() {
+interface EmptyLogoProps {
+  width: number;
+  height: number;
+}
+
+function EmptyLogo({ width, height }: EmptyLogoProps) {
   const [loadingAnimation, setLoadingAnimation] = useState(null);
 
   useEffect(() => {
@@ -25,15 +30,16 @@ function NotifyEmptyLogo() {
   if (!loadingAnimation) {
     return <div>...</div>;
   }
+  console.log(width, height);
 
   return (
     <Lottie
       loop
       animationData={loadingAnimation}
       play
-      style={{ width: 50, height: 50 }}
+      className={`w-[${width}] h-[${height}]`}
     />
   );
 }
 
-export default NotifyEmptyLogo;
+export default EmptyLogo;
