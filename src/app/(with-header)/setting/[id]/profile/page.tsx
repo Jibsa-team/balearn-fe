@@ -1,45 +1,84 @@
 "use client";
 
 import TextInput from "@/components/group/input/textInput";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import GroupAddError from "@/components/error/ErrorMessage";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-
 import useAuthStore from "@/store/useAuthStore";
 import { formSchema } from "./schema";
 import UserProfile from "./userProfile";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
-function Page() {
+function Page({ reset }: { reset(): void }) {
   const user = useAuthStore((state) => state.user);
-  const [userName, setUserName] = useState(user?.name || "");
+  const setUser = useAuthStore((state) => state.setUser);
+  const [name, setName] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (user?.name) {
+      setName(user.name);
+    }
+  }, [user]);
 
   const isFormValid = () => {
-    const formData = { userName, profileImage };
+    const formData = { name };
     const result = formSchema.safeParse(formData);
-    return result.success && profileImage !== null;
+    return result.success && name !== user?.name;
   };
 
-  const handleCreate = async () => {
+  const handleUpdate = async () => {
     try {
       const formData = {
-        userName,
-        profileImage,
+        name,
       };
       formSchema.parse(formData);
+
+      const newFormData = new FormData();
+
+      const blob = new Blob([JSON.stringify({ name, phoneNumber })], {
+        type: "application/json",
+      });
+      newFormData.append("data", blob);
+
+      if (profileImage) {
+        newFormData.append("image", profileImage);
+      }
+
       const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/group/create`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/me`,
         {
-          method: "POST",
+          method: "PUT",
+          body: newFormData,
         }
       );
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      if (!response.ok) {
+        throw new Error("프로필 업데이트에 실패했습니다.");
+      }
+
       const result = await response.json();
-      // console.log(result);
+
+      if (result.responseCode === "SUCCESS") {
+        setUser(result.result);
+      }
+
+      toast({
+        title: "프로필 수정 성공",
+        description: "프로필이 성공적으로 수정되었습니다.",
+        variant: "default",
+      });
 
       setErrors({});
+      reset();
+      router.refresh();
     } catch (err) {
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
@@ -54,40 +93,42 @@ function Page() {
 
   return (
     <div className="w-[100%] h-[100%] p-[30px] bg-white">
-      <h1 className="text-xl font-semibold mb-[40px]">프로필 수정</h1>
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
-          <div className="flex flex-col items-start mb-[30px] font-semibold">
-            <span>이름</span>
-            <TextInput
-              message={"이름을 입력해주세요."}
-              width={100}
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-            {errors.userName && <GroupAddError errors={errors.userName} />}
-          </div>
+      <div className="md:w-[70%] w-full">
+        <h1 className="text-xl font-semibold mb-[40px]">프로필 수정</h1>
+        <div className="flex flex-col-reverse md:flex-row w-full justify-between">
+          <div className="md:w-[48%] w-full">
+            <div className="flex flex-col items-start mb-[30px] font-semibold">
+              <span>이름</span>
+              <TextInput
+                message={"이름을 입력해주세요."}
+                width={100}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              {errors.name && <GroupAddError errors={errors.name} />}
+            </div>
 
-          {/* 생성하기 버튼 */}
-          <div className="w-full flex justify-between mt-[50px]">
-            <div></div>
-            <div
-              onClick={handleCreate}
-              className={`px-[70px] py-[5px] rounded-md text-white ${
-                isFormValid()
-                  ? "bg-logoColor text-white cursor-pointer"
-                  : "bg-disabledColor text-gray-200 cursor-not-allowed"
-              }`}
-            >
-              변경하기
+            <div className="w-full flex justify-between mt-[50px]">
+              <div className="hidden md:block"></div>
+              <button
+                onClick={handleUpdate}
+                className={`w-full flex justify-center items-center px-[70px] py-[5px] rounded-md text-white cursor-pointer ${
+                  isFormValid()
+                    ? "bg-logoColor text-white cursor-pointer"
+                    : "bg-disabledColor text-gray-200 cursor-not-allowed"
+                }`}
+                //disabled={!isFormValid()}
+              >
+                <span>변경하기</span>
+              </button>
             </div>
           </div>
-        </div>
-        <div className="w-[48%]">
-          <UserProfile
-            profileImage={profileImage}
-            setProfileImage={setProfileImage}
-          />
+          <div className="w-[48%]">
+            <UserProfile
+              profileImage={profileImage}
+              setProfileImage={setProfileImage}
+            />
+          </div>
         </div>
       </div>
     </div>
