@@ -14,14 +14,22 @@ const reissueToken = async () => {
     );
 
     if (!response.ok) {
-      console.error("Failed to reissue token:", response.status);
+      if (response.status === 401) {
+        useAuthStore.getState().clearAccessToken();
+        useAuthStore.getState().clearUser();
+        window.location.href = "/login";
+      }
       return false;
     }
 
     const data: { result: { accessToken: string; expirationTime: number } } =
       await response.json();
-    setAccessToken(data.result.accessToken, data.result.expirationTime);
-    return true;
+
+    if (data.result.accessToken && data.result.expirationTime) {
+      setAccessToken(data.result.accessToken, data.result.expirationTime);
+      return true;
+    }
+    return false;
   } catch (error) {
     console.error("Error reissuing token:", error);
     return false;
@@ -29,10 +37,11 @@ const reissueToken = async () => {
 };
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  const { expirationTime } = useAuthStore.getState();
+  const { expirationTime, accessToken } = useAuthStore.getState();
 
-  if (expirationTime && Date.now() <= expirationTime * 1000) {
-    console.log("Fsafsa");
+  const THRESHOLD_SECONDS = 10;
+
+  if (!accessToken || (expirationTime && expirationTime <= THRESHOLD_SECONDS)) {
     const success = await reissueToken();
     if (!success) {
       throw new Error("Failed to reissue token");
@@ -40,10 +49,35 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   }
 
   const updatedAccessToken = useAuthStore.getState().accessToken;
+
   const headers = {
     ...options.headers,
     Authorization: `Bearer ${updatedAccessToken}`,
   };
 
-  return fetch(url, { ...options, headers, credentials: "include" });
+  const response = await fetch(url, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    const success = await reissueToken();
+    if (success) {
+      const retryToken = useAuthStore.getState().accessToken;
+      const retryHeaders = {
+        ...options.headers,
+        Authorization: `Bearer ${retryToken}`,
+      };
+      return fetch(url, {
+        ...options,
+        headers: retryHeaders,
+        credentials: "include",
+      });
+    } else {
+      throw new Error("Token refresh failed");
+    }
+  }
+
+  return response;
 };
