@@ -4,7 +4,6 @@ import { DatePicker } from "./datePicker";
 import { TimePicker } from "./timePicker";
 
 function CalendarDate({
-  view,
   setStartDate,
   setEndDate,
   startDate,
