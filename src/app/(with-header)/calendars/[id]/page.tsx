@@ -1,36 +1,30 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar"; // TimeSlotWrapperProps 추가
+import { Calendar, momentLocalizer, SlotInfo, View } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { calendarTime } from "@/utils/calendar";
 import CanlendarSideModal from "@/components/calendar/sideModal";
-import { Event, CustomEvent } from "@/types/calendar/event";
+import { CreateEventDto, CustomEvent, EventDto } from "@/types/calendar/event";
 import { Goal } from "@/types/dashboard/dashboard";
+import { Mission } from "@/types/calendar/event";
 import { useParams } from "next/navigation";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import moment from "moment-timezone";
 import { hexToRgba } from "@/app/lib/color";
+import CalendarsHeader from "./calendars.header";
+import { Days } from "@/types/calendar/day";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import SideModalEvent from "@/components/calendar/sideModal.event";
 
 const localizer = momentLocalizer(moment);
 
-type EventWithColor = Event & {
+interface EventWithColor extends CustomEvent {
   color?: string;
-};
+}
 
-type dayProps = {
-  [key: string]: string;
-  Sun: string;
-  Mon: string;
-  Tue: string;
-  Wed: string;
-  Thu: string;
-  Fri: string;
-  Sat: string;
-};
-
-const daysInKorean: dayProps = {
+const daysInKorean: Days = {
   Sun: "일",
   Mon: "월",
   Tue: "화",
@@ -40,68 +34,115 @@ const daysInKorean: dayProps = {
   Sat: "토",
 };
 
+const fetchCalendarEvents = async (
+  teamId: string,
+  date: Date,
+  view: View
+): Promise<CustomEvent[]> => {
+  const year = moment(date).year();
+  const month = moment(date).month() + 1;
+  const week = moment(date).isoWeek();
+
+  const endpoint =
+    view === "week"
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/week/team/${teamId}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/month/team/${teamId}`;
+
+  const response = await fetchWithAuth(
+    `${endpoint}?year=${year}&month=${month}&week=${week}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("일정 조회 실패");
+  }
+
+  const data = await response.json();
+
+  return data.result.map((event: EventDto) => ({
+    start: moment.utc(event.startTime).tz("Asia/Seoul", true).toDate(),
+    end: moment.utc(event.endTime).tz("Asia/Seoul", true).toDate(),
+    title: event.topic,
+    color: event.color,
+    id: event.id,
+  }));
+};
+
+const createCalendarEvent = async (
+  eventData: CreateEventDto
+): Promise<EventDto> => {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/create`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventData),
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || result.responseCode !== "SUCCESS") {
+    throw new Error(result.message || "이벤트 등록 실패");
+  }
+
+  return result;
+};
+
 const Page: React.FC = () => {
   const [view, setView] = useState<View>("week");
-  const [events, setEvents] = useState<CustomEvent[]>([
-    {
-      start: new Date(),
-      end: new Date(),
-      title: "Test Event",
-      color: "#FF0000",
-    },
-  ]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectDate, setSelectDate] = useState<Date>(new Date());
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenEvent, setIsOpenEvent] = useState<boolean>(false);
+  const [selectEventId, setSelectEventId] = useState<number>();
   const { id } = useParams();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { data: events = [] } = useQuery({
+    queryKey: ["events", id, moment(currentDate).format("YYYY-MM-DD"), view],
+    queryFn: () => fetchCalendarEvents(id as string, currentDate, view),
+  });
+
+  const createEventMutation = useMutation({
+    mutationFn: (eventData: CreateEventDto) => createCalendarEvent(eventData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      toast({
+        title: "일정 등록 성공",
+        description: "일정이 성공적으로 등록되었습니다.",
+        variant: "default",
+      });
+      setIsOpen(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "일정 등록 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     setSelectDate(slotInfo.start);
     setIsOpen((prev) => !prev);
+    setIsOpenEvent(false);
+    console.log(slotInfo);
   };
 
-  const createEvent = async (eventData: Event) => {
-    try {
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(eventData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("이벤트 등록 실패");
-      }
-
-      const result = await response.json();
-
-      const startTime = moment
-        .utc(result.result.startTime)
-        .tz("Asia/Seoul", true)
-        .toDate();
-      const endTime = moment
-        .utc(result.result.endTime)
-        .tz("Asia/Seoul", true)
-        .toDate();
-
-      const newEvent = {
-        ...result,
-        start: startTime,
-        end: endTime,
-        title: result.result.topic,
-        color: result.result.color,
-      };
-
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
-      return result;
-    } catch (error) {
-      console.error("이벤트 등록 에러:", error);
-      throw error;
-    }
+  const handleSelectEvent = async (event: EventWithColor) => {
+    setIsOpenEvent(true);
+    setSelectEventId(event.id);
+    setIsOpen(false);
   };
 
   const handleAddEvent = (
@@ -110,10 +151,10 @@ const Page: React.FC = () => {
     endDate: Date,
     startTime: number,
     endTime: number,
-    color: string
+    color: string,
+    missions: Mission[],
+    deleteMissions: number[]
   ) => {
-    console.log(startDate, startTime, endDate, endTime, color);
-
     const formatDateTime = (date: Date, time: number) => {
       const hours = time;
       const minutes = 0;
@@ -131,99 +172,49 @@ const Page: React.FC = () => {
       endTime: formatDateTime(endDate, endTime),
       topic: selectedGoal.detail,
       color,
-      missions: [
-        {
-          detail: selectedGoal.detail,
-        },
-      ],
+      missions: missions.map((mission) => ({
+        detail: mission.detail,
+      })),
+      deleteMissions,
     };
 
-    console.log("newEvent:", newEvent);
-    createEvent(newEvent);
+    createEventMutation.mutate(newEvent);
+  };
+
+  const handleRangeChange = (
+    range: Date[] | { start: Date; end: Date },
+    viewType?: View
+  ) => {
+    let targetDate: Date;
+    if (Array.isArray(range)) {
+      targetDate = range[0];
+    } else {
+      targetDate = range.start;
+    }
+    setCurrentDate(targetDate);
+    if (viewType) setView(viewType);
   };
 
   const handleNavigate = (date: Date) => {
     setCurrentDate(date);
-    const startOfMonth = moment(date).startOf("month").toDate();
-    const endOfMonth = moment(date).endOf("month").toDate();
-    console.log(startOfMonth, endOfMonth);
   };
-
-  const navigateToPrevious = () => {
-    const newDate =
-      view === "week"
-        ? moment(currentDate).subtract(1, "week").toDate()
-        : moment(currentDate).subtract(1, "month").toDate();
-    setCurrentDate(newDate);
-  };
-
-  const navigateToNext = () => {
-    const newDate =
-      view === "week"
-        ? moment(currentDate).add(1, "week").toDate()
-        : moment(currentDate).add(1, "month").toDate();
-    setCurrentDate(newDate);
-  };
-
-  console.log(events);
 
   return (
     <div className="w-full bg-white flex">
       <div className="w-full">
-        <div className="flex justify-between mb-4 items-center p-[10px]">
-          <div></div>
-          <div className="flex items-center">
-            <button
-              className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
-              onClick={navigateToPrevious}
-            >
-              <IoIosArrowBack />
-            </button>
-
-            <div className="text-lg font-bold mx-[10px]">
-              {`${moment(currentDate)
-                .startOf("week")
-                .format("YYYY.MM.D")} ~ ${moment(currentDate)
-                .endOf("week")
-                .format("D")}`}
-            </div>
-
-            <button
-              className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
-              onClick={navigateToNext}
-            >
-              <IoIosArrowForward />
-            </button>
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              className={`border border-gray-300 rounded-lg px-[16px] py-[4px] mr-2 ${
-                view === "week" ? "text-blue-500" : ""
-              }`}
-              onClick={() => setView("week")}
-            >
-              주간
-            </button>
-            <button
-              className={`border border-gray-300 rounded-lg px-[16px] py-[4px] ${
-                view === "month" ? "text-blue-500" : ""
-              }`}
-              onClick={() => setView("month")}
-            >
-              월간
-            </button>
-          </div>
-        </div>
-
-        <Calendar
+        <CalendarsHeader
+          view={view}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          setView={setView}
+          fetchEvents={() =>
+            queryClient.invalidateQueries({ queryKey: ["events"] })
+          }
+        />
+        <Calendar<EventWithColor, object>
           localizer={localizer}
           events={events}
-          onRangeChange={(range, view) => {
-            console.log("onRangeChange triggered");
-            console.log("Current view:", view);
-            console.log("Range:", range);
-          }}
+          onRangeChange={handleRangeChange}
           defaultView={view}
           culture="ko"
           view={view}
@@ -232,6 +223,7 @@ const Page: React.FC = () => {
           date={currentDate}
           onNavigate={handleNavigate}
           onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
           style={{
             height: "calc(100vh - 140px)",
             width: "100%",
@@ -241,7 +233,6 @@ const Page: React.FC = () => {
             timeGutterFormat: (date) => calendarTime(moment(date).hour()),
             dayFormat: (date) => {
               const day = moment(date).format("ddd");
-              //const dayOfMonth = moment(date).date();
               return `${daysInKorean[day]}`;
             },
             weekdayFormat: (date) => {
@@ -250,6 +241,7 @@ const Page: React.FC = () => {
             },
           }}
           step={30}
+          timeslots={4}
           components={{
             // eslint-disable-next-line @typescript-eslint/no-empty-object-type
             timeSlotWrapper: (props: React.PropsWithChildren<{}>) => (
@@ -258,32 +250,28 @@ const Page: React.FC = () => {
                 style={{
                   color: "#ADB8CC",
                   fontWeight: "600",
-                  fontSize: "0.8rem",
-                  height: "80px",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
+                className="h-[40px] md:[80px] text-[0.6rem] md:text-[0.8rem]"
               >
                 {props.children}
               </div>
             ),
           }}
-          eventPropGetter={(event: EventWithColor) => {
-            const rgbaColor = hexToRgba(event.color as string, 0.07);
-            return {
-              style: {
-                backgroundColor: rgbaColor,
-                border: "none",
-                borderLeft: `4px solid ${event.color}`,
-                color: event.color,
-                fontSize: "1.1rem",
-                fontWeight: "bord",
-                borderRadius: "4px",
-                padding: "10px",
-              },
-            };
-          }}
+          eventPropGetter={(event: EventWithColor) => ({
+            className: "text-[0.8rem] md:text-[1rem]",
+            style: {
+              backgroundColor: hexToRgba(event.color as string, 0.07),
+              border: "none",
+              borderLeft: `4px solid ${event.color}`,
+              color: event.color,
+              fontWeight: "bord",
+              borderRadius: "4px",
+              padding: "10px",
+            },
+          })}
           dayPropGetter={(date) => {
             const dayOfWeek = moment(date).day();
             const isToday = moment(date).isSame(new Date(), "day");
@@ -293,15 +281,6 @@ const Page: React.FC = () => {
                 return {
                   style: {
                     backgroundColor: "transparent",
-                  },
-                };
-              }
-
-              if (isToday) {
-                return {
-                  style: {
-                    backgroundColor: "transparent",
-                    border: "none",
                   },
                 };
               }
@@ -315,15 +294,15 @@ const Page: React.FC = () => {
                   },
                 };
               }
+            }
 
-              if (isToday) {
-                return {
-                  style: {
-                    backgroundColor: "transparent",
-                    border: "none",
-                  },
-                };
-              }
+            if (isToday) {
+              return {
+                style: {
+                  backgroundColor: "transparent",
+                  border: "none",
+                },
+              };
             }
 
             return {};
@@ -335,6 +314,11 @@ const Page: React.FC = () => {
         selectDate={selectDate}
         view={view}
         handleAddEvent={handleAddEvent}
+      />
+      <SideModalEvent
+        isOpen={isOpenEvent}
+        onClose={() => setIsOpenEvent(false)}
+        eventId={selectEventId}
       />
     </div>
   );
