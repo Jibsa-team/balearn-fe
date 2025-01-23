@@ -1,9 +1,9 @@
 "use client";
 
+import useAuthStore from "@/store/useAuthStore";
 import Image from "next/image";
 import { BsImageAlt } from "react-icons/bs";
 
-// 프로필 이미지 타입을 명확히 정의
 type ProfileImage = File | null;
 
 interface GroupProfileProps {
@@ -12,6 +12,7 @@ interface GroupProfileProps {
 }
 
 const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
+  const user = useAuthStore((state) => state.user);
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
@@ -36,8 +37,17 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
                 objectFit="cover"
               />
             </div>
+          ) : user?.profileImageUrl ? (
+            <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
+              <Image
+                src={user.profileImageUrl}
+                alt="Profile"
+                layout="fill"
+                objectFit="cover"
+              />
+            </div>
           ) : (
-            <span className="bg-gray-200  w-[150px] h-[150px] rounded-full flex items-center justify-center">
+            <span className="bg-gray-200 w-[150px] h-[150px] rounded-full flex items-center justify-center">
               <BsImageAlt className="text-2xl text-gray-500" />
             </span>
           )}

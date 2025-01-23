@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import CalendarGoal from "./goal";
 import CalendarDate from "./date";
 import { Goal } from "@/types/dashboard/dashboard";
+import { useToast } from "@/hooks/use-toast";
+import CalendarMission from "./mission";
+import { Mission } from "@/types/calendar/event";
 
 function CanlendarSideModal({
   isOpen,
@@ -19,7 +22,9 @@ function CanlendarSideModal({
     endDate: Date,
     startTime: number,
     endTime: number,
-    color: string
+    color: string,
+    missions: Mission[],
+    deleteMissons: number[]
   ) => void;
 }) {
   const [selectedGoal, setSelectedGoal] = useState<Goal>();
@@ -28,20 +33,42 @@ function CanlendarSideModal({
   const [startTime, setStartTime] = useState<number>(0);
   const [endTime, setEndTime] = useState<number>(0);
   const [color, setColor] = useState<string>("");
+  const [missions, setMissions] = useState<Mission[]>([]);
+  const [deleteMissions, setDeleteMissions] = useState<number[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
-    setStartDate(selectDate);
-    setEndDate(selectDate);
-  }, [selectDate]);
+    if (isOpen) {
+      setSelectedGoal(undefined);
+      setStartDate(selectDate);
+      setEndDate(selectDate);
+      setStartTime(0);
+      setEndTime(0);
+      setColor("");
+      setMissions([]);
+      setDeleteMissions([]);
+    }
+  }, [isOpen, selectDate]);
 
   const handlerUpdateEvent = () => {
+    if (selectedGoal == null) {
+      toast({
+        title: "일정 등록 실패",
+        description: "목표를 먼저 설정해주세요",
+        variant: "destructive",
+      });
+
+      return;
+    }
     handleAddEvent(
       selectedGoal!,
       startDate!,
       endDate!,
       startTime,
       endTime,
-      color
+      color,
+      missions,
+      deleteMissions
     );
   };
 
@@ -61,6 +88,12 @@ function CanlendarSideModal({
             selectedGoal={selectedGoal}
             setColor={setColor}
           />
+          <CalendarMission
+            setMissions={setMissions}
+            missions={missions}
+            setDeleteMissions={setDeleteMissions}
+          />
+
           <CalendarDate
             view={view}
             setStartDate={setStartDate}

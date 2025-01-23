@@ -35,6 +35,10 @@
   border: none !important;
 }
 
+.rbc-events-container {
+  margin-right: 0px !important;
+}
+
 /* 메인페이지 멤버 스크롤 처리 */
 .hide-scrollbar {
   -ms-overflow-style: none;

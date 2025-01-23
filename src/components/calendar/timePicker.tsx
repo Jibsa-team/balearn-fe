@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Select,
   SelectContent,
@@ -11,34 +10,41 @@ import {
 
 interface TimePickerProps {
   setTime: React.Dispatch<React.SetStateAction<number>>;
-  time: string;
+  time: number;
 }
 
-export function TimePicker({ setTime }: TimePickerProps) {
-  const times = Array.from({ length: 24 }).map((_, i) => {
-    const hour = i % 12 === 0 ? 12 : i % 12;
-    const ampm = i < 12 ? "오전" : "오후";
-    return `${ampm} ${hour}시`;
-  });
+export function TimePicker({ setTime, time }: TimePickerProps) {
+  // 시간 포맷 함수
+  const formatTimeString = (hour: number) => {
+    const ampm = hour < 12 ? "오전" : "오후";
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    return `${ampm} ${displayHour}시`;
+  };
+
+  const times = Array.from({ length: 24 }).map((_, i) => formatTimeString(i));
 
   const handleTimeChange = (value: string) => {
     const selectedTime = times.indexOf(value);
     if (selectedTime !== -1) {
-      console.log(selectedTime, value);
       setTime(selectedTime);
     }
   };
 
   return (
-    <Select onValueChange={handleTimeChange}>
+    <Select
+      onValueChange={handleTimeChange}
+      defaultValue={formatTimeString(time)}
+    >
       <SelectTrigger className="w-[110px]">
-        <SelectValue placeholder="시간 선택" />
+        <SelectValue placeholder="시간 선택">
+          {formatTimeString(time)}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {times.map((time, index) => (
-            <SelectItem key={index} value={time}>
-              {time}
+          {times.map((timeString, index) => (
+            <SelectItem key={index} value={timeString}>
+              {timeString}
             </SelectItem>
           ))}
         </SelectGroup>

@@ -1,5 +1,6 @@
 import "./globals.css";
 import Providers from "./lib/provides";
+import { Toaster } from "@/components/ui/toaster";
 
 if (
   process.env.NEXT_RUNTIME === "nodejs" &&
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <div className="flex w-full">{children}</div>
+          <Toaster />
         </Providers>
       </body>
     </html>

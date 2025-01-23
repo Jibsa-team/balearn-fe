@@ -37,7 +37,10 @@ function EmptyLogo({ width, height }: EmptyLogoProps) {
       loop
       animationData={loadingAnimation}
       play
-      className={`w-[${width}] h-[${height}]`}
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
     />
   );
 }

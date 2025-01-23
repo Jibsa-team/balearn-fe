@@ -76,7 +76,6 @@ function Page() {
       <h1 className="text-xl font-semibold mb-[40px]">모임 관리</h1>
       <div className="flex w-full justify-between">
         <div className="w-[48%]">
-          {/* 모임명 입력 */}
           <div className="flex flex-col items-start mb-[30px] font-semibold">
             <span>모임명</span>
             <TextInput
@@ -88,7 +87,6 @@ function Page() {
             {errors.groupName && <GroupAddError errors={errors.groupName} />}
           </div>
 
-          {/* 모임 목적 입력 */}
           <div className="flex flex-col items-start mb-[30px] font-semibold">
             <span>모임 목적</span>
             <TextInput
