@@ -19,6 +19,7 @@ export interface Goal {
 
 export interface TeamUser {
   id: number;
+  teamId: number;
   userId: number;
   role: string;
   nickname: string;
