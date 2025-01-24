@@ -24,7 +24,7 @@ function Member() {
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["dashboardData"],
+    queryKey: ["dashboardData", id],
     queryFn: () => fetchMemberData(id),
   });
 
@@ -34,12 +34,10 @@ function Member() {
     switch (role) {
       case "OWNER":
         return "(스터디장)";
+      case "LEADER":
+        return "(관리자)";
       case "MEMBER":
         return "(팀원)";
-      case "ADMIN":
-        return "(관리자)";
-      default:
-        return "(알 수 없음)";
     }
   };
 
