@@ -46,6 +46,22 @@ const updateEvent = async (eventData: UpdateEventDto) => {
   return result;
 };
 
+const deleteEvent = async (eventId: number) => {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/${eventId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  const result = await response.json();
+  if (!response.ok || result.responseCode !== "SUCCESS") {
+    throw new Error(result.message || "일정 삭제에 실패했습니다.");
+  }
+
+  return result;
+};
+
 function SideModalEvent({
   isOpen,
   eventId,
@@ -66,6 +82,7 @@ function SideModalEvent({
   const [missions, setMissions] = useState<Mission[]>([]);
   const [deleteMissions, setDeleteMissions] = useState<number[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDeleting, setIsDeleting] = useState(false);
   const { id } = useParams();
 
@@ -134,6 +151,36 @@ function SideModalEvent({
     },
   });
 
+  const deleteEventMutation = useMutation({
+    mutationFn: () => deleteEvent(data!.id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
+
+      await queryClient.removeQueries({
+        queryKey: ["event", data?.id],
+      });
+
+      toast({
+        title: "일정 삭제 성공",
+        description: "일정이 성공적으로 삭제되었습니다.",
+        variant: "default",
+      });
+
+      setIsDeleteModalOpen(false);
+      onClose();
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "일정 삭제 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsDeleteModalOpen(false);
+    },
+  });
+
   const handleUpdateEvent = () => {
     if (!selectedGoal || !startDate || !endDate || id === undefined) {
       toast({
@@ -177,37 +224,7 @@ function SideModalEvent({
   };
 
   const confirmDelete = async () => {
-    try {
-      setIsDeleting(true);
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/${data?.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      const result = await response.json();
-      await queryClient.invalidateQueries({
-        queryKey: ["events"],
-      });
-
-      await queryClient.removeQueries({
-        queryKey: ["event", data?.id],
-      });
-
-      toast({
-        title: "일정 삭제 성공",
-        description: "일정이 성공적으로 삭제되었습니다.",
-        variant: "default",
-      });
-
-      setIsDeleteModalOpen(false);
-      onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsDeleting(false);
-    }
+    deleteEventMutation.mutate();
   };
 
   if (!isOpen) return null;
@@ -256,13 +273,13 @@ function SideModalEvent({
               onClick={handleUpdateEvent}
               className="w-full bg-logoColor text-white mt-[30px] py-[5px] rounded-lg"
             >
-              {updateEventMutation.isPending ? "수정중" : "수정하기"}
+              {updateEventMutation.isPending ? "수정중.." : "수정하기"}
             </button>
             <button
               onClick={handleDeleteEvent}
               className="w-full bg-[#FB4358] text-white mt-[10px] py-[5px] rounded-lg"
             >
-              일정 삭제하기
+              {deleteEventMutation.isPending ? "식제중.." : "일정 삭제하기"}
             </button>
           </div>
         ) : null}
