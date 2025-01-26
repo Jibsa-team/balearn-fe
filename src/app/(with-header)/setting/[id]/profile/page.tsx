@@ -9,41 +9,48 @@ import useAuthStore from "@/store/useAuthStore";
 import { formSchema } from "./schema";
 import UserProfile from "./userProfile";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 function Page({ reset }: { reset(): void }) {
   const user = useAuthStore((state) => state.user);
+  const teamUser = useAuthStore((state) => state.teamUser);
   const setUser = useAuthStore((state) => state.setUser);
+  const setTeamUser = useAuthStore((state) => state.setTeamUser);
   const [name, setName] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [phoneNumber, setPhoneNumber] = useState("");
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [updateLoading, setUpdateLoading] = useState<boolean>();
   const router = useRouter();
   const { toast } = useToast();
+  const { id } = useParams();
 
   useEffect(() => {
-    if (user?.name) {
+    if (teamUser?.nickname) {
+      setName(teamUser.nickname);
+    } else if (user?.name) {
       setName(user.name);
     }
-  }, [user]);
+  }, [user, teamUser]);
 
   const isFormValid = () => {
     const formData = { name };
     const result = formSchema.safeParse(formData);
-    return result.success && name !== user?.name;
+    return (
+      result.success &&
+      (teamUser ? name !== teamUser.nickname : name !== user?.name)
+    );
   };
 
   const handleUpdate = async () => {
     try {
-      const formData = {
-        name,
-      };
+      setUpdateLoading(true);
+      const formData = { name };
       formSchema.parse(formData);
 
       const newFormData = new FormData();
-
-      const blob = new Blob([JSON.stringify({ name, phoneNumber })], {
+      const blob = new Blob([JSON.stringify({ nickname: name, phoneNumber })], {
         type: "application/json",
       });
       newFormData.append("data", blob);
@@ -52,13 +59,14 @@ function Page({ reset }: { reset(): void }) {
         newFormData.append("image", profileImage);
       }
 
-      const response = await fetchWithAuth(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user/me`,
-        {
-          method: "PUT",
-          body: newFormData,
-        }
-      );
+      const url = id
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}/me`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/user/me`;
+
+      const response = await fetchWithAuth(url, {
+        method: "PUT",
+        body: newFormData,
+      });
 
       if (!response.ok) {
         throw new Error("프로필 업데이트에 실패했습니다.");
@@ -67,7 +75,8 @@ function Page({ reset }: { reset(): void }) {
       const result = await response.json();
 
       if (result.responseCode === "SUCCESS") {
-        setUser(result.result);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        id ? setTeamUser(result.result) : setUser(result.result);
       }
 
       toast({
@@ -88,6 +97,8 @@ function Page({ reset }: { reset(): void }) {
         });
         setErrors(fieldErrors);
       }
+    } finally {
+      setUpdateLoading(false);
     }
   };
 
@@ -117,9 +128,9 @@ function Page({ reset }: { reset(): void }) {
                     ? "bg-logoColor text-white cursor-pointer"
                     : "bg-disabledColor text-gray-200 cursor-not-allowed"
                 }`}
-                //disabled={!isFormValid()}
+                disabled={updateLoading}
               >
-                <span>변경하기</span>
+                <span>{updateLoading ? "변경중.." : "변경하기"}</span>
               </button>
             </div>
           </div>

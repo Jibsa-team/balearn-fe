@@ -11,12 +11,12 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 
 const SettingItem = [
   {
-    title: "모임 관리",
-    subtitle: "모임을 관리해보세요.",
-    description: "모임 관리 및 생성을 할 수 있습니다.",
+    title: "모임 수정",
+    subtitle: "모임을 수정해보세요.",
+    description: "모임 수정을 할 수 있습니다.",
     icon: <RiGroupFill className="mb-[25px] text-[1.3rem] text-gray-700" />,
-    url: "group",
-    allowedRoles: ["OWNER", "ADMIN", "MEMBER"],
+    url: "groupUpdate",
+    allowedRoles: ["OWNER", "LEADER", "MEMBER"],
   },
   {
     title: "회원 관리",
@@ -36,7 +36,7 @@ const SettingItem = [
       <AiFillNotification className="mb-[25px] text-[1.5rem] text-gray-700" />
     ),
     url: "notify",
-    allowedRoles: ["OWNER", "ADMIN", "MEMBER"],
+    allowedRoles: ["OWNER", "LEADER", "MEMBER"],
   },
 ];
 

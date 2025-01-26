@@ -13,12 +13,16 @@ interface GroupProfileProps {
 
 const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
   const user = useAuthStore((state) => state.user);
+  const teamUser = useAuthStore((state) => state.teamUser);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       setProfileImage(file);
     }
   };
+
+  const profileImageUrl = teamUser?.imgUrl || user?.profileImageUrl;
 
   return (
     <div className="flex flex-col items-start mb-[20px] font-semibold">
@@ -37,10 +41,10 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
                 objectFit="cover"
               />
             </div>
-          ) : user?.profileImageUrl ? (
+          ) : profileImageUrl ? (
             <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
               <Image
-                src={user.profileImageUrl}
+                src={profileImageUrl}
                 alt="Profile"
                 layout="fill"
                 objectFit="cover"
