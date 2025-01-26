@@ -6,6 +6,8 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import DailySkeleton from "@/components/skeleton/dailySkelton";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { GoGoal } from "react-icons/go";
+import { hexToRgba } from "@/app/lib/color";
 
 const fetchDailyData = async (
   groupId: string | string[]
@@ -43,18 +45,23 @@ function Daily() {
         <span>목표를 달성해보세요</span>
       </h1>
       {!isLoading ? (
-        <div>
-          <ol className="list-decimal pl-3">
-            {data?.result.goal.map((e, i) => (
-              <li key={i} className="flex items-center">
-                <div
-                  className="w-[20px] h-[20px] rounded-full mr-[10px]"
-                  style={{ backgroundColor: e.color }}
-                ></div>
-                <span className="text-[1.1rem]">{e.detail}</span>
-              </li>
-            ))}
-          </ol>
+        <div className="w-full flex flex-nowrap gap-4 overflow-x-auto md:flex-wrap md:overflow-x-visible hide-scrollbar">
+          {data?.result.goal.map((goal, i) => (
+            <div
+              key={goal.id}
+              className="flex-shrink-0 border-[1px] border-l-[3px] border-solid shadow-xl pl-[20px] pr-[50px] py-[15px] flex flex-col cursor-pointer rounded-lg"
+              style={{
+                borderColor: goal.color,
+                //backgroundColor: hexToRgba(goal.color as string, 0.5),
+              }}
+            >
+              <GoGoal
+                className="text-[1.5rem] mb-[10px]"
+                style={{ color: goal.color }}
+              />
+              <p className="text-[1rem] font-semibold">{goal.detail}</p>
+            </div>
+          ))}
         </div>
       ) : (
         <DailySkeleton />
