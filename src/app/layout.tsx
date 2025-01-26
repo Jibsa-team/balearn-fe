@@ -1,16 +1,12 @@
 import "./globals.css";
 import Providers from "./lib/provides";
 import { Toaster } from "@/components/ui/toaster";
+import { Prompt } from "next/font/google";
 
-if (
-  process.env.NEXT_RUNTIME === "nodejs" &&
-  process.env.NODE_ENV !== "production"
-) {
-  (async () => {
-    const { server } = await import("@/mocks/http");
-    server.listen();
-  })();
-}
+const poppins = Prompt({
+  weight: "500",
+  subsets: ["latin", "latin-ext"],
+});
 
 export default function RootLayout({
   children,
@@ -19,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${poppins.className}`}>
         <Providers>
           <div className="flex w-full">{children}</div>
           <Toaster />

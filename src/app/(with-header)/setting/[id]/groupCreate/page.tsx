@@ -73,7 +73,7 @@ function Page() {
 
   return (
     <div className="w-[100%] h-[100%] p-[30px] bg-white">
-      <h1 className="text-xl font-semibold mb-[40px]">모임 관리</h1>
+      <h1 className="text-xl font-semibold mb-[40px]">모임 생성</h1>
       <div className="flex w-full justify-between">
         <div className="w-[48%]">
           <div className="flex flex-col items-start mb-[30px] font-semibold">
@@ -100,10 +100,8 @@ function Page() {
             )}
           </div>
 
-          {/* 목표 목록 */}
           <GoalList goals={goals} setGoals={setGoals} errors={errors.goals} />
 
-          {/* 생성하기 버튼 */}
           <div className="w-full flex justify-between mt-[50px]">
             <div></div>
             <div

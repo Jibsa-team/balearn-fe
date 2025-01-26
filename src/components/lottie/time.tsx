@@ -5,18 +5,13 @@ import { useEffect, useState } from "react";
 
 const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
 
-interface EmptyLogoProps {
-  width: number;
-  height: number;
-}
-
-function EmptyLogo({ width, height }: EmptyLogoProps) {
+const TimeLottie = () => {
   const [loadingAnimation, setLoadingAnimation] = useState(null);
 
   useEffect(() => {
     const loadAnimation = async () => {
       try {
-        const response = await fetch("/empty.json");
+        const response = await fetch("/time.json");
         const data = await response.json();
         setLoadingAnimation(data);
       } catch (error) {
@@ -28,7 +23,7 @@ function EmptyLogo({ width, height }: EmptyLogoProps) {
   }, []);
 
   if (!loadingAnimation) {
-    return <div>...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
@@ -36,12 +31,9 @@ function EmptyLogo({ width, height }: EmptyLogoProps) {
       loop
       animationData={loadingAnimation}
       play
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-      }}
+      style={{ width: 200, height: 200 }}
     />
   );
-}
+};
 
-export default EmptyLogo;
+export default TimeLottie;

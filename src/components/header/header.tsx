@@ -11,6 +11,7 @@ import useAuthStore from "@/store/useAuthStore";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useParams, useRouter } from "next/navigation";
 import ProfileModal from "../modal/profileModal";
+import { TeamUser } from "@/types/dashboard/dashboard";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -24,22 +25,36 @@ async function fetchUserData(): Promise<User> {
   return data.result;
 }
 
+async function fetchTeamUserData(id: string): Promise<TeamUser> {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}/me`
+  );
+  const data = await response.json();
+  return data.result;
+}
+
 function Header({ toggleSidebar }: HeaderProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const accessToken = useAuthStore((state) => state.accessToken);
   const setUser = useAuthStore((state) => state.setUser);
+  const setTeamUser = useAuthStore((state) => state.setTeamUser);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
   const clearUser = useAuthStore((state) => state.clearUser);
   const router = useRouter();
   const { id } = useParams();
 
-  const { data, isLoading, isError } = useQuery<User>({
-    queryKey: ["userData", accessToken],
-    queryFn: () => fetchUserData(),
+  const { data, isLoading, isError } = useQuery<User | TeamUser>({
+    queryKey: ["userData", id || "default"],
+    queryFn: () => (id ? fetchTeamUserData(id as string) : fetchUserData()),
     enabled: !!accessToken,
-    select: (data: User) => {
-      setUser(data);
-      return data;
+    select: (data: User | TeamUser) => {
+      if ("teamId" in data) {
+        setTeamUser(data);
+        return data;
+      } else {
+        setUser(data);
+        return data;
+      }
     },
   });
 
@@ -82,15 +97,17 @@ function Header({ toggleSidebar }: HeaderProps) {
             className="w-[30px] h-[30px] relative cursor-pointer"
             onClick={handleProfileClick}
           >
-            {data?.profileImageUrl ? (
+            {data && (
               <Image
-                src={data?.profileImageUrl}
+                src={
+                  "teamId" in data
+                    ? data.imgUrl || "/Avatar.png"
+                    : data.profileImageUrl || "/Avatar.png"
+                }
                 alt="user img"
                 layout="fill"
                 className="rounded-full object-cover"
               />
-            ) : (
-              <div className="w-[30px] h-[30px] bg-gray-300 rounded-full"></div>
             )}
           </div>
           <ProfileModal

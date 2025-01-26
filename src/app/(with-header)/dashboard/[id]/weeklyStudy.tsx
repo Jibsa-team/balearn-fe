@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import WeeklyStudySkeleteon from "@/components/skeleton/weeklySkelton";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import TimeLottie from "@/components/lottie/time";
 
 const fetchWeeklyData = async (
   id: string | string[]
@@ -21,6 +22,7 @@ const fetchWeeklyData = async (
 
 function WeeklyStudy() {
   const { id } = useParams();
+  const router = useRouter();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardData"],
@@ -58,9 +60,18 @@ function WeeklyStudy() {
             </table>
           </div>
         ) : (
-          <div className="mt-[15px]">
-            <button className="px-[20px] py-[5px] text-white rounded-lg bg-logoColor mt-[10px] w-[200px]">
-              <span className="text-white">일정 등록하러 가기</span>
+          <div className="mt-[15px] flex flex-col items-start">
+            <span className="text-[1.2rem] font-semibold">
+              아직 일정을 등록하지 않았어요
+            </span>
+            <TimeLottie />
+            <button className="px-[20px] py-[5px] text-white rounded-lg bg-[#B6DCFF] mt-[10px] w-[200px]">
+              <span
+                onClick={() => router.push(`/calendars/${id}`)}
+                className="text-white"
+              >
+                일정 등록하러 가기
+              </span>
             </button>
           </div>
         )

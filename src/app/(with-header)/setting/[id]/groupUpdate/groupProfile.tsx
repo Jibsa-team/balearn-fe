@@ -1,6 +1,5 @@
 "use client";
 
-import useAuthStore from "@/store/useAuthStore";
 import Image from "next/image";
 import { BsImageAlt } from "react-icons/bs";
 
@@ -9,12 +8,14 @@ type ProfileImage = File | null;
 interface GroupProfileProps {
   profileImage: ProfileImage;
   setProfileImage: React.Dispatch<React.SetStateAction<ProfileImage>>;
+  originalImage: string | null;
 }
 
-const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
-  const user = useAuthStore((state) => state.user);
-  const teamUser = useAuthStore((state) => state.teamUser);
-
+const GroupProfile = ({
+  profileImage,
+  setProfileImage,
+  originalImage,
+}: GroupProfileProps) => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
@@ -22,11 +23,9 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
     }
   };
 
-  const profileImageUrl = teamUser?.imgUrl || user?.profileImageUrl;
-
   return (
     <div className="flex flex-col items-start mb-[20px] font-semibold">
-      <span>프로필</span>
+      <span>모임 프로필</span>
       <div className="flex items-center rounded-full">
         <label
           htmlFor="profileImage"
@@ -41,10 +40,10 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
                 objectFit="cover"
               />
             </div>
-          ) : profileImageUrl ? (
+          ) : originalImage ? (
             <div className="w-[150px] h-[150px] rounded-full overflow-hidden relative">
               <Image
-                src={profileImageUrl}
+                src={originalImage}
                 alt="Profile"
                 layout="fill"
                 objectFit="cover"
@@ -68,4 +67,4 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
   );
 };
 
-export default UserProfile;
+export default GroupProfile;

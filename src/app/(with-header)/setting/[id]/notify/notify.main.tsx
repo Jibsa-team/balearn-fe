@@ -1,42 +1,52 @@
 "use client";
 
-import useAuthStore from "@/store/useAuthStore";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import NotifyModal from "./notify.setting.modal";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import TeamNotifySkeleton from "@/components/skeleton/teamNotifySkelton";
-import { NotificationDto } from "@/types/notify/teamNotifyDto";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 import { NotifyDate } from "@/app/lib/date";
 import Empty from "@/components/empty/empty";
 
-const getAllNotify = async (
-  teamId: number,
-  page: number = 0,
-  size: number = 10
-): Promise<NotificationDto> => {
+const getAllNotify = async ({
+  pageParam = 1,
+  id,
+}: {
+  pageParam: number;
+  id: string;
+}) => {
+  console.log("pageParam : " + pageParam);
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/notice/team/${teamId}?page=${page}&size=${size}`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/notice/team/${id}?page=${pageParam}&size=10`
   );
-  if (!response.ok) {
-    throw new Error("데이터를 가져오는데 실패했습니다.");
-  }
+  if (!response.ok) throw new Error("데이터 로드 실패");
   return response.json();
 };
 
 function NotifyMain() {
-  const user = useAuthStore((state) => state.user);
   const [activeModalId, setActiveModalId] = useState<number | null>(null);
+  // const [uploadLoading, setUploadLoading] = useState<boolean>();
   const { id } = useParams();
+  const { ref, inView } = useInView();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["teamNotify", id],
-    queryFn: () => getAllNotify(Number(id)!, 1, 10),
-    enabled: !!id,
-  });
+  const { data, fetchNextPage, hasNextPage, isLoading, isError } =
+    useInfiniteQuery({
+      queryKey: ["teamNotify", id],
+      queryFn: ({ pageParam = 1 }) =>
+        getAllNotify({ pageParam, id: id as string }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.result.hasNext ? allPages.length + 1 : undefined,
+    });
+
+  useEffect(() => {
+    if (inView && hasNextPage) fetchNextPage();
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const handleToggleModal = (id: number) => {
     setActiveModalId((prev) => (prev === id ? null : id));
@@ -46,67 +56,64 @@ function NotifyMain() {
     setActiveModalId(null);
   };
 
-  if (isLoading) {
-    return (
-      <>
-        {Array.from({ length: 10 }).map((_, index) => (
-          <div key={index}>
-            <TeamNotifySkeleton />
-          </div>
-        ))}
-      </>
-    );
-  }
-
-  if (isError) {
-    return <div>오류가 발생했습니다.</div>;
-  }
-
-  if (!data || !data.result.content || data.result.content.length === 0) {
-    return <Empty message={"등록된 공지가 없습니다"} />;
-  }
+  if (isLoading) return <TeamNotifySkeleton count={10} />;
+  if (isError) return <div>오류가 발생했습니다.</div>;
+  if (!data || data.pages[0]?.result.content.length === 0)
+    return <Empty message="등록된 공지가 없습니다" />;
 
   return (
     <>
-      {data.result.content.map((notice) => (
-        <div
-          key={notice.id}
-          className="flex justify-between md:items-center items-start border-b-[1px] border-gray-200 mb-[20px] pb-[10px]"
-        >
-          <div className="w-full flex flex-col md:flex-row items-start md:items-center">
-            <div className="flex items-center gap-4 mb-4 md:mb-0 md:mr-[20px]">
-              <div className="w-[30px] h-[30px] relative cursor-pointer mr-[5px]">
-                <Image
-                  src={user?.profileImageUrl as string}
-                  alt="user img"
-                  layout="fill"
-                  className="rounded-full object-cover"
-                />
+      <>
+        {data.pages
+          .flatMap((page) => page.result.content)
+          .map((notice) => (
+            <div
+              key={notice.id}
+              className="flex flex-col items-start md:items-center border-b-[1px] border-gray-200 mb-[50px] pb-[10px]"
+            >
+              <div className="w-full text-[1rem] text-gray-800 font-semibold mb-[10px]">
+                {NotifyDate(notice.createdAt)}
               </div>
-              <div className="mt-[13px] ml-[5px]">
-                <div className="text-[1rem]">{user!.name}</div>
-                <div className="text-[0.8rem] text-gray-500">
-                  {NotifyDate(notice.createdAt)}
+              <div className="w-full flex justify-between items-center">
+                <div className="w-full flex flex-col md:flex-row items-start md:items-center">
+                  <div className="w-[30%] flex items-center gap-4 mb-4 md:mb-0 md:mr-[20px]">
+                    <div className="w-[30px] h-[30px] relative cursor-pointer">
+                      <Image
+                        src={notice.createdBy.imgUrl}
+                        alt="user img"
+                        layout="fill"
+                        className="rounded-full object-cover"
+                      />
+                    </div>
+                    <div className="text-[1rem]">
+                      {notice.createdBy.nickname}
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <span className="font-semibold mr-[10px] text-[1.1rem]">
+                      [공지]
+                    </span>
+                    <span className="text-[1rem]">{`${notice.title}`}</span>
+                  </div>
+                </div>
+                <div className="md:mt-[0px] mt-[15px]">
+                  <div
+                    className="cursor-pointer relative"
+                    onClick={() => handleToggleModal(notice.id)}
+                  >
+                    <BsThreeDots />
+                    <NotifyModal
+                      isOpen={activeModalId === notice.id}
+                      onClose={handleCloseModal}
+                      id={activeModalId}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="w-full">{notice.title}</div>
-          </div>
-          <div className="md:mt-[0px] mt-[15px]">
-            <div
-              className="cursor-pointer relative"
-              onClick={() => handleToggleModal(notice.id)}
-            >
-              <BsThreeDots />
-              <NotifyModal
-                isOpen={activeModalId === notice.id}
-                onClose={handleCloseModal}
-                id={activeModalId}
-              />
-            </div>
-          </div>
-        </div>
-      ))}
+          ))}
+        <div ref={ref}>{hasNextPage && <TeamNotifySkeleton count={1} />}</div>
+      </>
     </>
   );
 }

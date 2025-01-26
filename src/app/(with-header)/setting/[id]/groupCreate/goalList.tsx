@@ -5,6 +5,7 @@ import { SketchPicker } from "react-color";
 import TextInput from "@/components/group/input/textInput";
 import { IoIosArrowDown } from "react-icons/io";
 import GroupAddError from "@/components/error/ErrorMessage";
+import { IoMdClose } from "react-icons/io";
 
 interface GoalItem {
   detail: string;
@@ -29,6 +30,20 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
     left: 0,
   });
 
+  const getRandomColor = () => {
+    const colors = [
+      "#2C3E50",
+      "#8E44AD",
+      "#2980B9",
+      "#cfba21",
+      "#D35400",
+      "#C0392B",
+      "#16A085",
+      "#2874A6",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   const handleGoalChange = (index: number, value: string) => {
     const updatedGoals = [...goals];
     updatedGoals[index].detail = value;
@@ -42,7 +57,13 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
   };
 
   const addGoalItem = () => {
-    setGoals([...goals, { detail: "", color: "#FFCB33" }]);
+    setGoals([...goals, { detail: "", color: getRandomColor() }]);
+  };
+
+  const removeGoalItem = (index: number) => {
+    const updatedGoals = goals.filter((_, i) => i !== index);
+    setGoals(updatedGoals);
+    setActivePickerIndex(null);
   };
 
   const toggleColorPicker = (
@@ -87,7 +108,6 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
             onChange={(e) => handleGoalChange(index, e.target.value)}
           />
 
-          {/* 색상 선택 버튼 */}
           <div className="mt-[10px] flex items-center gap-[15px] relative">
             <div
               onClick={(e) => toggleColorPicker(index, e.currentTarget)}
@@ -105,9 +125,12 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
               />
               <IoIosArrowDown className="ml-[5px] text-gray-500" />
             </div>
+            <IoMdClose
+              onClick={() => removeGoalItem(index)}
+              className="cursor-pointer"
+            />
           </div>
 
-          {/* 색상 선택기 */}
           {activePickerIndex === index && (
             <div
               style={{
