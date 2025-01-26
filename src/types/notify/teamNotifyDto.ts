@@ -3,9 +3,20 @@ export interface Notice {
   title: string;
   detail: string;
   createdAt: string;
-  createdBy: number;
+  createdBy: TeamUser;
   modifiedAt: string;
-  modifiedBy: number;
+  modifiedBy: TeamUser;
+}
+
+export interface TeamUser {
+  id: number;
+  userId: number;
+  teamId: number;
+  role: string;
+  nickname: string;
+  imgUrl: string;
+  createdAt: string;
+  modifiedAt: string;
 }
 
 export interface NotificationDto {
