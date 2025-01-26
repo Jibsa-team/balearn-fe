@@ -41,6 +41,7 @@ function UserAuthority() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, isLoading, isError } = useQuery({
     queryKey: ["dashboardData", id],
     queryFn: () => fetchMemberData(id),
@@ -54,7 +55,6 @@ function UserAuthority() {
       ).then((res) => res.json()),
   });
 
-  if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>오류가 발생했습니다.</div>;
 
   const teamUsers = (data?.result?.teamUser || []).filter(

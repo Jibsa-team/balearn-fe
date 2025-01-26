@@ -30,7 +30,6 @@ function EmptyLogo({ width, height }: EmptyLogoProps) {
   if (!loadingAnimation) {
     return <div>...</div>;
   }
-  console.log(width, height);
 
   return (
     <Lottie

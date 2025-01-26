@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import LoginLoading from "@/components/loading/loading";
+import LoginLoading from "@/components/lottie/loading";
 import { LoginRes } from "@/types/login/login";
 import useAuthStore from "@/store/useAuthStore";
 import useGroupStore from "@/store/useGroupStore";
