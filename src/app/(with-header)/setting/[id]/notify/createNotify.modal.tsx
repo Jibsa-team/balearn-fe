@@ -7,6 +7,7 @@ import { NotifySchema } from "./schema";
 import NotifyAddError from "@/components/error/ErrorMessage";
 import { useParams } from "next/navigation";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CreateNotifyModal({
   isOpen,
@@ -18,7 +19,9 @@ export default function CreateNotifyModal({
   const [title, setTitle] = useState<string>("");
   const [detail, setDetail] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const isFormValid = () => {
     const formData = { title, detail };
@@ -28,6 +31,7 @@ export default function CreateNotifyModal({
 
   const handleCreate = async () => {
     try {
+      setUploadLoading(true);
       const formData = { title, detail };
       NotifySchema.parse(formData);
 
@@ -44,6 +48,13 @@ export default function CreateNotifyModal({
       const result = await response.json();
       console.log(result);
 
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["dashboardData", id] }),
+        queryClient.invalidateQueries({ queryKey: ["teamNotify", id] }),
+      ]);
+
+      setTitle("");
+      setDetail("");
       onClose();
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -54,6 +65,8 @@ export default function CreateNotifyModal({
         });
         setErrors(fieldErrors);
       }
+    } finally {
+      setUploadLoading(false);
     }
   };
 
@@ -107,8 +120,9 @@ export default function CreateNotifyModal({
                   ? "bg-logoColor text-white cursor-pointer"
                   : "bg-disabledColor text-gray-200 cursor-not-allowed"
               }`}
+              disabled={uploadLoading}
             >
-              생성
+              {uploadLoading ? "생성중.." : "생성"}
             </button>
           </div>
         </motion.div>
