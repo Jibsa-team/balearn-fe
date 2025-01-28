@@ -120,7 +120,7 @@ const FileUploadPage: React.FC = () => {
       <div className="w-full md:text-[1.2rem] text-[1rem] font-semibold flex justify-start mb-[10px]">
         모든 파일
       </div>
-      <div className="className= flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         <MyFiles />
       </div>
     </div>
