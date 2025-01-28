@@ -1,19 +1,48 @@
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import { FileData } from "@/types/file/files";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { RiCloseCircleLine } from "react-icons/ri";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+import { IoMdClose } from "react-icons/io";
 
 interface DeleteFileModalProps {
   isOpen: boolean;
-  fileName: string;
+  fileDelete: FileData;
   onClose: () => void;
-  onConfirm: () => void;
 }
 
 const DeleteFileModal: React.FC<DeleteFileModalProps> = ({
   isOpen,
-  fileName,
+  fileDelete,
   onClose,
-  onConfirm,
 }) => {
+  const { id } = useParams();
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const DeleteFile = async () => {
+    try {
+      setLoading(true);
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/file/${fileDelete.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const result = await response.json();
+
+      if (result) {
+        await queryClient.invalidateQueries({ queryKey: ["files", id] });
+        onClose();
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -31,20 +60,21 @@ const DeleteFileModal: React.FC<DeleteFileModalProps> = ({
       >
         <div className="flex justify-between items-center">
           <div className="text-xl">파일 삭제</div>
-          <RiCloseCircleLine
+          <IoMdClose
             className="cursor-pointer text-gray-500"
             onClick={onClose}
           />
         </div>
         <div className="mt-4 text-center">
-          <p>{fileName} 파일을 삭제하시겠습니까?</p>
+          <p>{fileDelete.name} 파일을 삭제하시겠습니까?</p>
         </div>
         <div className="mt-4 flex justify-center space-x-4">
           <button
             className="bg-red-600 text-white px-4 py-2 rounded-md"
-            onClick={onConfirm}
+            onClick={DeleteFile}
+            disabled={loading}
           >
-            삭제
+            {loading ? "삭제중..." : "삭제"}
           </button>
           <button
             className="bg-gray-200 px-4 py-2 rounded-md"
