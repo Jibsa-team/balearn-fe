@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import NotifyModal from "./notify.setting.modal";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import TeamNotifySkeleton from "@/components/skeleton/teamNotifySkelton";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -20,7 +19,6 @@ const getAllNotify = async ({
   pageParam: number;
   id: string;
 }) => {
-  console.log("pageParam : " + pageParam);
   const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/notice/team/${id}?page=${pageParam}&size=10`
   );
