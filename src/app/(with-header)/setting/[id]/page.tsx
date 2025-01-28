@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import SettingSkelton from "@/components/skeleton/settingSkelton";
 
 const SettingItem = [
   {
@@ -43,7 +44,7 @@ const SettingItem = [
 function Page() {
   const { id } = useParams();
 
-  const { data: userData } = useQuery({
+  const { data: userData, isLoading } = useQuery({
     queryKey: ["teamUserRole", id],
     queryFn: () =>
       fetchWithAuth(
@@ -57,13 +58,17 @@ function Page() {
     item.allowedRoles.includes(userRole || "")
   );
 
+  if (isLoading) {
+    return <SettingSkelton />;
+  }
+
   return (
     <div className="w-[95%] p-[30px] overflow-y-scroll">
       <h1 className="text-[1.5rem] font-semibold mb-[20px]">설정</h1>
       <div className="flex flex-wrap gap-[20px]">
         {accessibleItems.map((item, i) => (
           <Link href={`/setting/${id}/${item.url}`} key={i}>
-            <div className="w-[300px] border-[1px] border-gray-300 px-[20px] py-[30px] rounded-xl shadow-lg flex flex-col justify-between hover:bg-gray-400 hover:backdrop-blur-xl transition-all duration-200 group relative cursor-pointer">
+            <div className=" bg-white w-[300px] border-[1px] border-gray-300 px-[20px] py-[30px] rounded-xl shadow-lg flex flex-col justify-between hover:bg-gray-400 hover:backdrop-blur-xl transition-all duration-200 group relative cursor-pointer">
               <div className="group-hover:opacity-10 transition-opacity duration-300">
                 {item.icon}
               </div>
