@@ -1,33 +1,40 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { UploadedFile } from "@/types/file/files";
+import { FileData } from "@/types/file/files";
+
+interface FileWithTeam extends FileData {
+  teamId: string;
+}
 
 interface FileStore {
-  recentFiles: UploadedFile[];
-  addFile: (file: UploadedFile) => void;
-  removeFile: (fileName: string) => void;
+  recentFiles: FileWithTeam[];
+  addFile: (file: FileData, teamId: string) => void;
+  removeFile: (fileName: string, teamId: string) => void;
 }
 
 const useFileStore = create<FileStore>()(
   persist(
     (set, get) => ({
       recentFiles: [],
-      addFile: (file) => {
-        const updatedFiles = [
-          file,
-          ...get().recentFiles.filter((f) => f.name !== file.name),
+      addFile: (file, teamId) => {
+        const fileWithTeam = { ...file, teamId };
+        const addFiles = [
+          fileWithTeam,
+          ...get().recentFiles.filter(
+            (f) => !(f.name === file.name && f.teamId === teamId)
+          ),
         ].slice(0, 10);
-        set({ recentFiles: updatedFiles });
+        set({ recentFiles: addFiles });
       },
-      removeFile: (fileName) => {
-        const updatedFiles = get().recentFiles.filter(
-          (file) => file.name !== fileName
+      removeFile: (fileName, teamId) => {
+        const deleteFiles = get().recentFiles.filter(
+          (file) => !(file.name === fileName && file.teamId === teamId)
         );
-        set({ recentFiles: updatedFiles });
+        set({ recentFiles: deleteFiles });
       },
     }),
     {
-      name: "recent-files-storage", // 로컬 스토리지 키
+      name: "recent-files-storage",
     }
   )
 );
