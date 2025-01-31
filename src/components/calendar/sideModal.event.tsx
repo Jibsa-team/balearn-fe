@@ -12,6 +12,7 @@ import moment from "moment";
 import { useParams } from "next/navigation";
 import CalendarMission from "./mission";
 import DeleteEventModal from "./deleteEventModal";
+import { IoMdClose } from "react-icons/io";
 
 const fetchEventDetails = async (eventId: number): Promise<CurEventDto> => {
   const response = await fetchWithAuth(
@@ -232,8 +233,8 @@ function SideModalEvent({
   return (
     <>
       <motion.div
-        className={`bg-white shadow-lg rounded-lg p-4 w-[300px] z-20 absolute right-0 top-0 h-[100%]
-        md:w-[500px] lg:z-10 lg:static`}
+        className={`bg-white shadow-lg rounded-lg p-4 z-20 absolute right-0 top-0 h-[100%]
+        sm:w-[500px] w-[90%] lg:z-10 lg:static`}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 300, opacity: 0 }}
@@ -245,8 +246,12 @@ function SideModalEvent({
           <div className="text-red-500">일정을 불러오는데 실패했습니다.</div>
         ) : data ? (
           <div>
-            <div className="w-full text-[1.2rem] font-semibold mb-[20px]">
-              일정 수정
+            <div className="flex items-start justify-between mb-[30px]">
+              <span className="text-[1.3rem]">일정 수정</span>
+              <IoMdClose
+                className="mt-[5px] text-[1.2rem] cursor-pointer"
+                onClick={() => onClose()}
+              />
             </div>
             <CalendarGoal
               setSelectedGoal={setSelectedGoal}

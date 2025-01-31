@@ -6,14 +6,17 @@ import { Goal } from "@/types/dashboard/dashboard";
 import { useToast } from "@/hooks/use-toast";
 import CalendarMission from "./mission";
 import { Mission } from "@/types/calendar/event";
+import { IoMdClose } from "react-icons/io";
 
 function CanlendarSideModal({
   isOpen,
+  setIsOpen,
   selectDate,
   view,
   handleAddEvent,
 }: {
   isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectDate: Date;
   view: string;
   handleAddEvent: (
@@ -75,14 +78,21 @@ function CanlendarSideModal({
   return (
     isOpen && (
       <motion.div
-        className={`bg-white shadow-lg rounded-lg p-4 w-[300px] z-20 absolute right-0 top-0 h-[100%]
-          lg:w-[500px] lg:z-10 lg:static`}
+        className={`bg-white shadow-lg rounded-lg p-4 w-[90%] z-20 absolute right-0 top-0 h-[100%]
+          sm:w-[500px] lg:z-10 lg:static`}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 300, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <div>
+          <div className="flex items-start justify-between mb-[30px]">
+            <span className="text-[1.3rem]">일정 추가</span>
+            <IoMdClose
+              className="mt-[5px] text-[1.2rem] cursor-pointer"
+              onClick={() => setIsOpen(false)}
+            />
+          </div>
           <CalendarGoal
             setSelectedGoal={setSelectedGoal}
             selectedGoal={selectedGoal}

@@ -25,26 +25,24 @@ function CalendarDate({
 }) {
   return (
     <div>
-      <div className="w-[100%]">
+      <div className="w-full">
         <h2 className="text-[1.1rem] font-semibold mb-[20px]">날짜</h2>
 
-        <div className="mb-[10px] flex items-center justify-between">
+        <div className="mb-[10px] flex sm:flex-row flex-col sm:items-center items-start justify-between">
           <div className="mr-[10px] text-[1rem] font-semibold w-[40px]">
             시작
           </div>
-          <SelectCalendar onDateChange={setStartDate} selectDate={startDate} />
-          <div className="flex items-center">
+          <div className="flex sm:items-center sm:justify-normal justify-between w-full">
             <DatePicker date={startDate} setDate={setStartDate} />
             <TimePicker setTime={setStartTime} time={startTime} />
           </div>
         </div>
 
-        <div className="mb-[10px] flex items-center justify-between">
+        <div className="mb-[10px] flex sm:flex-row flex-col sm:items-center items-start justify-between">
           <div className="mr-[10px] text-[1rem] font-semibold w-[40px]">
             종료
           </div>
-          <SelectCalendar onDateChange={setEndDate} selectDate={endDate} />
-          <div className="flex items-center">
+          <div className="flex sm:items-center sm:justify-normal justify-between w-full">
             <DatePicker date={endDate} setDate={setEndDate} />
             <TimePicker setTime={setEndTime} time={endTime} />
           </div>

@@ -35,8 +35,11 @@ export function TimePicker({ setTime, time }: TimePickerProps) {
       onValueChange={handleTimeChange}
       defaultValue={formatTimeString(time)}
     >
-      <SelectTrigger className="w-[110px]">
-        <SelectValue placeholder="시간 선택">
+      <SelectTrigger className="sm:w-[120px] w-[100px]">
+        <SelectValue
+          placeholder="시간 선택"
+          className="sm:text-[1rem] text-[0.9rem]"
+        >
           {formatTimeString(time)}
         </SelectValue>
       </SelectTrigger>
@@ -44,7 +47,7 @@ export function TimePicker({ setTime, time }: TimePickerProps) {
         <SelectGroup>
           {times.map((timeString, index) => (
             <SelectItem key={index} value={timeString}>
-              {timeString}
+              <span className="sm:text-[0.9rem]">{timeString}</span>
             </SelectItem>
           ))}
         </SelectGroup>
