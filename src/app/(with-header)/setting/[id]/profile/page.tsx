@@ -128,7 +128,7 @@ function Page({ reset }: { reset(): void }) {
                     ? "bg-logoColor text-white cursor-pointer"
                     : "bg-disabledColor text-gray-200 cursor-not-allowed"
                 }`}
-                disabled={updateLoading}
+                disabled={updateLoading || !isFormValid()}
               >
                 <span>{updateLoading ? "변경중.." : "변경하기"}</span>
               </button>
