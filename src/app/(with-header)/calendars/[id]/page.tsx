@@ -200,7 +200,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white flex">
+    <div className="w-full bg-white flex relative">
       <div className="w-full">
         <CalendarsHeader
           view={view}
@@ -264,11 +264,11 @@ const Page: React.FC = () => {
             className: "text-[0.8rem] md:text-[1rem]",
             style: {
               backgroundColor: hexToRgba(event.color as string, 0.07),
-              border: "none",
-              borderLeft: `4px solid ${event.color}`,
+              border: `2px solid ${event.color}`,
+              //borderLeft: `4px solid ${event.color}`,
               color: event.color,
               fontWeight: "bord",
-              borderRadius: "4px",
+              borderRadius: "10px",
               padding: "10px",
             },
           })}
@@ -311,6 +311,7 @@ const Page: React.FC = () => {
       </div>
       <CanlendarSideModal
         isOpen={isOpen}
+        setIsOpen={setIsOpen}
         selectDate={selectDate}
         view={view}
         handleAddEvent={handleAddEvent}
