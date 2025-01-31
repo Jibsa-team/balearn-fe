@@ -2,8 +2,8 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function CalendarEventSkeleton() {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4 w-[300px] z-20 absolute right-0 top-0 h-[100%] md:w-[500px] lg:z-10 lg:static">
-      <div className="mb-[20px]">
+    <div className="bg-white shadow-lg rounded-lg p-4 w-full z-20 absolute right-0 top-0 h-[100%] md:w-[500px] lg:z-10 lg:static">
+      <div className="w-full mb-[20px]">
         <Skeleton className="h-[24px] w-1/2 mb-4" />
         <div className="mb-[20px]">
           <Skeleton className="h-[20px] w-1/3 mb-2" />

@@ -25,7 +25,7 @@ export function DatePicker({ date, setDate }: DatePickerProps) {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "sm:w-[280px] w-2/3 justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >

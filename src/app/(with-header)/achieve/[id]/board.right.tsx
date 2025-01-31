@@ -1,14 +1,35 @@
 import React from "react";
 import Image from "next/image";
 import { RiMedalFill } from "react-icons/ri";
+import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { TeamMember } from "@/types/leaderboard/leaderboard";
+import RankListSkeleton from "@/components/skeleton/rankListSkelton";
 
-const users = [
-  { id: 1, name: "이재인", image: "/Avatar.png", points: 100 },
-  { id: 2, name: "황민우", image: "/Avatar.png", points: 90 },
-  { id: 3, name: "장경우", image: "/Avatar.png", points: 80 },
-];
+async function fetchLeaderBoard(id: string): Promise<TeamMember[]> {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/leaderboard/${id}`
+  );
+  if (!response.ok) throw new Error("Failed to fetch leaderboard");
+
+  const result = await response.json();
+  return result.result;
+}
 
 function BoardRight() {
+  const { id } = useParams();
+  const { data, isLoading, error } = useQuery<TeamMember[]>({
+    queryKey: ["leaderboard", id],
+    queryFn: () => fetchLeaderBoard(id as string),
+    enabled: !!id,
+  });
+
+  if (isLoading) return <RankListSkeleton />;
+  if (error) return <div>Error: {error.message}</div>;
+
+  const sortedUsers = data ? [...data].sort((a, b) => b.score - a.score) : [];
+
   return (
     <div className="mt-[30px] md:mt-[0px] w-full md:w-1/2 flex flex-col">
       <table className="w-full rounded-lg overflow-hidden">
@@ -20,37 +41,47 @@ function BoardRight() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
-            <tr key={user.id} className="border-b border-gray-200">
-              <td className="p-4 text-center font-medium flex items-center justify-center">
-                <div className="mr-[10px] text-[1.2rem]">{index + 1}</div>
-                {index < 3 ? (
-                  <RiMedalFill
-                    className={`text-[1.6rem] inline mr-2 ${
-                      index === 0
-                        ? "text-yellow-400"
-                        : index === 1
-                        ? "text-gray-400"
-                        : "text-yellow-700"
-                    }`}
-                  />
-                ) : null}
-              </td>
-              <td className="p-4">
-                <div className="flex items-center justify-start">
-                  <Image
-                    src={user.image}
-                    alt={user.name}
-                    width={30}
-                    height={30}
-                    className="rounded-full mr-3"
-                  />
-                  <span className="text-base">{user.name}</span>
-                </div>
-              </td>
-              <td className="p-4 text-center font-medium">{user.points}</td>
-            </tr>
-          ))}
+          {sortedUsers &&
+            sortedUsers.map((user, index) => (
+              <tr key={index} className="border-b border-gray-200">
+                <td className="p-4 text-center font-medium flex items-center justify-center">
+                  {user.score === 0 ? (
+                    <div className="mr-[10px] text-[1.2rem] text-gray-400">
+                      -
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mr-[10px] text-[1.2rem]">{index + 1}</div>
+                      {index < 3 && (
+                        <RiMedalFill
+                          className={`text-[1.6rem] inline mr-2 ${
+                            index === 0
+                              ? "text-yellow-400"
+                              : index === 1
+                              ? "text-gray-400"
+                              : "text-yellow-700"
+                          }`}
+                        />
+                      )}
+                    </>
+                  )}
+                </td>
+                <td className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-[30px] h-[30px] flex-shrink-0">
+                      <Image
+                        src={user.profileImgUrl}
+                        alt={user.nickname}
+                        layout="fill"
+                        className="rounded-full object-cover"
+                      />
+                    </div>
+                    <span className="text-base">{user.nickname}</span>
+                  </div>
+                </td>
+                <td className="p-4 text-center font-medium">{user.score}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
