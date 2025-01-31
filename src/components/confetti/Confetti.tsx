@@ -9,10 +9,12 @@ function PodiumSpot({
   rank,
   name,
   points,
+  image,
 }: {
   rank: number;
   name: string;
   points: number;
+  image: string;
 }) {
   const [count, setCount] = useState(0);
   const height =
@@ -20,9 +22,29 @@ function PodiumSpot({
   const bgColor = rank === 1 ? "bg-logoColor" : "bg-gray-300";
 
   useEffect(() => {
+    const calculateStepAndInterval = (points: number) => {
+      const maxTime = 2000; // 최대 애니메이션 시간 (2초)
+      const baseStep = 10;
+
+      if (points <= 100) return { step: baseStep, interval: 50 };
+
+      const step = Math.max(Math.ceil(points / (maxTime / 50)), baseStep);
+
+      return {
+        step: step,
+        interval: Math.min(50, Math.max(10, 50 - Math.log(points) * 5)),
+      };
+    };
+
+    const { step, interval } = calculateStepAndInterval(points);
+
     const timer = setInterval(() => {
-      setCount((prev) => (prev < points ? prev + 1 : points));
-    }, 50);
+      setCount((prev) => {
+        const nextCount = prev + step;
+        return nextCount >= points ? points : nextCount;
+      });
+    }, interval);
+
     return () => clearInterval(timer);
   }, [points]);
 
@@ -67,15 +89,21 @@ function PodiumSpot({
       className="flex flex-col items-center w-full"
       whileHover={{ scale: 1.05 }}
     >
-      <Image
-        src="/Avatar.png"
-        alt={`${rank}nd`}
-        width={40}
-        height={40}
-        className="rounded-full mb-2 cursor-pointer"
-      />
+      <div className="relative w-[40px] h-[40px] rounded-full">
+        <div className="w-[40px] h-[40px] rounded-full bg-gray-200"></div>
+        {image.length > 0 ? (
+          <Image
+            src={image}
+            alt={`${rank}nd`}
+            layout="fill"
+            className="rounded-full object-cover"
+          />
+        ) : (
+          <div></div>
+        )}
+      </div>
       <span>{name}</span>
-      <span>{count} pts</span>
+      <span>{count} 점</span>
       <div className={`${bgColor} w-full ${height} rounded-t-md mt-2 relative`}>
         <span className="text-[1.5rem] text-white absolute inset-0 flex items-center justify-center">
           {rank}
