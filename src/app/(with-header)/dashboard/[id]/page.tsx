@@ -1,6 +1,6 @@
 "use client";
 
-import { useNotify } from "@/hooks/useDashboard";
+import { useDashboard } from "@/hooks/useDashboard";
 import Daliy from "./daliy";
 import Member from "./member";
 import Notify from "./notify";
@@ -10,7 +10,7 @@ import { useWeeklyStudy } from "@/hooks/useWeeklyStudy";
 
 export default function Home() {
   const { id } = useParams();
-  const { data, isLoading, isError } = useNotify(id as string);
+  const { data, isLoading, isError } = useDashboard(id as string);
   const { data: weeklyData } = useWeeklyStudy(id as string);
 
   return (

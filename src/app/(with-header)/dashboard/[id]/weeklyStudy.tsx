@@ -3,13 +3,13 @@
 // import WeeklyStudySkeleteon from "@/components/skeleton/weeklySkelton";
 import { EventDto } from "@/types/calendar/event";
 import { useParams, useRouter } from "next/navigation";
+import React from "react";
 
 interface WeeklyStudyProps {
   weeklyData?: EventDto[];
 }
 
 function WeeklyStudy({ weeklyData }: WeeklyStudyProps) {
-  console.log(weeklyData);
   const { id } = useParams();
   const router = useRouter();
 
@@ -88,4 +88,4 @@ function WeeklyStudy({ weeklyData }: WeeklyStudyProps) {
   );
 }
 
-export default WeeklyStudy;
+export default React.memo(WeeklyStudy);

@@ -44,11 +44,9 @@ function Notify({ data, isLoading, isError }: NotifyProps) {
   }
 
   return (
-    <div className="relative">
+    <div>
       <div
-        className={`mb-[40px] lg:w-[500px] sm:w-full sm:text-[1rem] text-[0.8rem] cursor-pointer relative ${
-          isExpanded ? "z-50" : "z-0"
-        }`}
+        className={`mb-[40px] lg:w-[500px] sm:w-full sm:text-[1rem] text-[0.8rem] cursor-pointer`}
       >
         <div
           className={`border-[2px] border-logoColor p-[10px] rounded-md transition-all duration-300 bg-white ${
