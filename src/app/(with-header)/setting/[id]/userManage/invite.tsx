@@ -35,7 +35,7 @@ function UserInvite() {
             onClick={handlerInviteCode}
             className="text-[0.9rem] bg-[#2DA44E] text-white px-[20px] py-[5px] rounded-lg ml-[10px]"
           >
-            초대 링크
+            초대
           </button>
         </div>
       </div>
