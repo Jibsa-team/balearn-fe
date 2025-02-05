@@ -116,6 +116,7 @@ const Page: React.FC = () => {
     mutationFn: (eventData: CreateEventDto) => createCalendarEvent(eventData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({ queryKey: ["weeklyStudy", id] });
       toast({
         title: "일정 등록 성공",
         description: "일정이 성공적으로 등록되었습니다.",
@@ -240,7 +241,7 @@ const Page: React.FC = () => {
               return daysInKorean[day];
             },
           }}
-          step={30}
+          step={45}
           timeslots={4}
           components={{
             // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -253,6 +254,7 @@ const Page: React.FC = () => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  minWidth: "34.59px",
                 }}
                 className="h-[40px] md:[80px] text-[0.6rem] md:text-[0.8rem]"
               >
@@ -261,15 +263,12 @@ const Page: React.FC = () => {
             ),
           }}
           eventPropGetter={(event: EventWithColor) => ({
-            className: "text-[0.8rem] md:text-[1rem]",
             style: {
               backgroundColor: hexToRgba(event.color as string, 0.07),
-              border: `2px solid ${event.color}`,
-              //borderLeft: `4px solid ${event.color}`,
+              border: "none",
+              borderLeft: `4px solid ${event.color}`,
               color: event.color,
-              fontWeight: "bord",
-              borderRadius: "10px",
-              padding: "10px",
+              fontWeight: "bold",
             },
           })}
           dayPropGetter={(date) => {
@@ -289,9 +288,9 @@ const Page: React.FC = () => {
             if (view === "week") {
               if (dayOfWeek === 0 || dayOfWeek === 6) {
                 return {
-                  style: {
-                    display: "none",
-                  },
+                  // style: {
+                  //   display: "none",
+                  // },
                 };
               }
             }

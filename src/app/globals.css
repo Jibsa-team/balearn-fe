@@ -30,6 +30,11 @@
   display: none !important;
 }
 
+.rbc-label.rbc-time-header-gutter {
+  padding: 0 !important;
+  width: 28px !important;
+}
+
 .react-date-picker__wrapper,
 .react-date-picker__inputGroup {
   border: none !important;
@@ -37,6 +42,11 @@
 
 .rbc-events-container {
   margin-right: 0px !important;
+}
+
+.rbc-event-content {
+  @apply md:p-[10px] p-[0px] md:text-[1rem] text-[0.8rem];
+  @apply md:text-[1rem] text-[0.6rem];
 }
 
 /* 메인페이지 멤버 스크롤 처리 */

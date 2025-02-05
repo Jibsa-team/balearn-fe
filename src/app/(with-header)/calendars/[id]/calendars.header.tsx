@@ -36,6 +36,15 @@ function CalendarsHeader({
     fetchEvents(newDate, view);
   };
 
+  const getHeaderText = () => {
+    if (view === "week") {
+      return `${moment(currentDate).format("YYYY.MM")}.${moment(currentDate)
+        .startOf("week")
+        .format("D")} ~ ${moment(currentDate).endOf("week").format("D")}`;
+    }
+    return moment(currentDate).format("YYYY.MM");
+  };
+
   return (
     <div className="flex justify-between mb-4 items-center p-[10px]">
       <div></div>
@@ -47,12 +56,8 @@ function CalendarsHeader({
           <IoIosArrowBack />
         </button>
 
-        <div className="text-lg font-bold mx-[10px]">
-          {`${moment(currentDate)
-            .startOf("week")
-            .format("YYYY.MM.D")} ~ ${moment(currentDate)
-            .endOf("week")
-            .format("D")}`}
+        <div className="sm:text-[1.2ren] text-[1rem] font-bold mx-[10px]">
+          {getHeaderText()}
         </div>
 
         <button
