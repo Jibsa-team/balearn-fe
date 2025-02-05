@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { getDashBoard } from "@/app/api/dashboard";
 
-export function useNotify(id: string) {
+export function useDashboard(id: string) {
   const fetchNotifyData = async (): Promise<DashboardType> => {
     const response = await getDashBoard(id);
     if (!response.ok) {
