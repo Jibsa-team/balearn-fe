@@ -1,83 +1,89 @@
-// WeeklyStudy.tsx
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { DashboardType } from "@/types/dashboard/dashboard";
-import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import WeeklyStudySkeleteon from "@/components/skeleton/weeklySkelton";
+// import WeeklyStudySkeleteon from "@/components/skeleton/weeklySkelton";
+import { EventDto } from "@/types/calendar/event";
 import { useParams, useRouter } from "next/navigation";
-import TimeLottie from "@/components/lottie/time";
 
-const fetchWeeklyData = async (
-  id: string | string[]
-): Promise<DashboardType> => {
-  const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch weekly study details");
-  }
-  return response.json();
-};
+interface WeeklyStudyProps {
+  weeklyData?: EventDto[];
+}
 
-function WeeklyStudy() {
+function WeeklyStudy({ weeklyData }: WeeklyStudyProps) {
+  console.log(weeklyData);
   const { id } = useParams();
   const router = useRouter();
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["dashboardData"],
-    queryFn: () => fetchWeeklyData(id),
-  });
+  const weekdays = [
+    { day: "월요일", date: 1 },
+    { day: "화요일", date: 2 },
+    { day: "수요일", date: 3 },
+    { day: "목요일", date: 4 },
+    { day: "금요일", date: 5 },
+    { day: "토요일", date: 6 },
+    { day: "일요일", date: 0 },
+  ];
 
-  if (isError) return <div>오류가 발생했습니다.</div>;
+  const getTopicForDay = (dayNumber: number) => {
+    if (!weeklyData || !Array.isArray(weeklyData)) return "-";
+
+    const schedules = weeklyData.filter((item) => {
+      const date = new Date(item.startTime);
+      return date.getDay() === dayNumber;
+    });
+
+    if (schedules.length === 0)
+      return <span className="text-gray-400">{"-"}</span>;
+
+    return (
+      <ul className="flex flex-col gap-1 list-none">
+        {schedules.map((schedule, index) => (
+          <li key={index} className="flex items-center">
+            <span
+              style={{ backgroundColor: schedule.color }}
+              className="inline-block w-1.5 h-1.5 rounded-full mr-2"
+            ></span>
+            {schedule.topic}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className="pl-[10px]">
-      <h1 className="text-[1.4rem] font-semibold text-gray-700">주간 일정</h1>
-      {!isLoading ? (
-        data?.result.weekly_schedule ? (
-          <div className="overflow-x-auto mt-4">
-            <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2">요일</th>
-                  <th className="border border-gray-300 px-4 py-2">주제</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data &&
-                  data.result.weekly_schedule?.map((schedule) => (
-                    <tr key={schedule.id}>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {schedule.address}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">
-                        {schedule.topic}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="mt-[15px] flex flex-col items-start">
-            <span className="text-[1.2rem] font-semibold">
-              아직 일정을 등록하지 않았어요
-            </span>
-            <TimeLottie />
-            <button className="px-[20px] py-[5px] text-white rounded-lg bg-[#B6DCFF] mt-[10px] w-[200px]">
-              <span
-                onClick={() => router.push(`/calendars/${id}`)}
-                className="text-white"
-              >
-                일정 등록하러 가기
-              </span>
-            </button>
-          </div>
-        )
-      ) : (
-        <WeeklyStudySkeleteon />
-      )}
+      <header className="w-full flex justify-between items-center">
+        <span className="sm:text-[1.4rem] text-[1.1rem] font-semibold text-gray-700">
+          주간
+        </span>
+        <button className="px-[5px] py-[5px] sm:text-[1rem] text-[0.8rem] text-white rounded-lg bg-logoColor sm:mt-[10px] mt-[0px] sm:w-[150px] w-[80px]">
+          <span
+            onClick={() => router.push(`/calendars/${id}`)}
+            className="text-white"
+          >
+            일정 등록
+          </span>
+        </button>
+      </header>
+      <div className="overflow-x-auto mt-4">
+        <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2">요일</th>
+              <th className="border border-gray-300 px-4 py-2">주제</th>
+            </tr>
+          </thead>
+          <tbody>
+            {weekdays.map(({ day, date }) => (
+              <tr key={day}>
+                <td className="border border-gray-300 px-4 py-2">{day}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {getTopicForDay(date)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
