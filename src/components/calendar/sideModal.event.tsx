@@ -234,7 +234,7 @@ function SideModalEvent({
     <>
       <motion.div
         className={`bg-white shadow-lg rounded-lg p-4 z-20 absolute right-0 top-0 h-[100%]
-        sm:w-[500px] w-[90%] lg:z-10 lg:static`}
+        sm:w-[400px] w-[85%] lg:z-10 lg:static`}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 300, opacity: 0 }}
