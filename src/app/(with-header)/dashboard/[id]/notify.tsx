@@ -1,39 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { AiFillNotification } from "react-icons/ai";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { FaCrown } from "react-icons/fa";
-import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
-import { DashboardType } from "@/types/dashboard/dashboard";
 import { useParams, useRouter } from "next/navigation";
-
-import { IoIosArrowForward } from "react-icons/io";
+import { AiFillNotification } from "react-icons/ai";
+import {
+  IoIosArrowDown,
+  IoIosArrowUp,
+  IoIosArrowForward,
+} from "react-icons/io";
+import { FaCrown } from "react-icons/fa";
 import EmptyLogo from "@/components/empty/EmptyLogo";
 import NotifySkeleton from "@/components/skeleton/notifySkelton";
+import { DashboardType } from "@/types/dashboard/dashboard";
 
-const fetchNotifyData = async (
-  id: string | string[]
-): Promise<DashboardType> => {
-  const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${id}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch notify details");
-  }
-  return response.json();
-};
+interface NotifyProps {
+  data: DashboardType | undefined;
+  isLoading: boolean;
+  isError: boolean;
+}
 
-function Notify() {
+function Notify({ data, isLoading, isError }: NotifyProps) {
   const { id } = useParams();
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const { data, isLoading, isError } = useQuery<DashboardType>({
-    queryKey: ["dashboardData", id],
-    queryFn: () => fetchNotifyData(id),
-  });
 
   if (isLoading) return <NotifySkeleton />;
 
@@ -41,7 +30,7 @@ function Notify() {
     return (
       <div
         onClick={() => router.push(`/setting/${id}/notify`)}
-        className="mb-[30px] flex items-center justify-between md:w-[400px] w-full rounded-md px-[10px] border-[1px] border-[#6760DB] cursor-pointer"
+        className="mb-[30px] flex items-center justify-between md:w-[400px] w-full sm:text-[1rem] text-[0.8rem] rounded-md px-[10px] border-[1px] border-[#6760DB] cursor-pointer"
       >
         <div className="flex items-center">
           <EmptyLogo width={50} height={50} />
@@ -55,29 +44,45 @@ function Notify() {
   }
 
   return (
-    <div className="mb-[40px] lg:w-[500px] sm:w-full cursor-pointer transition-all duration-200 border-[2px] border-logoColor p-[10px] rounded-md">
+    <div className="relative">
       <div
-        className="flex items-center justify-between"
-        onClick={() => setIsExpanded(!isExpanded)}
+        className={`mb-[40px] lg:w-[500px] sm:w-full sm:text-[1rem] text-[0.8rem] cursor-pointer relative ${
+          isExpanded ? "z-50" : "z-0"
+        }`}
       >
-        <div className="flex items-center">
-          <AiFillNotification className="text-logoColor font-bold text-2xl mr-2" />
-          <span>{data.result.notice.title}</span>
+        <div
+          className={`border-[2px] border-logoColor p-[10px] rounded-md transition-all duration-300 bg-white ${
+            isExpanded ? "shadow-lg" : ""
+          }`}
+        >
+          <div
+            className="flex items-center justify-between"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <div className="flex items-center">
+              <AiFillNotification className="text-logoColor font-bold text-2xl mr-2" />
+              <span>{data.result.notice.title}</span>
+            </div>
+            {isExpanded ? <IoIosArrowUp /> : <IoIosArrowDown />}
+          </div>
+
+          <div
+            className={`overflow-hidden transition-all duration-300 ${
+              isExpanded ? "h-auto mt-4 opacity-100" : "h-0 opacity-0"
+            }`}
+          >
+            <div className="ml-[31px]">
+              <p>{data.result.notice.detail}</p>
+            </div>
+            <div className="flex items-center mt-2">
+              <FaCrown className="ml-[31px] mr-[5px] text-[#FDD24E]" />
+              <span>재인</span>
+            </div>
+          </div>
         </div>
-        {isExpanded ? <IoIosArrowUp /> : <IoIosArrowDown />}
       </div>
-      {isExpanded && (
-        <div>
-          <div className="mt-2 ml-[31px]">
-            <p>{data.result.notice.detail}</p>
-          </div>
-          <div className="flex items-center">
-            <FaCrown className="ml-[31px] mr-[5px] text-[#FDD24E]" />
-            <span>재인</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+
 export default Notify;

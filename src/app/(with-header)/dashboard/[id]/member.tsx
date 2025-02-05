@@ -1,33 +1,17 @@
 // Member.tsx
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import MemberSkeleton from "@/components/skeleton/memberSkelton";
-import { useParams } from "next/navigation";
 
-const fetchMemberData = async (
-  groupId: string | string[]
-): Promise<DashboardType> => {
-  const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${groupId}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch member details");
-  }
-  return response.json();
-};
+interface MemberProps {
+  data: DashboardType | undefined;
+  isLoading: boolean;
+  isError: boolean;
+}
 
-function Member() {
-  const { id } = useParams();
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["dashboardData", id],
-    queryFn: () => fetchMemberData(id),
-  });
-
+function Member({ data, isLoading, isError }: MemberProps) {
   if (isError) return <div>오류가 발생했습니다.</div>;
 
   const getRoleLabel = (role: string) => {
@@ -43,7 +27,9 @@ function Member() {
 
   return (
     <div className="mb-[80px] pl-[10px]">
-      <h1 className="text-[1.4rem] font-semibold text-gray-700">스터디 멤버</h1>
+      <h1 className="sm:text-[1.4rem] text-[1.1rem] font-semibold text-gray-700">
+        스터디 멤버
+      </h1>
       <div className="mt-[20px] flex overflow-x-scroll whitespace-nowrap hide-scrollbar">
         {!isLoading ? (
           data &&
@@ -64,7 +50,7 @@ function Member() {
               ) : (
                 <div className="w-[30px] h-[30px] bg-gray-300 rounded-full" />
               )}
-              <span className="mt-4 text-gray-700 font-medium text-center">
+              <span className="mt-4 text-gray-700 font-medium text-center sm:[text-1rem] text-[0.8rem]">
                 {member.nickname}
                 {getRoleLabel(member.role)}
               </span>
