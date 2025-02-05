@@ -49,7 +49,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
   return (
     <>
       <div
-        className="hidden lg:block w-[300px] bg-white shadow-xl flex-shrink-0"
+        className="hidden xl:block w-[300px] bg-white shadow-xl flex-shrink-0"
         style={{ height: "calc(100vh - 70px)" }}
       >
         <Content
