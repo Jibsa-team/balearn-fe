@@ -1,7 +1,6 @@
 "use client";
 
 import { Mission } from "@/types/calendar/event";
-import { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 
@@ -63,7 +62,7 @@ function CalendarMission({
   return (
     <div className="w-full mb-[40px]">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[1.1rem] font-semibold">모임 미션</span>
+        <span>모임 선택</span>
         <button
           onClick={addMission}
           className="flex items-center text-sm text-gray-600 hover:text-gray-800"
@@ -84,7 +83,7 @@ function CalendarMission({
               value={mission.detail}
               onChange={(e) => updateMission(mission, e.target.value)}
               placeholder="미션을 입력해주세요"
-              className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 p-2 text-[0.9rem] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {missions.length > 1 && (
               <button
