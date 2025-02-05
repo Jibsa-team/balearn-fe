@@ -72,9 +72,9 @@ function NotifyMain() {
               <div className="w-full text-[1rem] text-gray-800 font-semibold mb-[10px]">
                 {NotifyDate(notice.createdAt)}
               </div>
-              <div className="w-full flex justify-between items-center">
+              <div className="w-full flex justify-between sm:items-center items-start">
                 <div className="w-full flex flex-col md:flex-row items-start md:items-center">
-                  <div className="w-[30%] flex items-center gap-4 mb-4 md:mb-0 md:mr-[20px]">
+                  <div className="sm:w-[30%] w-[300px] flex items-center gap-4 mb-4 md:mb-0 md:mr-[20px]">
                     <div className="w-[30px] h-[30px] relative cursor-pointer">
                       <Image
                         src={notice.createdBy.imgUrl}
@@ -83,15 +83,13 @@ function NotifyMain() {
                         className="rounded-full object-cover"
                       />
                     </div>
-                    <div className="text-[1rem]">
+                    <div className="w-full sm:text-[1rem] text-[0.9rem]">
                       {notice.createdBy.nickname}
                     </div>
                   </div>
-                  <div className="w-full">
-                    <span className="font-semibold mr-[10px] text-[1.1rem]">
-                      [공지]
-                    </span>
-                    <span className="text-[1rem]">{`${notice.title}`}</span>
+                  <div className="w-full text-[1rem]">
+                    <span className="font-semibold mr-[10px]">[공지]</span>
+                    <span>{`${notice.title}`}</span>
                   </div>
                 </div>
                 <div className="md:mt-[0px] mt-[15px]">
