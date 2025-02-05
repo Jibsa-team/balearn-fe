@@ -1,5 +1,4 @@
 import React from "react";
-import SelectCalendar from "./select.calendar";
 import { DatePicker } from "./datePicker";
 import { TimePicker } from "./timePicker";
 
@@ -26,23 +25,22 @@ function CalendarDate({
   return (
     <div>
       <div className="w-full">
-        <h2 className="text-[1.1rem] font-semibold mb-[20px]">날짜</h2>
-
+        <div className="mb-[10px]">날짜 선택</div>
         <div className="mb-[10px] flex sm:flex-row flex-col sm:items-center items-start justify-between">
-          <div className="mr-[10px] text-[1rem] font-semibold w-[40px]">
+          <div className="mr-[10px] md:text-[0.9rem] text-[0.8rem] font-semibold w-[40px]">
             시작
           </div>
-          <div className="flex sm:items-center sm:justify-normal justify-between w-full">
+          <div className="flex sm:items-center sm:justify-normal justify-between sm:w-[85%] w-full">
             <DatePicker date={startDate} setDate={setStartDate} />
             <TimePicker setTime={setStartTime} time={startTime} />
           </div>
         </div>
 
         <div className="mb-[10px] flex sm:flex-row flex-col sm:items-center items-start justify-between">
-          <div className="mr-[10px] text-[1rem] font-semibold w-[40px]">
+          <div className="mr-[10px] md:text-[0.9rem] text-[0.8rem] font-semibold w-[40px]">
             종료
           </div>
-          <div className="flex sm:items-center sm:justify-normal justify-between w-full">
+          <div className="flex sm:items-center sm:justify-normal justify-between sm:w-[85%] w-full">
             <DatePicker date={endDate} setDate={setEndDate} />
             <TimePicker setTime={setEndTime} time={endTime} />
           </div>
