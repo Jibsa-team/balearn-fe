@@ -8,3 +8,12 @@ export interface User {
   profileImageUrl: string;
   provider: string;
 }
+
+export interface UserDto {
+  id: number;
+  imgUrl: string;
+  nickname: string;
+  role: string;
+  teamId: number;
+  userId: number;
+}
