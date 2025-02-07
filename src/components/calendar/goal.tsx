@@ -32,7 +32,7 @@ function CalendarGoal({
   const [goalOpen, setGoalOpen] = useState<boolean>(false);
   const { id } = useParams();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ["teamGoals", id],
     queryFn: () => fetchGoals(id as string),
   });
@@ -46,16 +46,14 @@ function CalendarGoal({
   return (
     <div>
       <div className="w-[100%]">
-        <h2 className="text-[1.1rem] font-semibold mb-[20px]">목표</h2>
         <div className="mb-[30px]">
           <span>목표 선택</span>
-
           <div className="relative w-[100%] mt-2">
             <div
               className="cursor-pointer border-[1px] border-gray-300 p-[10px] rounded-md flex justify-between items-center"
               onClick={() => setGoalOpen((prev) => !prev)}
             >
-              <div className="w-full flex items-center justify-between">
+              <div className="w-full flex items-center justify-between text-[0.9rem]">
                 <span>{selectedGoal ? selectedGoal.detail : "선택하세요"}</span>
               </div>
               <div
@@ -71,7 +69,7 @@ function CalendarGoal({
                   data.map((goal, i) => (
                     <div
                       key={i}
-                      className="cursor-pointer p-[10px] hover:bg-[rgba(0,0,0,0.05)]"
+                      className="cursor-pointer p-[10px] hover:bg-[rgba(0,0,0,0.05)] text-[0.9rem]"
                       onClick={() => handleSelectGoal(goal)}
                     >
                       <div className="flex items-center justify-between">

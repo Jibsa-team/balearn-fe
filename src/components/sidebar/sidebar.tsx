@@ -49,7 +49,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
   return (
     <>
       <div
-        className="hidden lg:block w-[300px] bg-white shadow-xl flex-shrink-0"
+        className="hidden xl:block w-[300px] bg-white shadow-xl flex-shrink-0"
         style={{ height: "calc(100vh - 70px)" }}
       >
         <Content
@@ -142,12 +142,12 @@ function Content({
         </main>
       </div>
 
-      <div className="w-full flex flex-col items-start pl-[15px]">
+      <div className="w-full flex flex-col items-start">
         <Link
           href={`/setting/${id}/groupCreate`}
-          className="cursor-pointer group"
+          className="cursor-pointer group w-full flex justify-center"
         >
-          <div className="w-full flex justify-evenly items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
+          <div className="w-full flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
             <HiPlusCircle className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
             <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
               모임 생성하기
@@ -156,7 +156,7 @@ function Content({
         </Link>
         <div
           onClick={handleOpenModal}
-          className="flex justify-evenly items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)] cursor-pointer group"
+          className="flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)] cursor-pointer group w-full"
         >
           <FaUserFriends className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
           <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">

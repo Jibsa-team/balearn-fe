@@ -11,7 +11,7 @@ import UserProfile from "./userProfile";
 import { useToast } from "@/hooks/use-toast";
 import { useParams, useRouter } from "next/navigation";
 
-function Page({ reset }: { reset(): void }) {
+function Page() {
   const user = useAuthStore((state) => state.user);
   const teamUser = useAuthStore((state) => state.teamUser);
   const setUser = useAuthStore((state) => state.setUser);
@@ -86,7 +86,6 @@ function Page({ reset }: { reset(): void }) {
       });
 
       setErrors({});
-      reset();
       router.refresh();
     } catch (err) {
       if (err instanceof z.ZodError) {

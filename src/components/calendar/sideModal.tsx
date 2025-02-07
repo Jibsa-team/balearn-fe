@@ -31,8 +31,8 @@ function CanlendarSideModal({
   ) => void;
 }) {
   const [selectedGoal, setSelectedGoal] = useState<Goal>();
-  const [startDate, setStartDate] = useState<Date | null>(selectDate);
-  const [endDate, setEndDate] = useState<Date | null>(selectDate);
+  const [startDate, setStartDate] = useState<Date | undefined>(selectDate);
+  const [endDate, setEndDate] = useState<Date | undefined>(selectDate);
   const [startTime, setStartTime] = useState<number>(0);
   const [endTime, setEndTime] = useState<number>(0);
   const [color, setColor] = useState<string>("");
@@ -63,6 +63,7 @@ function CanlendarSideModal({
 
       return;
     }
+
     handleAddEvent(
       selectedGoal!,
       startDate!,
@@ -78,8 +79,8 @@ function CanlendarSideModal({
   return (
     isOpen && (
       <motion.div
-        className={`bg-white shadow-lg rounded-lg p-4 w-[90%] z-20 absolute right-0 top-0 h-[100%]
-          sm:w-[500px] lg:z-10 lg:static`}
+        className={`bg-white shadow-lg rounded-lg p-4 w-[85%] z-20 absolute right-0 top-0 h-[100%]
+          sm:w-[400px] lg:z-10 lg:static`}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 300, opacity: 0 }}

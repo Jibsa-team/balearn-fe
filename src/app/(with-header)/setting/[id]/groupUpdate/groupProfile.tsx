@@ -26,7 +26,7 @@ const GroupProfile = ({
   return (
     <div className="flex flex-col items-start mb-[20px] font-semibold">
       <span>모임 프로필</span>
-      <div className="flex items-center rounded-full">
+      <div className="w-full flex justify-center items-center rounded-full">
         <label
           htmlFor="profileImage"
           className="cursor-pointer bg-gray-100 p-[10px] rounded-full flex items-center justify-center"

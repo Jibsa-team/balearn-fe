@@ -13,6 +13,7 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useQueryClient } from "@tanstack/react-query";
 
 const FileUploadPage: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const teamUser = useAuthStore();
