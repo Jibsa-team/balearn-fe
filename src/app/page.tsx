@@ -16,7 +16,12 @@ function Page() {
           </h1>
         </header>
         <section className="flex justify-center">
-          <Image src={"/logo.png"} alt="로고 이미지" width={130} height={130} />
+          <Image
+            src={"/icons/logo.png"}
+            alt="로고 이미지"
+            width={130}
+            height={130}
+          />
         </section>
         <div>
           <div className="text-[1rem] text-gray-400 mx-[5px] flex justify-center">
