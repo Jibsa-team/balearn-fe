@@ -19,8 +19,8 @@ function Page() {
           <Image
             src={"/icons/logo.png"}
             alt="로고 이미지"
-            width={130}
-            height={130}
+            width={230}
+            height={230}
           />
         </section>
         <div>
@@ -31,22 +31,22 @@ function Page() {
             <Image
               src={"/kakao.webp"}
               alt="카카로 로그인 버튼"
-              width={60}
-              height={60}
+              width={45}
+              height={45}
               onClick={() => onClickKLogin("kakao")}
             />
             <Image
               src={"/google.png"}
               alt="구글 로그인 버튼"
-              width={60}
-              height={60}
+              width={45}
+              height={45}
               onClick={() => onClickKLogin("google")}
             />
             <Image
               src={"/naver.png"}
               alt="네이버 로그인 버튼"
-              width={60}
-              height={60}
+              width={45}
+              height={45}
               onClick={() => onClickKLogin("naver")}
             />
           </div>
