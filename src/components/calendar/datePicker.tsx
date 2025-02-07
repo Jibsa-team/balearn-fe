@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/popover";
 
 interface DatePickerProps {
-  date: Date | null;
-  setDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  date: Date | undefined; // null 대신 undefined 사용
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>; // 여기도 동일하게 변경
 }
 
 export function DatePicker({ date, setDate }: DatePickerProps) {

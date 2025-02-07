@@ -9,7 +9,7 @@ import {
   IoIosArrowForward,
 } from "react-icons/io";
 import { FaCrown } from "react-icons/fa";
-import EmptyLogo from "@/components/empty/EmptyLogo";
+import EmptyLogo from "@/components/empty/emptyLogo";
 import NotifySkeleton from "@/components/skeleton/notifySkelton";
 import { DashboardType } from "@/types/dashboard/dashboard";
 

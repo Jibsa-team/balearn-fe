@@ -75,8 +75,8 @@ function SideModalEvent({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedGoal, setSelectedGoal] = useState<Goal>();
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
   const [startTime, setStartTime] = useState<number>(0);
   const [endTime, setEndTime] = useState<number>(0);
   const [color, setColor] = useState<string>("");

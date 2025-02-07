@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import useFileStore from "@/store/useFileStore";
 import { FileIcon } from "@/app/lib/fileType";
 import { useInView } from "react-intersection-observer";
-import { Skeleton } from "@/components/ui/skeleton";
 import FileSkelton from "@/components/skeleton/fileSkelton";
 
 const getAllFile = async ({

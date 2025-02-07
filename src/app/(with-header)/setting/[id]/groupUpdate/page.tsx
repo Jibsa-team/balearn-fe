@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import TextInput from "@/components/group/input/textInput";
@@ -27,6 +28,7 @@ function Page() {
   const [goals, setGoals] = useState<
     { id?: number; detail: string; color: string }[]
   >([]);
+  const [deleteId, setDeleteId] = useState<number[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [image, setImage] = useState<File | null>(null);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -61,7 +63,6 @@ function Page() {
   }, [teamData]);
 
   const handleUpdate = async () => {
-    console.log(goals);
     try {
       const formData = new FormData();
 
@@ -83,7 +84,6 @@ function Page() {
       );
 
       formData.append("data", blob);
-
       if (image) {
         formData.append("image", image);
       }
@@ -110,8 +110,6 @@ function Page() {
         description: "일정이 성공적으로 등록되었습니다.",
         variant: "default",
       });
-
-      router.push(`/dashboard/${id}`);
       setErrors({});
     } catch (err) {
       console.error("Error during group update:", err);
@@ -123,8 +121,8 @@ function Page() {
   return (
     <div className="w-[100%] h-[100%] p-[30px] bg-white">
       <h1 className="text-xl font-semibold mb-[40px]">모임 수정</h1>
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
+      <div className="flex flex-col-reverse md:flex-row w-full justify-between">
+        <div className="sm:w-[48%] w-full">
           <div className="mb-[40px]">
             <span>모임명</span>
             <TextInput
@@ -135,19 +133,29 @@ function Page() {
             />
           </div>
 
-          <GoalList goals={goals} setGoals={setGoals} errors={errors.goals} />
+          <GoalList
+            goals={goals}
+            setGoals={setGoals}
+            setDeleteId={setDeleteId}
+            errors={errors.goals}
+          />
 
           <div className="flex justify-between items-center">
-            <div></div>
             <div
               onClick={handleUpdate}
-              className="px-[70px] py-[5px] rounded-md text-white bg-logoColor cursor-pointer"
+              className="w-[45%] flex justify-center py-[5px] sm:text-[1rem] text-[0.9rem] rounded-md text-white bg-logoColor cursor-pointer"
             >
-              수정하기
+              <span>수정하기</span>
+            </div>
+            <div
+              onClick={handleUpdate}
+              className="w-[45%] flex justify-center py-[5px] sm:text-[1rem] text-[0.9rem] rounded-md text-white bg-red-600 cursor-pointer"
+            >
+              <span>삭제하기</span>
             </div>
           </div>
         </div>
-        <div className="w-[48%]">
+        <div className="sm:w-[48%] w-full">
           <GroupProfile
             profileImage={image}
             setProfileImage={setImage}

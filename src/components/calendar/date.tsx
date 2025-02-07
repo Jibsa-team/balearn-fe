@@ -13,12 +13,12 @@ function CalendarDate({
   endTime,
 }: {
   view: string;
-  setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
-  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setStartDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
   setEndTime: React.Dispatch<React.SetStateAction<number>>;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
   startTime: number;
   endTime: number;
 }) {

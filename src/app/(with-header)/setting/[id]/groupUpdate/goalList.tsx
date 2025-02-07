@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -8,6 +9,7 @@ import GroupAddError from "@/components/error/ErrorMessage";
 import { IoMdClose } from "react-icons/io";
 
 interface GoalItem {
+  id?: number;
   detail: string;
   color: string;
 }
@@ -15,10 +17,11 @@ interface GoalItem {
 interface GoalListProps {
   goals: GoalItem[];
   setGoals: React.Dispatch<React.SetStateAction<GoalItem[]>>;
+  setDeleteId: React.Dispatch<React.SetStateAction<number[]>>;
   errors?: string;
 }
 
-function GoalList({ goals, setGoals, errors }: GoalListProps) {
+function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
   const [activePickerIndex, setActivePickerIndex] = useState<number | null>(
     null
   );
@@ -44,33 +47,44 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const handleGoalChange = (index: number, value: string) => {
-    const updatedGoals = [...goals];
-    updatedGoals[index].detail = value;
+  const handleGoalChange = (goalId: number | undefined, value: string) => {
+    const updatedGoals = goals.map((goal) =>
+      goal.id === goalId ? { ...goal, detail: value } : goal
+    );
     setGoals(updatedGoals);
   };
 
-  const handleColorChange = (index: number, color: { hex: string }) => {
-    const updatedGoals = [...goals];
-    updatedGoals[index].color = color.hex;
+  const handleColorChange = (
+    goalId: number | undefined,
+    color: { hex: string }
+  ) => {
+    const updatedGoals = goals.map((goal) =>
+      goal.id === goalId ? { ...goal, color: color.hex } : goal
+    );
     setGoals(updatedGoals);
   };
 
   const addGoalItem = () => {
+    // 새로 추가되는 목표는 id를 undefined로 설정
     setGoals([...goals, { detail: "", color: getRandomColor() }]);
   };
 
-  const removeGoalItem = (index: number) => {
-    const updatedGoals = goals.filter((_, i) => i !== index);
-    setGoals(updatedGoals);
-    setActivePickerIndex(null);
+  const removeGoalItem = (goalId: number | undefined) => {
+    // const removedGoal = goals.find((goal) => goal.id === goalId);
+    // if (removedGoal && removedGoal.id !== undefined) {
+    //   setDeleteId((prev) => [...prev, removedGoal.id]);
+    // }
+    // // 목표 리스트에서 제거
+    // const updatedGoals = goals.filter((goal) => goal.id !== goalId);
+    // setGoals(updatedGoals);
+    // setActivePickerIndex(null);
   };
 
   const toggleColorPicker = (
-    index: number,
+    goalId: number | undefined,
     buttonRef: HTMLDivElement | null
   ) => {
-    if (activePickerIndex === index) {
+    if (activePickerIndex === goalId) {
       setActivePickerIndex(null);
     } else {
       if (buttonRef) {
@@ -80,11 +94,9 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
           left: rect.left + window.scrollX,
         });
       }
-      setActivePickerIndex(index);
+      //setActivePickerIndex(goalId);
     }
   };
-
-  console.log(goals);
 
   return (
     <div className="w-full flex flex-col items-start mb-[20px] font-semibold">
@@ -98,21 +110,21 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
         </div>
       </div>
 
-      {goals.map((goal, index) => (
+      {goals.map((goal) => (
         <div
-          key={index}
+          key={goal.id || `new-${Math.random()}`}
           className="w-full flex items-center justify-between mt-[15px]"
         >
           <TextInput
             message={"모임 목표를 입력해주세요."}
             width={80}
             value={goal.detail}
-            onChange={(e) => handleGoalChange(index, e.target.value)}
+            onChange={(e) => handleGoalChange(goal.id, e.target.value)}
           />
 
           <div className="mt-[10px] flex items-center gap-[15px] relative">
             <div
-              onClick={(e) => toggleColorPicker(index, e.currentTarget)}
+              onClick={(e) => toggleColorPicker(goal.id, e.currentTarget)}
               className="w-[60px] h-[30px] rounded-full cursor-pointer flex items-center justify-center"
               style={{
                 border: "1px solid rgba(0,0,0,0.2)",
@@ -128,12 +140,12 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
               <IoIosArrowDown className="ml-[5px] text-gray-500" />
             </div>
             <IoMdClose
-              onClick={() => removeGoalItem(index)}
+              onClick={() => removeGoalItem(goal.id)}
               className="cursor-pointer"
             />
           </div>
 
-          {activePickerIndex === index && (
+          {activePickerIndex === goal.id && (
             <div
               style={{
                 position: "absolute",
@@ -144,7 +156,7 @@ function GoalList({ goals, setGoals, errors }: GoalListProps) {
             >
               <SketchPicker
                 color={goal.color}
-                onChange={(color) => handleColorChange(index, color)}
+                onChange={(color) => handleColorChange(goal.id, color)}
               />
             </div>
           )}

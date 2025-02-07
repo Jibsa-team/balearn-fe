@@ -1,6 +1,6 @@
 import React from "react";
 
-import EmptyLogo from "./EmptyLogo";
+import EmptyLogo from "./emptyLogo";
 
 function Empty({ message }: { message: string }) {
   return (

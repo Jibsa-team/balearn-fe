@@ -31,8 +31,8 @@ function CanlendarSideModal({
   ) => void;
 }) {
   const [selectedGoal, setSelectedGoal] = useState<Goal>();
-  const [startDate, setStartDate] = useState<Date | null>(selectDate);
-  const [endDate, setEndDate] = useState<Date | null>(selectDate);
+  const [startDate, setStartDate] = useState<Date | undefined>(selectDate);
+  const [endDate, setEndDate] = useState<Date | undefined>(selectDate);
   const [startTime, setStartTime] = useState<number>(0);
   const [endTime, setEndTime] = useState<number>(0);
   const [color, setColor] = useState<string>("");
