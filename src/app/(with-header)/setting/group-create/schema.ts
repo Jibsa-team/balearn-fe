@@ -1,6 +1,7 @@
+// schema.ts
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const requiredFieldsSchema = z.object({
   name: z.string().min(1, "모임명을 입력해주세요."),
   description: z.string().min(1, "모임 목적을 입력해주세요."),
   goals: z
@@ -11,6 +12,9 @@ export const formSchema = z.object({
       })
     )
     .min(1, "최소 1개의 목표를 입력해주세요."),
+});
+
+export const formSchema = requiredFieldsSchema.extend({
   image: z
     .instanceof(File)
     .refine(

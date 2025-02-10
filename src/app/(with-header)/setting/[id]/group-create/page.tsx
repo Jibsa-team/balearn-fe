@@ -10,7 +10,7 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import useGroupStore from "@/store/useGroupStore";
 import { GroupDTO } from "@/types/group/group";
 import { useRouter } from "next/navigation";
-import { formSchema } from "./schema";
+import { requiredFieldsSchema } from "./schema";
 
 function Page() {
   const [name, setName] = useState("");
@@ -18,16 +18,21 @@ function Page() {
   const [goals, setGoals] = useState<{ detail: string; color: string }[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [image, setImage] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const setGroupId = useGroupStore((state) => state.setGroupId);
   const router = useRouter();
 
   const isFormValid = () => {
-    const formData = { name, description, goals, image };
-    const result = formSchema.safeParse(formData);
-    return result.success && image !== null;
+    const formData = { name, description, goals };
+    if (goals.length === 0) return false;
+    const result = requiredFieldsSchema.safeParse(formData);
+    return result.success;
   };
 
   const handleCreate = async () => {
+    if (!isFormValid() || isLoading) return;
+
+    setIsLoading(true);
     try {
       const formData = new FormData();
 
@@ -68,7 +73,16 @@ function Page() {
         });
         setErrors(fieldErrors);
       }
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const getButtonStyle = () => {
+    if (isLoading) return "bg-disabledColor text-gray-200 cursor-not-allowed";
+    return isFormValid()
+      ? "bg-logoColor text-white cursor-pointer"
+      : "bg-disabledColor text-gray-200 cursor-not-allowed";
   };
 
   return (
@@ -104,16 +118,13 @@ function Page() {
 
           <div className="w-full flex justify-between mt-[50px]">
             <div></div>
-            <div
+            <button
               onClick={handleCreate}
-              className={`px-[70px] py-[5px] rounded-md text-white ${
-                isFormValid()
-                  ? "bg-logoColor text-white cursor-pointer"
-                  : "bg-disabledColor text-gray-200 cursor-not-allowed"
-              }`}
+              className={`px-[70px] py-[5px] rounded-md text-white ${getButtonStyle()}`}
+              disabled={!isFormValid() || isLoading}
             >
-              생성하기
-            </div>
+              {isLoading ? "생성중..." : "생성하기"}
+            </button>
           </div>
         </div>
         <div className="w-[48%]">

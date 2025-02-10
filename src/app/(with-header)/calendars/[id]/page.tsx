@@ -137,7 +137,6 @@ const Page: React.FC = () => {
     setSelectDate(slotInfo.start);
     setIsOpen((prev) => !prev);
     setIsOpenEvent(false);
-    console.log(slotInfo);
   };
 
   const handleSelectEvent = async (event: EventWithColor) => {
@@ -314,6 +313,7 @@ const Page: React.FC = () => {
         selectDate={selectDate}
         view={view}
         handleAddEvent={handleAddEvent}
+        isLoading={createEventMutation.isPending}
       />
       <SideModalEvent
         isOpen={isOpenEvent}

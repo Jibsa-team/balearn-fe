@@ -14,11 +14,13 @@ function CanlendarSideModal({
   selectDate,
   view,
   handleAddEvent,
+  isLoading,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectDate: Date;
   view: string;
+  isLoading: boolean;
   handleAddEvent: (
     selectedGoal: Goal,
     startDate: Date,
@@ -119,8 +121,9 @@ function CanlendarSideModal({
           <button
             onClick={handlerUpdateEvent}
             className="w-full bg-logoColor text-white mt-[30px] py-[5px] rounded-lg"
+            disabled={isLoading}
           >
-            추가하기
+            {isLoading ? "추가중.." : "추가하기"}
           </button>
         </div>
       </motion.div>
