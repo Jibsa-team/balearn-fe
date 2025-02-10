@@ -16,7 +16,7 @@ const SettingItem = [
     subtitle: "모임을 수정해보세요.",
     description: "모임 수정을 할 수 있습니다.",
     icon: <RiGroupFill className="mb-[25px] text-[1.3rem] text-gray-700" />,
-    url: "groupUpdate",
+    url: "group-update",
     allowedRoles: ["OWNER", "LEADER", "MEMBER"],
   },
   {
@@ -26,7 +26,7 @@ const SettingItem = [
     icon: (
       <MdManageAccounts className="mb-[25px] text-[1.5rem] text-gray-700" />
     ),
-    url: "userManage",
+    url: "user-manage",
     allowedRoles: ["OWNER"],
   },
   {
