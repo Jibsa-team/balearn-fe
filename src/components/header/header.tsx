@@ -69,9 +69,9 @@ function Header({ toggleSidebar }: HeaderProps) {
     setIsModalOpen((prev) => !prev);
   };
 
-  if (isError) {
-    alert("로그인을 먼저 해주세요");
-  }
+  // if (isError) {
+  //   alert("로그인을 먼저 해주세요");
+  // }
 
   return (
     <div className="flex justify-between w-full h-[70px] p-[20px] bg-headerBg fixed top-0">
@@ -82,7 +82,7 @@ function Header({ toggleSidebar }: HeaderProps) {
         />
         <span
           className="text-[#C9D439] text-[1.4rem] cursor-pointer"
-          onClick={() => router.push(`/dashboard/${id}`)}
+          onClick={() => router.push(`/dashboard/${id ? id : ""}`)}
         >
           Balearn
         </span>
