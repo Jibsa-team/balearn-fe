@@ -8,7 +8,6 @@ import {
   IoIosArrowUp,
   IoIosArrowForward,
 } from "react-icons/io";
-import { FaCrown } from "react-icons/fa";
 import EmptyLogo from "@/components/empty/emptyLogo";
 import NotifySkeleton from "@/components/skeleton/notifySkelton";
 import { DashboardType } from "@/types/dashboard/dashboard";
@@ -46,10 +45,10 @@ function Notify({ data, isLoading, isError }: NotifyProps) {
   return (
     <div>
       <div
-        className={`mb-[40px] lg:w-[500px] sm:w-full sm:text-[1rem] text-[0.8rem] cursor-pointer`}
+        className={`mb-[40px] lg:w-[500px] sm:w-full sm:text-[0.9rem] text-[0.8rem] cursor-pointer`}
       >
         <div
-          className={`border-[2px] border-logoColor p-[10px] rounded-md transition-all duration-300 bg-white ${
+          className={`bg-[#FAFAFA] p-[10px] rounded-md transition-all duration-300 ${
             isExpanded ? "shadow-lg" : ""
           }`}
         >
@@ -59,7 +58,7 @@ function Notify({ data, isLoading, isError }: NotifyProps) {
           >
             <div className="flex items-center">
               <AiFillNotification className="text-logoColor font-bold text-2xl mr-2" />
-              <span>{data.result.notice.title}</span>
+              <span className="text-gray-600">{data.result.notice.title}</span>
             </div>
             {isExpanded ? <IoIosArrowUp /> : <IoIosArrowDown />}
           </div>
@@ -70,11 +69,7 @@ function Notify({ data, isLoading, isError }: NotifyProps) {
             }`}
           >
             <div className="ml-[31px]">
-              <p>{data.result.notice.detail}</p>
-            </div>
-            <div className="flex items-center mt-2">
-              <FaCrown className="ml-[31px] mr-[5px] text-[#FDD24E]" />
-              <span>재인</span>
+              <p className="text-gray-600">{data.result.notice.detail}</p>
             </div>
           </div>
         </div>
