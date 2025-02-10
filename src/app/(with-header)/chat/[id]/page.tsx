@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { ChatDto } from "@/types/chat/chat";
 
-const SOCKET_URL = "https://be.balearn.o-r.kr/ws";
+const SOCKET_URL = `${process.env.NEXT_PUBLIC_API_URL}/ws`;
 
 function ChatPage() {
   const { accessToken: token, teamUser } = useAuthStore.getState();
@@ -119,8 +119,6 @@ function ChatPage() {
     }
   };
 
-  console.log(messages);
-
   return (
     <div
       className="w-full flex flex-col bg-gray-50"
@@ -134,7 +132,7 @@ function ChatPage() {
 
       <div className="flex-1 overflow-y-auto p-4" ref={chatContainerRef}>
         {messages.map((msg, i) =>
-          msg.sender.id === teamUser?.id ? (
+          msg.sender.id !== teamUser?.id ? (
             <div key={i} className="flex flex-col gap-1 mb-4 animate-fade-in">
               <div className="flex items-start gap-3">
                 <div className="w-[30px] h-[30px] relative flex-shrink-0">

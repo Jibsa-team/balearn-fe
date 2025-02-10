@@ -64,7 +64,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         initial={{ x: "-100%" }}
         animate={{ x: isSidebarOpen ? "0%" : "-100%" }}
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
-        className="fixed lg:hidden w-[300px] z-40 bg-white shadow-xl"
+        className="fixed xl:hidden w-[300px] z-40 bg-white shadow-xl"
         style={{
           height: "calc(100vh - 70px)",
           top: "70px",
@@ -144,7 +144,7 @@ function Content({
 
       <div className="w-full flex flex-col items-start">
         <Link
-          href={`/setting/${id}/groupCreate`}
+          href={`/setting/${id ? id : ""}/group-create`}
           className="cursor-pointer group w-full flex justify-center"
         >
           <div className="w-full flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
