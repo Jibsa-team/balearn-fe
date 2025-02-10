@@ -107,13 +107,13 @@ function MyFiles() {
               </thead>
             </table>
             <div className="overflow-y-auto h-[calc(100%-48px)]">
-              <table className="table-fixed w-full border-collapse border border-gray-200">
+              <table className="table-fixed w-full border-collapse border border-gray-200 text-[rgba(0,0,0,0.6)]">
                 <tbody>
                   {data &&
                     data.pages.map((page) =>
                       page.result.map((file: FileData) => (
                         <tr key={file.id} className="hover:bg-gray-50">
-                          <td className="border border-gray-200 md:px-4 md:py-5 px-2 py-4 md:text-[1rem] text-[0.8rem]">
+                          <td className="border border-gray-200 md:px-4 md:py-5 px-2 py-4 text-[0.8rem]">
                             <a
                               href={file.fileUrl}
                               target="_blank"
@@ -127,16 +127,16 @@ function MyFiles() {
                               </span>
                             </a>
                           </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[1rem] text-[0.8rem]">
+                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem] text-[0.8rem]">
                             {fileSize(file.size)}
                           </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[1rem] text-[0.8rem]">
+                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1">
                             <span>{file.createdBy.nickname}</span>
                           </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[1rem] text-[0.8rem]">
+                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem]  text-[0.8rem]">
                             {new Date(file.modifiedAt).toLocaleDateString()}
                           </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 cursor-pointer md:text-[1rem] text-[0.8rem w-[10%]">
+                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 cursor-pointer md:text-[1rem w-[10%]">
                             <RiDeleteBin6Line
                               onClick={() => openDeleteModal(file)}
                             />
