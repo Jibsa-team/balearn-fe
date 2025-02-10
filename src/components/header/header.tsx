@@ -77,7 +77,7 @@ function Header({ toggleSidebar }: HeaderProps) {
     <div className="flex justify-between w-full h-[70px] p-[20px] bg-headerBg fixed top-0">
       <div className="flex items-center">
         <IoIosMenu
-          className="w-[23px] h-[23px] text-gray-500 cursor-pointer mr-[20px] lg:hidden"
+          className="w-[23px] h-[23px] text-gray-500 cursor-pointer mr-[20px] xl:hidden"
           onClick={toggleSidebar}
         />
         <span

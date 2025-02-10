@@ -23,7 +23,7 @@ const LoginLoading = () => {
   }, []);
 
   if (!loadingAnimation) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (
