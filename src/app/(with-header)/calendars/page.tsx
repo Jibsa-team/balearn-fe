@@ -2,6 +2,6 @@
 
 import GroupEmpty from "@/components/empty/groupEmpty";
 
-export default function Home() {
+export default function Page() {
   return <GroupEmpty />;
 }
