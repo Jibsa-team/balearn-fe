@@ -5,6 +5,7 @@ import MissionSkeleton from "@/components/skeleton/missonSkelton";
 import { useToast } from "@/hooks/use-toast";
 import { MissionDto } from "@/types/leaderboard/leaderboard";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
@@ -133,10 +134,19 @@ function Mission() {
   if (isError) return <span>에러가 발생했습니다.</span>;
 
   return (
-    <div className="md:mt-[60px] mt-[15px] p-4">
-      <h2 className="text-[1.2rem] md:text-2xl font-bold mb-4">
-        오늘의 미션 달성해주세요
-      </h2>
+    <div className="md:mt-[60px] mt-[15px]">
+      <div className="flex items-center mb-4">
+        <Image
+          src={"/mission.png"}
+          alt="트로피"
+          width={40}
+          height={40}
+          className="mr-[10px]"
+        />
+        <h3 className="md:text-[1.3rem] text-[1.1rem] font-semibold text-[rgba(0,0,0,0.7)]">
+          오늘의 미션 달성해주세요
+        </h3>
+      </div>
       <ul className="mb-4">
         {data?.map((mission) => (
           <li
@@ -144,17 +154,19 @@ function Mission() {
             className="flex items-center mb-2 cursor-pointer justify-between"
           >
             <div
-              className="flex items-center flex-grow"
+              className="flex items-center"
               onClick={() => toggleMission(mission.id)}
             >
               <FaStar
-                className={`mr-2 text-[1.7rem] font-semibold ${
+                className={`mr-2 text-[1.2rem] font-semibold ${
                   mission.clear || newCompletedMissions.includes(mission.id)
                     ? "text-logoColor"
                     : "text-gray-300"
                 }`}
               />
-              <span className="text-[1.2rem] ml-2">{mission.detail}</span>
+              <span className="sm:text-[1rem] text-[0.9rem] ml-2">
+                {mission.detail}
+              </span>
             </div>
             <button
               onClick={() => toggleCanceledMission(mission.id)}
@@ -176,7 +188,7 @@ function Mission() {
             canceledMissions.length === 0) ||
           submitMutation.isPending
         }
-        className={`w-full flex justify-center items-center px-4 md:py-2 py-1 rounded text-lg mt-[10px] 
+        className={`w-full flex justify-center items-center px-4 md:py-2 py-[7px] rounded text-[0.9rem] mt-[10px] 
           ${
             newCompletedMissions.length > 0 || canceledMissions.length > 0
               ? "bg-logoColor text-white"
