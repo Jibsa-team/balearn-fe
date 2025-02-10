@@ -6,6 +6,7 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import TopRankSkeleton from "@/components/skeleton/topRankSkelton";
 import PodiumSpot from "@/components/confetti/Confetti";
 import { TeamMember } from "@/types/leaderboard/leaderboard";
+import Image from "next/image";
 
 async function fetchLeaderBoard(id: string): Promise<TeamMember[]> {
   const response = await fetchWithAuth(
@@ -38,9 +39,18 @@ function TobRank() {
 
   return (
     <div className="w-full flex flex-col mb-8 md:mb-0">
-      <h3 className="md:text-[1.4rem] text-[1.2rem] font-semibold mb-4">
-        오늘까지 점수 랭크에요
-      </h3>
+      <div className="flex items-center mb-4">
+        <Image
+          src={"/trophy.png"}
+          alt="트로피"
+          width={40}
+          height={40}
+          className="mr-[10px]"
+        />
+        <h3 className="md:text-[1.3rem] text-[1.1rem] font-semibold  text-[rgba(0,0,0,0.7)]">
+          오늘까지 점수 랭크에요
+        </h3>
+      </div>
       <div className="flex justify-center items-end gap-4 relative">
         <PodiumSpot
           rank={3}

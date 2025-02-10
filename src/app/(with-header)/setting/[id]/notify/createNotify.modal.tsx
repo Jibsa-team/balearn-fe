@@ -8,6 +8,7 @@ import NotifyAddError from "@/components/error/ErrorMessage";
 import { useParams } from "next/navigation";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CreateNotifyModal({
   isOpen,
@@ -21,6 +22,7 @@ export default function CreateNotifyModal({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [uploadLoading, setUploadLoading] = useState<boolean>(false);
   const { id } = useParams();
+  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const isFormValid = () => {
@@ -46,7 +48,9 @@ export default function CreateNotifyModal({
       );
 
       const result = await response.json();
-      console.log(result);
+      if (!response.ok) {
+        throw new Error(result.message || "공지 등록에 실패했습니다.");
+      }
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["dashboardData", id] }),
@@ -56,6 +60,12 @@ export default function CreateNotifyModal({
       setTitle("");
       setDetail("");
       onClose();
+
+      toast({
+        title: "공지 등록 성공",
+        description: "공지가 성공적으로 등록되었습니다.",
+        variant: "default",
+      });
     } catch (err) {
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
@@ -64,6 +74,14 @@ export default function CreateNotifyModal({
           fieldErrors[field] = error.message;
         });
         setErrors(fieldErrors);
+        console.log(err.errors);
+      } else {
+        toast({
+          title: "공지 등록 실패",
+          description:
+            err instanceof Error ? err.message : "공지 등록에 실패했습니다.",
+          variant: "destructive",
+        });
       }
     } finally {
       setUploadLoading(false);

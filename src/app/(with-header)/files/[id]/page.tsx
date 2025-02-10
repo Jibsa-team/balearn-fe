@@ -113,7 +113,7 @@ const FileUploadPage: React.FC = () => {
           <div className="flex justify-center text-5xl text-sky-500">
             <SlCloudUpload className="md:mb-[20px] mb-[10px]" />
           </div>
-          <p className="text-[0.9rem] md:text-[1.1rem]">
+          <p className="md:text-[1rem] text-[0.7rem] text-[rgba(0,0,0,0.6)]">
             {isUploading ? "업로드 중..." : "파일을 업로드 해주세요."}
           </p>
         </div>

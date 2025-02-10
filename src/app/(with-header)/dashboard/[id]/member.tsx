@@ -39,7 +39,7 @@ function Member({ data, isLoading, isError }: MemberProps) {
               className="flex flex-col items-center mr-[10px]"
             >
               {member.imgUrl ? (
-                <div className="rounded-full p-[5px] border-[2.5px] w-[120px] h-[120px] overflow-hidden relative">
+                <div className="rounded-full p-[5px] border-[2.5px] sm:w-[110px] w-[90px] sm:h-[110px] h-[90px] overflow-hidden relative">
                   <Image
                     src={member.imgUrl}
                     alt={`${member.nickname} img`}

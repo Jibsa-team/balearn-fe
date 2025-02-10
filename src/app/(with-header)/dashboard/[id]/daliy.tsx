@@ -3,7 +3,6 @@
 import { DashboardType } from "@/types/dashboard/dashboard";
 import DailySkeleton from "@/components/skeleton/dailySkelton";
 import Image from "next/image";
-import { GoGoal } from "react-icons/go";
 
 interface DailyProps {
   data: DashboardType | undefined;
@@ -27,22 +26,16 @@ function Daily({ data, isLoading, isError }: DailyProps) {
         <span>목표를 달성해보세요</span>
       </h1>
       {!isLoading ? (
-        <div className="w-full flex flex-nowrap gap-4 overflow-x-auto md:flex-wrap md:overflow-x-visible hide-scrollbar">
+        <div className="w-full flex flex-nowrap gap-4 md:flex-wrap md:overflow-x-visible hide-scrollbar overflow-x-auto whitespace-nowrap">
           {data?.result.goal.map((goal) => (
             <div
               key={goal.id}
-              className="flex-shrink-0 border-[1px] border-l-[3px] border-solid flex items-center cursor-pointer rounded-lg px-[10px] pr-[30px] py-[15px]"
+              className=" px-[20px] py-[10px]"
               style={{
-                borderColor: goal.color,
+                boxShadow: `inset 0 -10px 0 ${goal.color}90`,
               }}
             >
-              <GoGoal
-                className="text-[1.5rem] mr-[10px]"
-                style={{ color: goal.color }}
-              />
-              <p className="sm:text-[1rem] text-[0.8rem] font-semibold">
-                {goal.detail}
-              </p>
+              <p className="text-[1rem] text-gray-700">{goal.detail}</p>
             </div>
           ))}
         </div>

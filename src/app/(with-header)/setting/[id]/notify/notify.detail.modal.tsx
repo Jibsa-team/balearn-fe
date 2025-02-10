@@ -27,6 +27,7 @@ export default function DetailNotifyModal({
   const [title, setTitle] = useState<string>("");
   const [detail, setDetail] = useState<string>("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { id } = useParams();
@@ -47,6 +48,7 @@ export default function DetailNotifyModal({
 
   const handleUpdate = async () => {
     try {
+      setIsLoading(true);
       const formData = { title, detail };
       NotifySchema.parse(formData);
 
@@ -61,6 +63,9 @@ export default function DetailNotifyModal({
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "공지 수정에 실패했습니다.");
+      }
 
       await queryClient.invalidateQueries({
         queryKey: ["teamNotify", id],
@@ -84,10 +89,13 @@ export default function DetailNotifyModal({
       } else {
         toast({
           title: "공지 수정 실패",
-          description: "공지 수정 중 오류가 발생했습니다.",
+          description:
+            err instanceof Error ? err.message : "공지 수정에 실패했습니다.",
           variant: "destructive",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -166,8 +174,9 @@ export default function DetailNotifyModal({
                       ? "bg-logoColor text-white cursor-pointer"
                       : "bg-disabledColor text-gray-200 cursor-not-allowed"
                   }`}
+                  disabled={isLoading}
                 >
-                  수정
+                  {isLoading ? "수정중..." : "수정"}
                 </button>
               </>
             )}
