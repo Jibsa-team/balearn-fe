@@ -11,16 +11,16 @@ function Page() {
     <div className="w-full h-screen flex justify-center items-center md:bg-[rgba(0,0,0,0.1)] bg-white">
       <div className="flex flex-col justify-between bg-white rounded-xl w-full md:w-auto md:min-w-[450px] h-full md:h-auto min-h-[750px] p-[30px] shadow-xl">
         <header className="text-[1.7rem] font-bold">
-          <h1 className="text-[#C9D439] md:text-[2.2rem] text-[1.8rem]">
+          <h1 className="text-[#C9D439] sm:text-[2.2rem] text-[1.5rem]">
             Balearn
           </h1>
         </header>
         <section className="flex justify-center">
           <Image
-            src={"/icons/logo.png"}
+            src={"/icons/logo2.png"}
             alt="로고 이미지"
-            width={230}
-            height={230}
+            width={500}
+            height={500}
           />
         </section>
         <div>
