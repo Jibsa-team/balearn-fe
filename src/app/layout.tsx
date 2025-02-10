@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: "스터디 관리 서비스입니다",
     images: [
       {
-        url: "/icons/logo.png",
+        url: "/icons/logo2.png",
         width: 1200,
         height: 630,
         alt: "depromeet",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/icons/logo.png",
-    apple: "/icons/logo.png",
+    icon: "/icons/logo2.png",
+    apple: "/icons/logo2.png",
   },
 };
 

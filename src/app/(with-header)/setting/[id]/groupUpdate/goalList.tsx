@@ -7,6 +7,7 @@ import TextInput from "@/components/group/input/textInput";
 import { IoIosArrowDown } from "react-icons/io";
 import GroupAddError from "@/components/error/ErrorMessage";
 import { IoMdClose } from "react-icons/io";
+import { constructNow } from "date-fns";
 
 interface GoalItem {
   id?: number;
@@ -17,7 +18,7 @@ interface GoalItem {
 interface GoalListProps {
   goals: GoalItem[];
   setGoals: React.Dispatch<React.SetStateAction<GoalItem[]>>;
-  setDeleteId: React.Dispatch<React.SetStateAction<number[]>>;
+  setDeleteId: React.Dispatch<React.SetStateAction<(number | undefined)[]>>;
   errors?: string;
 }
 
@@ -65,19 +66,19 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
   };
 
   const addGoalItem = () => {
-    // 새로 추가되는 목표는 id를 undefined로 설정
     setGoals([...goals, { detail: "", color: getRandomColor() }]);
   };
 
   const removeGoalItem = (goalId: number | undefined) => {
-    // const removedGoal = goals.find((goal) => goal.id === goalId);
-    // if (removedGoal && removedGoal.id !== undefined) {
-    //   setDeleteId((prev) => [...prev, removedGoal.id]);
-    // }
-    // // 목표 리스트에서 제거
-    // const updatedGoals = goals.filter((goal) => goal.id !== goalId);
-    // setGoals(updatedGoals);
-    // setActivePickerIndex(null);
+    const removedGoal = goals.find((goal) => goal.id === goalId);
+    if (removedGoal && removedGoal.id !== undefined) {
+      setDeleteId((prev) => [...prev, removedGoal.id]);
+    }
+
+    // 나머지 로직은 그대로 유지
+    const updatedGoals = goals.filter((goal) => goal.id !== removedGoal?.id);
+    setGoals(updatedGoals);
+    setActivePickerIndex(null);
   };
 
   const toggleColorPicker = (

@@ -62,7 +62,7 @@ function CalendarMission({
   return (
     <div className="w-full mb-[40px]">
       <div className="flex items-center justify-between mb-4">
-        <span>모임 선택</span>
+        <span>미션 선택</span>
         <button
           onClick={addMission}
           className="flex items-center text-sm text-gray-600 hover:text-gray-800"
