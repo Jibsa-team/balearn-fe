@@ -47,6 +47,7 @@ const DeleteEventModal: React.FC<DeleteConfirmModalProps> = ({
             <button
               onClick={onConfirmDelete}
               className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+              disabled={isDeleting}
             >
               {isDeleting ? "삭제 중..." : "삭제"}
             </button>

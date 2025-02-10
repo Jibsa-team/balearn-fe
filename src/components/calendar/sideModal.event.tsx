@@ -83,8 +83,6 @@ function SideModalEvent({
   const [missions, setMissions] = useState<Mission[]>([]);
   const [deleteMissions, setDeleteMissions] = useState<number[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isDeleting, setIsDeleting] = useState(false);
   const { id } = useParams();
 
   const { data, isLoading, isError } = useQuery({
@@ -277,12 +275,14 @@ function SideModalEvent({
             <button
               onClick={handleUpdateEvent}
               className="w-full bg-logoColor text-white mt-[30px] py-[5px] rounded-lg"
+              disabled={updateEventMutation.isPending}
             >
               {updateEventMutation.isPending ? "수정중.." : "수정하기"}
             </button>
             <button
               onClick={handleDeleteEvent}
               className="w-full bg-[#FB4358] text-white mt-[10px] py-[5px] rounded-lg"
+              disabled={deleteEventMutation.isPending}
             >
               {deleteEventMutation.isPending ? "식제중.." : "일정 삭제하기"}
             </button>
@@ -293,7 +293,7 @@ function SideModalEvent({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirmDelete={confirmDelete}
-        isDeleting={isDeleting}
+        isDeleting={deleteEventMutation.isPending}
       />
     </>
   );
