@@ -144,7 +144,7 @@ function Content({
 
       <div className="w-full flex flex-col items-start">
         <Link
-          href={`/setting/${id}/groupCreate`}
+          href={`/setting/${id ? id : ""}/group-create`}
           className="cursor-pointer group w-full flex justify-center"
         >
           <div className="w-full flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">

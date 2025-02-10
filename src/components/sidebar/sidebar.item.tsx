@@ -47,7 +47,7 @@ function SidebarItem() {
     <div className="mt-10 grid grid-cols-2 w-full cursor-pointer">
       {categories.map((e, i) => {
         return (
-          <Link href={`/${e.url}/${id}`} key={i}>
+          <Link href={`/${e.url}/${id ? id : ""}`} key={i}>
             <div className="group flex flex-col justify-center items-center w-[100px] h-[100px] rounded-lg border-gray-200 border-[1px] transition-all duration-200 hover:scale-110 hover:bg-white hover:shadow-md">
               <div className="text-unActiveColor group-hover:text-logoColor">
                 {e.icon}
