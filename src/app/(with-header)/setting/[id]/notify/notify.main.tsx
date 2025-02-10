@@ -28,7 +28,6 @@ const getAllNotify = async ({
 
 function NotifyMain() {
   const [activeModalId, setActiveModalId] = useState<number | null>(null);
-  // const [uploadLoading, setUploadLoading] = useState<boolean>();
   const { id } = useParams();
   const { ref, inView } = useInView();
 
