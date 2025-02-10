@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import useAuthStore from "@/store/useAuthStore";
 import { ChatDto } from "@/types/chat/chat";
 
-const SOCKET_URL = "https://be.balearn.o-r.kr/ws";
+const SOCKET_URL = `${process.env.NEXT_PUBLIC_API_URL}/ws`;
 
 function ChatPage() {
   const { accessToken: token, teamUser } = useAuthStore.getState();
