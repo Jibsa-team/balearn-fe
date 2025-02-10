@@ -6,12 +6,13 @@ import React, { useEffect, useState } from "react";
 import GroupProfile from "./groupProfile";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardType } from "@/types/dashboard/dashboard";
 import { useQueryClient } from "@tanstack/react-query";
 import GoalList from "./goalList";
 import { useToast } from "@/hooks/use-toast";
+import DeleteGroupModal from "@/components/modal/deleteGroup";
 
 const fetchTeamDetail = async (
   teamId: string | string[]
@@ -22,16 +23,28 @@ const fetchTeamDetail = async (
   return response.json();
 };
 
+const deleteTeam = async (teamId: string) => {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/team/${teamId}`,
+    {
+      method: "DELETE",
+    }
+  );
+  return response.json();
+};
+
 function Page() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [goals, setGoals] = useState<
     { id?: number; detail: string; color: string }[]
   >([]);
-  const [deleteId, setDeleteId] = useState<number[]>([]);
+  const [deleteId, setDeleteId] = useState<(number | undefined)[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [image, setImage] = useState<File | null>(null);
   const [originalImage, setOriginalImage] = useState<string | null>(null);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const router = useRouter();
   const { id } = useParams();
   const { toast } = useToast();
@@ -64,8 +77,8 @@ function Page() {
 
   const handleUpdate = async () => {
     try {
+      setUpdateLoading(true);
       const formData = new FormData();
-
       const blob = new Blob(
         [
           JSON.stringify({
@@ -76,6 +89,7 @@ function Page() {
               detail: goal.detail,
               color: goal.color,
             })),
+            deleteGoals: deleteId,
           }),
         ],
         {
@@ -102,6 +116,7 @@ function Page() {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const result = await response.json();
+      console.log(result);
       queryClient.invalidateQueries({ queryKey: ["dashboardData", id] });
       queryClient.invalidateQueries({ queryKey: ["teamInfo", id] });
 
@@ -113,7 +128,51 @@ function Page() {
       setErrors({});
     } catch (err) {
       console.error("Error during group update:", err);
+    } finally {
+      setUpdateLoading(false);
     }
+  };
+
+  const deleteTeamMutation = useMutation({
+    mutationFn: () => deleteTeam(id as string),
+    onSuccess: async () => {
+      try {
+        const response = await fetchWithAuth(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/team/list`
+        );
+        const result = await response.json();
+
+        toast({
+          title: "모임 삭제 성공",
+          description: "모임이 성공적으로 삭제되었습니다.",
+          variant: "default",
+        });
+
+        queryClient.invalidateQueries({ queryKey: ["groupList"] });
+        queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
+        queryClient.invalidateQueries({ queryKey: ["teamInfo"] });
+
+        if (result.result && result.result.length > 0) {
+          router.push(`/dashboard/${result.result[0].id}`);
+        } else {
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("Error fetching team list:", error);
+        router.push("/dashboard");
+      }
+    },
+    onError: () => {
+      toast({
+        title: "모임 삭제 실패",
+        description: "모임 삭제 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    deleteTeamMutation.mutate();
   };
 
   if (isLoading) return <Skeleton />;
@@ -141,18 +200,19 @@ function Page() {
           />
 
           <div className="flex justify-between items-center">
-            <div
+            <button
               onClick={handleUpdate}
               className="w-[45%] flex justify-center py-[5px] sm:text-[1rem] text-[0.9rem] rounded-md text-white bg-logoColor cursor-pointer"
+              disabled={updateLoading}
             >
-              <span>수정하기</span>
-            </div>
-            <div
-              onClick={handleUpdate}
+              <span>{updateLoading ? "수정중..." : "수정"}</span>
+            </button>
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
               className="w-[45%] flex justify-center py-[5px] sm:text-[1rem] text-[0.9rem] rounded-md text-white bg-red-600 cursor-pointer"
             >
-              <span>삭제하기</span>
-            </div>
+              <span>삭제</span>
+            </button>
           </div>
         </div>
         <div className="sm:w-[48%] w-full">
@@ -162,6 +222,12 @@ function Page() {
             originalImage={originalImage}
           />
         </div>
+        <DeleteGroupModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onDelete={handleDelete}
+          isDeleting={deleteTeamMutation.isPending}
+        />
       </div>
     </div>
   );
