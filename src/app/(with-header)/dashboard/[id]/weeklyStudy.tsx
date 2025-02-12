@@ -68,15 +68,21 @@ function WeeklyStudy({ weeklyData }: WeeklyStudyProps) {
         <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-xl">
           <thead>
             <tr>
-              <th className="border border-gray-300 px-4 py-2">요일</th>
-              <th className="border border-gray-300 px-4 py-2">주제</th>
+              <th className="border border-gray-300 px-4 py-2 sm:text-[1.1rem] text-[1rem] sm:w-[20%]">
+                요일
+              </th>
+              <th className="border border-gray-300 px-4 py-2 sm:text-[1.1rem] text-[1rem]">
+                주제
+              </th>
             </tr>
           </thead>
           <tbody>
             {weekdays.map(({ day, date }) => (
               <tr key={day}>
-                <td className="border border-gray-300 px-4 py-2">{day}</td>
-                <td className="border border-gray-300 px-4 py-2">
+                <td className="border border-gray-300 px-4 py-2 sm:text-[1rem] text-[0.9rem] text-center">
+                  {day}
+                </td>
+                <td className="border border-gray-300 px-4 py-2 sm:text-[1rem] text-[0.9rem] text-center">
                   {getTopicForDay(date)}
                 </td>
               </tr>

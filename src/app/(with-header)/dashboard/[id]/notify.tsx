@@ -29,15 +29,15 @@ function Notify({ data, isLoading, isError }: NotifyProps) {
     return (
       <div
         onClick={() => router.push(`/setting/${id}/notify`)}
-        className="mb-[30px] flex items-center justify-between md:w-[400px] w-full sm:text-[1rem] text-[0.8rem] rounded-md px-[10px] border-[1px] border-[#6760DB] cursor-pointer"
+        className="mb-[30px] flex items-center justify-between sm:w-[400px] w-full sm:text-[1rem] text-[0.8rem] rounded-full px-[10px] border-[1px] cursor-pointer"
       >
         <div className="flex items-center">
-          <EmptyLogo width={50} height={50} />
-          <span className="md:text-[1.1rem] text-[0.9rem] ml-[5px] mt-[5px]">
+          <EmptyLogo width={40} height={40} />
+          <span className="md:text-[1rem] text-[0.8rem] ml-[5px] mt-[5px] text-gray-500">
             공지를 등록 해보세요
           </span>
         </div>
-        <IoIosArrowForward className="mt-[5px] text-[#6760DB] font-bold" />
+        <IoIosArrowForward className="mt-[5px] font-bold text-gray-500" />
       </div>
     );
   }

@@ -45,6 +45,7 @@ function Member({ data, isLoading, isError }: MemberProps) {
                     alt={`${member.nickname} img`}
                     layout="fill"
                     className="rounded-full object-cover"
+                    priority={true}
                   />
                 </div>
               ) : (
