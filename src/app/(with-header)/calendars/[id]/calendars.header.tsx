@@ -50,10 +50,10 @@ function CalendarsHeader({
       <div></div>
       <div className="flex items-center">
         <button
-          className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+          className="w-[28px] h-[28px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
           onClick={navigateToPrevious}
         >
-          <IoIosArrowBack />
+          <IoIosArrowBack className="text-gray-500" />
         </button>
 
         <div className="sm:text-[1.2ren] text-[1rem] font-bold mx-[10px]">
@@ -61,10 +61,10 @@ function CalendarsHeader({
         </div>
 
         <button
-          className="w-[20px] h-[20px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+          className="w-[28px] h-[28px] flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
           onClick={navigateToNext}
         >
-          <IoIosArrowForward />
+          <IoIosArrowForward className="text-gray-500" />
         </button>
       </div>
 

@@ -48,6 +48,9 @@ export const metadata: Metadata = {
     icon: "/icons/logo2.png",
     apple: "/icons/logo2.png",
   },
+  other: {
+    preconnect: ["https://be.balearn.o-r.kr"],
+  },
 };
 
 export default function RootLayout({

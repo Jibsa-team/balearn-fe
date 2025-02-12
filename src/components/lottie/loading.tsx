@@ -3,7 +3,10 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
+const Lottie = dynamic(() => import("react-lottie-player"), {
+  ssr: false,
+  loading: () => <div className="w-[150px] h-[150px]" />,
+});
 
 const LoginLoading = () => {
   const [loadingAnimation, setLoadingAnimation] = useState(null);

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const Lottie = dynamic(() => import("react-lottie-player"), {
   ssr: false,
-  loading: () => <div className="w-[230px] h-[230px" />,
+  loading: () => <div className="w-[230px] h-[230px]" />,
 });
 
 const GroupLottie = () => {
@@ -17,7 +17,6 @@ const GroupLottie = () => {
 
     const loadAnimation = async () => {
       try {
-        // 애니메이션 데이터를 캐시에서 먼저 확인
         const cachedData = sessionStorage.getItem("groupEmptyAnimation");
 
         if (cachedData) {
@@ -31,7 +30,6 @@ const GroupLottie = () => {
 
         if (mounted) {
           setAnimationData(data);
-          // 캐시에 저장
           sessionStorage.setItem("groupEmptyAnimation", JSON.stringify(data));
           setIsLoading(false);
         }

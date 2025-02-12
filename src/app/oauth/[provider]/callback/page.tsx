@@ -58,16 +58,17 @@ const KakaoCallbackPage = () => {
 
       if (!currentGroupId || currentGroupId === 0) {
         const groups = await fetchGroupList();
-        console.log(groups);
         if (groups && groups.length > 0) {
           currentGroupId = groups[0].id;
           setGroupId(currentGroupId);
         } else if (groups.length === 0) {
+          router.prefetch("/dashboard");
           router.push("/dashboard");
         }
       }
 
       if (currentGroupId) {
+        router.prefetch(`/dashboard/${currentGroupId}`);
         router.push(`/dashboard/${currentGroupId}`);
       } else {
         console.error("No group ID available to navigate.");
