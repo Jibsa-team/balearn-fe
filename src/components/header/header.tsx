@@ -107,6 +107,7 @@ function Header({ toggleSidebar }: HeaderProps) {
                 alt="user img"
                 layout="fill"
                 className="rounded-full object-cover"
+                priority={true}
               />
             )}
           </div>
