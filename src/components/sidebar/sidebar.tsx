@@ -54,6 +54,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
       >
         <Content
           handleOpenModal={handleOpenModal}
+          setIsSidebarOpen={setIsSidebarOpen}
           teamInfo={data}
           isLoading={isLoading}
           isError={isError}
@@ -72,6 +73,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
       >
         <Content
           handleOpenModal={handleOpenModal}
+          setIsSidebarOpen={setIsSidebarOpen}
           teamInfo={data}
           isLoading={isLoading}
           isError={isError}
@@ -91,11 +93,13 @@ function Content({
   handleOpenModal,
   teamInfo,
   isLoading,
+  setIsSidebarOpen,
 }: {
   handleOpenModal: () => void;
   teamInfo: Team | null;
   isLoading: boolean;
   isError: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { id } = useParams();
@@ -138,7 +142,7 @@ function Content({
         <div className="w-full border-[1px] border-gray-[rgba(0,0,0,0.05)] mt-[10px]"></div>
 
         <main className="w-[100%] flex flex-col items-center">
-          <SidebarItem />
+          <SidebarItem setIsSidebarOpen={setIsSidebarOpen} />
         </main>
       </div>
 
@@ -148,8 +152,8 @@ function Content({
           className="cursor-pointer group w-full flex justify-center"
         >
           <div className="w-full flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)]">
-            <HiPlusCircle className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
-            <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
+            <HiPlusCircle className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.4rem] mr-[10px]" />
+            <span className="text-[1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
               모임 생성하기
             </span>
           </div>
@@ -158,8 +162,8 @@ function Content({
           onClick={handleOpenModal}
           className="flex justify-center items-center mt-[10px] text-[1rem] text-[rgba(0,0,0,0.6)] cursor-pointer group w-full"
         >
-          <FaUserFriends className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.6rem] mr-[10px]" />
-          <span className="text-[1.1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
+          <FaUserFriends className="text-[rgba(0,0,0,0.2)] group-hover:text-[rgba(0,0,0,0.4)] text-[1.4rem] mr-[10px]" />
+          <span className="text-[1rem] text-[rgba(0,0,0,0.4)] group-hover:text-[rgba(0,0,0,0.6)]">
             모임 가입하기
           </span>
         </div>
