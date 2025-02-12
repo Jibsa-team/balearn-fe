@@ -3,45 +3,67 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
+const Lottie = dynamic(() => import("react-lottie-player"), {
+  ssr: false,
+  loading: () => <div className="w-[50px] h-[50px]" />,
+});
 
-interface EmptyLogoProps {
-  width: number;
-  height: number;
-}
-
-function EmptyLogo({ width, height }: EmptyLogoProps) {
-  const [loadingAnimation, setLoadingAnimation] = useState(null);
+const EmptyLogo = ({ width, height }: { width: number; height: number }) => {
+  const [animationData, setAnimationData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     const loadAnimation = async () => {
       try {
+        const cachedData = sessionStorage.getItem("emptyLogoAnimation");
+
+        if (cachedData) {
+          setAnimationData(JSON.parse(cachedData));
+          setIsLoading(false);
+          return;
+        }
+
         const response = await fetch("/empty.json");
         const data = await response.json();
-        setLoadingAnimation(data);
+
+        if (mounted) {
+          setAnimationData(data);
+          sessionStorage.setItem("emptyLogoAnimation", JSON.stringify(data));
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error("애니메이션 로딩 오류:", error);
+        setIsLoading(false);
       }
     };
 
     loadAnimation();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  if (!loadingAnimation) {
-    return <div>...</div>;
+  if (isLoading || !animationData) {
+    return <div className="w-[100px] h-[100px] rounded-lg b" />;
   }
 
   return (
-    <Lottie
-      loop
-      animationData={loadingAnimation}
-      play
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-      }}
-    />
+    <div>
+      <Lottie
+        loop
+        animationData={animationData}
+        play
+        style={{ width, height }}
+        rendererSettings={{
+          preserveAspectRatio: "xMidYMid slice",
+          progressiveLoad: true,
+        }}
+      />
+    </div>
   );
-}
+};
 
 export default EmptyLogo;
