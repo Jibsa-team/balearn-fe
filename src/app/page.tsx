@@ -17,7 +17,7 @@ function Page() {
         </header>
         <section className="flex justify-center">
           <Image
-            src={"/icons/logo2.png"}
+            src={"/icons/logo.png"}
             alt="로고 이미지"
             width={500}
             height={500}
