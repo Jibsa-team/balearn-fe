@@ -15,12 +15,16 @@ function CanlendarSideModal({
   view,
   handleAddEvent,
   isLoading,
+  selectedStartTime,
+  selectedEndTime,
 }: {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectDate: Date;
   view: string;
   isLoading: boolean;
+  selectedStartTime: number;
+  selectedEndTime: number;
   handleAddEvent: (
     selectedGoal: Goal,
     startDate: Date,
@@ -47,8 +51,8 @@ function CanlendarSideModal({
       setSelectedGoal(undefined);
       setStartDate(selectDate);
       setEndDate(selectDate);
-      setStartTime(0);
-      setEndTime(0);
+      setStartTime(selectedStartTime);
+      setEndTime(selectedEndTime);
       setColor("");
       setMissions([]);
       setDeleteMissions([]);

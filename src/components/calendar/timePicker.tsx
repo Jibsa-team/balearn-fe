@@ -14,7 +14,7 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ setTime, time }: TimePickerProps) {
-  // 시간 포맷 함수
+  console.log(time);
   const formatTimeString = (hour: number) => {
     const ampm = hour < 12 ? "오전" : "오후";
     const displayHour = hour % 12 === 0 ? 12 : hour % 12;
@@ -22,6 +22,7 @@ export function TimePicker({ setTime, time }: TimePickerProps) {
   };
 
   const times = Array.from({ length: 24 }).map((_, i) => formatTimeString(i));
+  const currentTimeString = formatTimeString(time);
 
   const handleTimeChange = (value: string) => {
     const selectedTime = times.indexOf(value);
@@ -31,13 +32,10 @@ export function TimePicker({ setTime, time }: TimePickerProps) {
   };
 
   return (
-    <Select
-      onValueChange={handleTimeChange}
-      defaultValue={formatTimeString(time)}
-    >
+    <Select value={currentTimeString} onValueChange={handleTimeChange}>
       <SelectTrigger className="sm:w-[120px] w-[100px]">
         <SelectValue placeholder="시간 선택" className="text-[0.7rem]">
-          {formatTimeString(time)}
+          {currentTimeString}
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
