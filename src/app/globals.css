@@ -2,13 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .rbc-allday-cell {
-  display: none !important;
-} */
-
-.rbc-time-header {
-  padding-top: 20px !important;
+:root {
+  --vh: 100vh;
 }
+
+html,
+body {
+  height: 100%;
+  height: 100dvh;
+}
+
 .rbc-day {
   white-space: pre-wrap; /* 줄바꿈을 제대로 표시 */
 }
