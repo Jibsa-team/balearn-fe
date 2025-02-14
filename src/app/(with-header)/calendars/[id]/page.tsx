@@ -208,7 +208,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white flex relative">
+    <div className="w-full bg-white flex">
       <div className="w-full">
         <CalendarsHeader
           view={view}
@@ -279,27 +279,11 @@ const Page: React.FC = () => {
             },
           })}
           dayPropGetter={(date) => {
-            const dayOfWeek = moment(date).day();
             const isToday = moment(date).isSame(new Date(), "day");
-
             if (view === "month") {
-              if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return {
-                  style: {
-                    backgroundColor: "transparent",
-                  },
-                };
-              }
             }
 
             if (view === "week") {
-              if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return {
-                  // style: {
-                  //   display: "none",
-                  // },
-                };
-              }
             }
 
             if (isToday) {
