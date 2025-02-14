@@ -22,7 +22,7 @@ const ProfileModal = ({ isOpen, onClose, onLogout }: ModalProps) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="absolute right-0 mt-2 w-[150px] bg-white border rounded-md shadow-lg z-50"
+          className="absolute right-0 mt-2 w-[150px] bg-white border rounded-md shadow-lg z-9000"
           initial="hidden"
           animate="visible"
           exit="exit"
