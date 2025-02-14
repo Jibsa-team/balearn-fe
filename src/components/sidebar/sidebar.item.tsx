@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { MdDashboard } from "react-icons/md";
 import { FaRegCalendarMinus } from "react-icons/fa";
 import { FaCloud } from "react-icons/fa";
@@ -6,7 +6,7 @@ import { TbMessage2Filled } from "react-icons/tb";
 import { HiMiniWrenchScrewdriver } from "react-icons/hi2";
 import { GrAchievement } from "react-icons/gr";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 const categories = [
   {
@@ -47,26 +47,26 @@ interface SidebarItemProps {
 
 function SidebarItem({ setIsSidebarOpen }: SidebarItemProps) {
   const { id } = useParams();
-  const [selectName, setSelectName] = useState("Dashboard");
+  const pathname = usePathname();
 
-  const handleClick = (name: string) => {
+  const handleClick = () => {
     setIsSidebarOpen(false);
-    setSelectName(name);
   };
+
   return (
     <div className="mt-10 grid grid-cols-2 w-full cursor-pointer">
-      {categories.map((e, i) => {
-        const isSelected = selectName === e.name;
+      {categories.map((item, index) => {
+        const isSelected = pathname.startsWith(`/${item.url}`);
         return (
-          <Link href={`/${e.url}/${id ? id : ""}`} key={i}>
+          <Link href={`/${item.url}/${id ? id : ""}`} key={index}>
             <div
-              onClick={() => handleClick(e.name)}
+              onClick={handleClick}
               className={`group flex flex-col justify-center items-center w-[100px] h-[100px] rounded-lg border-gray-200 border-[1px] transition-all duration-200 
-                ${
-                  isSelected
-                    ? "bg-white shadow-md"
-                    : "hover:scale-110 hover:bg-white hover:shadow-md"
-                }`}
+               ${
+                 isSelected
+                   ? "bg-white shadow-md"
+                   : "hover:scale-110 hover:bg-white hover:shadow-md"
+               }`}
             >
               <div
                 className={`${
@@ -75,7 +75,7 @@ function SidebarItem({ setIsSidebarOpen }: SidebarItemProps) {
                     : "text-unActiveColor group-hover:text-logoColor"
                 }`}
               >
-                {e.icon}
+                {item.icon}
               </div>
               <span
                 className={`mt-2 text-[13px] ${
@@ -84,7 +84,7 @@ function SidebarItem({ setIsSidebarOpen }: SidebarItemProps) {
                     : "text-unActiveColor group-hover:text-logoColor"
                 }`}
               >
-                {e.name}
+                {item.name}
               </span>
             </div>
           </Link>
