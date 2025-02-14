@@ -157,7 +157,7 @@ function Mission() {
         </h3>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 overflow-y-auto max-h-[300px] min-h-[250px]">
         {data?.map((schedule) => (
           <div
             key={schedule.id}
