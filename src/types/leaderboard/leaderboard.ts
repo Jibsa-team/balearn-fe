@@ -18,3 +18,13 @@ export interface MissionDto {
   modifiedBy: number;
   clear: false;
 }
+
+export interface TodayGoalDto {
+  address: string;
+  color: string;
+  endTime: string;
+  id: number;
+  mission: MissionDto[];
+  startTime: string;
+  topic: string;
+}
