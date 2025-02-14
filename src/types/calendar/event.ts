@@ -37,8 +37,8 @@ export interface CreateEventDto {
 }
 
 export interface UpdateEventDto {
-  id: number;
-  teamId: string | string[];
+  id?: number;
+  teamId?: string | string[];
   address: string;
   startTime: string;
   endTime: string;

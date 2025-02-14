@@ -10,6 +10,7 @@ import { formSchema } from "./schema";
 import UserProfile from "./userProfile";
 import { useToast } from "@/hooks/use-toast";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Page() {
   const user = useAuthStore((state) => state.user);
@@ -23,6 +24,7 @@ function Page() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [updateLoading, setUpdateLoading] = useState<boolean>();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { id } = useParams();
 
@@ -35,24 +37,43 @@ function Page() {
   }, [user, teamUser]);
 
   const isFormValid = () => {
-    const formData = { name };
+    const formData = { name, profileImage };
     const result = formSchema.safeParse(formData);
-    return (
-      result.success &&
-      (teamUser ? name !== teamUser.nickname : name !== user?.name)
-    );
+
+    const nameChanged = teamUser
+      ? name !== teamUser.nickname
+      : name !== user?.name;
+    const imageChanged = profileImage !== null;
+
+    return result.success && (nameChanged || imageChanged);
   };
 
   const handleUpdate = async () => {
     try {
       setUpdateLoading(true);
-      const formData = { name };
+      const formData = { name, profileImage };
       formSchema.parse(formData);
 
       const newFormData = new FormData();
-      const blob = new Blob([JSON.stringify({ nickname: name, phoneNumber })], {
-        type: "application/json",
-      });
+      const blob = new Blob(
+        [
+          JSON.stringify(
+            id
+              ? {
+                  nickname: name,
+                }
+              : {
+                  name: name,
+                  phoneNumber: phoneNumber || "",
+                }
+          ),
+        ],
+        {
+          type: "application/json",
+        }
+      );
+
+      // Blob을 FormData에 추가
       newFormData.append("data", blob);
 
       if (profileImage) {
@@ -84,6 +105,7 @@ function Page() {
         description: "프로필이 성공적으로 수정되었습니다.",
         variant: "default",
       });
+      queryClient.invalidateQueries({ queryKey: ["userData", id] });
 
       setErrors({});
       router.refresh();

@@ -100,6 +100,8 @@ const Page: React.FC = () => {
   const [view, setView] = useState<View>("week");
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectDate, setSelectDate] = useState<Date>(new Date());
+  const [selectedStartTime, setSelectedStartTime] = useState<number>(0);
+  const [selectedEndTime, setSelectedEndTime] = useState<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenEvent, setIsOpenEvent] = useState<boolean>(false);
   const [selectEventId, setSelectEventId] = useState<number>();
@@ -134,6 +136,12 @@ const Page: React.FC = () => {
   });
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
+    const startTime = new Date(slotInfo.slots[0]).getHours();
+    const endTime = new Date(
+      slotInfo.slots[slotInfo.slots.length - 1]
+    ).getHours();
+    setSelectedStartTime(startTime);
+    setSelectedEndTime(endTime);
     setSelectDate(slotInfo.start);
     setIsOpen((prev) => !prev);
     setIsOpenEvent(false);
@@ -153,6 +161,7 @@ const Page: React.FC = () => {
     endTime: number,
     color: string,
     missions: Mission[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deleteMissions: number[]
   ) => {
     const formatDateTime = (date: Date, time: number) => {
@@ -175,7 +184,6 @@ const Page: React.FC = () => {
       missions: missions.map((mission) => ({
         detail: mission.detail,
       })),
-      deleteMissions,
     };
 
     createEventMutation.mutate(newEvent);
@@ -200,7 +208,7 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white flex relative">
+    <div className="w-full bg-white flex">
       <div className="w-full">
         <CalendarsHeader
           view={view}
@@ -240,7 +248,7 @@ const Page: React.FC = () => {
               return daysInKorean[day];
             },
           }}
-          step={45}
+          step={30}
           timeslots={4}
           components={{
             // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -271,27 +279,11 @@ const Page: React.FC = () => {
             },
           })}
           dayPropGetter={(date) => {
-            const dayOfWeek = moment(date).day();
             const isToday = moment(date).isSame(new Date(), "day");
-
             if (view === "month") {
-              if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return {
-                  style: {
-                    backgroundColor: "transparent",
-                  },
-                };
-              }
             }
 
             if (view === "week") {
-              if (dayOfWeek === 0 || dayOfWeek === 6) {
-                return {
-                  // style: {
-                  //   display: "none",
-                  // },
-                };
-              }
             }
 
             if (isToday) {
@@ -314,6 +306,8 @@ const Page: React.FC = () => {
         view={view}
         handleAddEvent={handleAddEvent}
         isLoading={createEventMutation.isPending}
+        selectedStartTime={selectedStartTime as number}
+        selectedEndTime={selectedEndTime as number}
       />
       <SideModalEvent
         isOpen={isOpenEvent}

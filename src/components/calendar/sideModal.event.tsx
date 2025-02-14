@@ -27,9 +27,13 @@ const fetchEventDetails = async (eventId: number): Promise<CurEventDto> => {
   return result.result;
 };
 
-const updateEvent = async (eventData: UpdateEventDto) => {
+const updateEvent = async ({
+  id,
+  ...eventData
+}: UpdateEventDto & { id: number }) => {
+  console.log(eventData.endTime);
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/${eventData.id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/schedule/${id}`,
     {
       method: "PUT",
       headers: {
@@ -203,9 +207,7 @@ function SideModalEvent({
         : { detail: mission.detail };
     });
 
-    const updateData: UpdateEventDto = {
-      id: eventId as number,
-      teamId: id,
+    const updateData = {
       address: "string",
       startTime: formatDateTime(startDate, startTime),
       endTime: formatDateTime(endDate, endTime),
@@ -215,7 +217,7 @@ function SideModalEvent({
       deleteMissions,
     };
 
-    updateEventMutation.mutate(updateData);
+    updateEventMutation.mutate({ id: eventId as number, ...updateData });
   };
 
   const handleDeleteEvent = () => {

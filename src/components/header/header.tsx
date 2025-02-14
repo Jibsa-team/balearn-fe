@@ -94,7 +94,7 @@ function Header({ toggleSidebar }: HeaderProps) {
         </div>
         <div className="ml-[20px] md:block relative">
           <div
-            className="w-[30px] h-[30px] relative cursor-pointer"
+            className="w-[30px] h-[30px] cursor-pointer"
             onClick={handleProfileClick}
           >
             {data && (
