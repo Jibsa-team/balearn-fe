@@ -33,8 +33,8 @@ function Page() {
               onClick={() => onClickKLogin("kakao")}
             >
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 className="absolute left-2 top-[10px]"
               >
                 <defs>
@@ -51,8 +51,8 @@ function Page() {
               onClick={() => onClickKLogin("google")}
             >
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 className="absolute left-[5px] top-[10px]"
               >
                 <defs>
@@ -85,8 +85,8 @@ function Page() {
               onClick={() => onClickKLogin("naver")}
             >
               <svg
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 className="absolute left-2 top-[10px]"
                 viewBox="0 0 24 24"
               >
