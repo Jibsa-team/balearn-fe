@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import NoMisson from "./noMisson";
 
 async function getAllMisson(id: string): Promise<TodayGoalDto[]> {
   try {
@@ -157,100 +158,106 @@ function Mission() {
         </h3>
       </div>
 
-      <div className="mb-4 overflow-y-auto max-h-[300px] min-h-[250px]">
-        {data?.map((schedule) => (
-          <div
-            key={schedule.id}
-            className="mb-4"
-            style={{ backgroundColor: hexToRgba(schedule.color, 0.05) }}
-          >
+      <div className="mb-4">
+        {data && data.length > 0 ? (
+          data?.map((schedule) => (
             <div
-              onClick={() => handleScheduleClick(schedule.id)}
-              className={`p-4 rounded-lg cursor-pointer`}
+              key={schedule.id}
+              className="mb-4"
+              style={{ backgroundColor: hexToRgba(schedule.color, 0.05) }}
             >
-              <div className="flex justify-between items-center">
-                <h4 className="font-semibold">{schedule.topic}</h4>
-                <span
-                  className="text-sm text-gray-500"
-                  style={{ color: schedule.color }}
-                >
-                  {new Date(schedule.startTime).toLocaleTimeString()} -{" "}
-                  {new Date(schedule.endTime).toLocaleTimeString()}
-                </span>
+              <div
+                onClick={() => handleScheduleClick(schedule.id)}
+                className={`p-4 rounded-lg cursor-pointer`}
+              >
+                <div className="flex justify-between items-center">
+                  <h4 className="font-semibold sm:text-[0.9rem] text-[0.8rem] max-w-[60%] truncate">
+                    {schedule.topic}
+                  </h4>
+                  <span
+                    className="sm:text-[0.9rem] text-[0.7rem] text-gray-500"
+                    style={{ color: schedule.color }}
+                  >
+                    {new Date(schedule.startTime).toLocaleTimeString()} -{" "}
+                    {new Date(schedule.endTime).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {selectedSchedule === schedule.id && schedule.mission && (
-              <div className="mt-2 pl-4">
-                <ul className="mb-4">
-                  {schedule.mission.map((mission) => (
-                    <li
-                      key={mission.id}
-                      className="flex items-center mb-2 cursor-pointer justify-between"
-                    >
-                      <div
-                        className="flex items-center"
-                        onClick={() => toggleMission(mission.id)}
+              {selectedSchedule === schedule.id && schedule.mission && (
+                <div className="mt-2 pl-4">
+                  <ul className="mb-4">
+                    {schedule.mission.map((mission) => (
+                      <li
+                        key={mission.id}
+                        className="flex items-center mb-2 cursor-pointer justify-between"
                       >
-                        <FaStar
-                          className={`mr-2 text-[1.2rem] font-semibold`}
-                          style={{
-                            color:
-                              mission.clear ||
-                              newCompletedMissions.includes(mission.id)
-                                ? schedule.color
-                                : "#D1D5DB",
-                          }}
-                        />
-                        <span className="sm:text-[1rem] text-[0.9rem] ml-2">
-                          {mission.detail}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => toggleCanceledMission(mission.id)}
-                        className={`ml-2 px-2 py-1 rounded text-sm ${
-                          canceledMissions.includes(mission.id)
-                            ? "bg-red-500 text-white"
-                            : "bg-gray-200 text-gray-600"
-                        }`}
-                      >
-                        취소
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-                <button
-                  onClick={handleSubmit}
-                  disabled={
-                    (newCompletedMissions.length === 0 &&
-                      canceledMissions.length === 0) ||
-                    submitMutation.isPending
-                  }
-                  className={`w-full flex justify-center items-center px-4 md:py-2 py-[7px] rounded text-[0.9rem] mt-[10px]`}
-                  style={{
-                    backgroundColor:
-                      newCompletedMissions.length > 0 ||
-                      canceledMissions.length > 0
-                        ? schedule.color
-                        : "#D1D5DB",
-                    color:
-                      newCompletedMissions.length > 0 ||
-                      canceledMissions.length > 0
-                        ? "white"
-                        : "#6B7280",
-                    cursor:
-                      newCompletedMissions.length > 0 ||
-                      canceledMissions.length > 0
-                        ? "pointer"
-                        : "not-allowed",
-                  }}
-                >
-                  {submitMutation.isPending ? "제출 중..." : "제출"}
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+                        <div
+                          className="flex items-center"
+                          onClick={() => toggleMission(mission.id)}
+                        >
+                          <FaStar
+                            className={`mr-2 text-[1.2rem] font-semibold`}
+                            style={{
+                              color:
+                                mission.clear ||
+                                newCompletedMissions.includes(mission.id)
+                                  ? schedule.color
+                                  : "rgba(0,0,0,0.1)",
+                            }}
+                          />
+                          <span className="sm:text-[0.9rem] text-[0.8rem] ml-2 max-w-[90%] truncate">
+                            {mission.detail}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => toggleCanceledMission(mission.id)}
+                          className={`ml-2 px-2 py-1 rounded text-sm ${
+                            canceledMissions.includes(mission.id)
+                              ? "bg-red-500 text-white"
+                              : "bg-[rgba(0,0,0,0.1)] text-gray-600"
+                          }`}
+                        >
+                          취소
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={
+                      (newCompletedMissions.length === 0 &&
+                        canceledMissions.length === 0) ||
+                      submitMutation.isPending
+                    }
+                    className={`w-full flex justify-center items-center px-4 md:py-2 py-[7px] rounded text-[0.9rem] mt-[10px]`}
+                    style={{
+                      backgroundColor:
+                        newCompletedMissions.length > 0 ||
+                        canceledMissions.length > 0
+                          ? schedule.color
+                          : hexToRgba(schedule.color, 0.5),
+                      color:
+                        newCompletedMissions.length > 0 ||
+                        canceledMissions.length > 0
+                          ? "white"
+                          : "#6B7280",
+                      cursor:
+                        newCompletedMissions.length > 0 ||
+                        canceledMissions.length > 0
+                          ? "pointer"
+                          : "not-allowed",
+                    }}
+                  >
+                    {submitMutation.isPending ? "제출 중..." : "제출"}
+                  </button>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <NoMisson />
+        )}
       </div>
     </div>
   );

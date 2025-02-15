@@ -83,7 +83,7 @@ function CalendarMission({
               value={mission.detail}
               onChange={(e) => updateMission(mission, e.target.value)}
               placeholder="미션을 입력해주세요"
-              className="flex-1 p-2 text-[0.9rem] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 p-2 sm:text-[0.9rem] text-[0.8rem] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {missions.length > 1 && (
               <button
