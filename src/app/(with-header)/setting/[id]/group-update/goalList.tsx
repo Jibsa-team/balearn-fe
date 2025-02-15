@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -7,12 +6,12 @@ import TextInput from "@/components/group/input/textInput";
 import { IoIosArrowDown } from "react-icons/io";
 import GroupAddError from "@/components/error/ErrorMessage";
 import { IoMdClose } from "react-icons/io";
-import { constructNow } from "date-fns";
 
 interface GoalItem {
   id?: number;
   detail: string;
   color: string;
+  _tempId?: string;
 }
 
 interface GoalListProps {
@@ -23,9 +22,9 @@ interface GoalListProps {
 }
 
 function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
-  const [activePickerIndex, setActivePickerIndex] = useState<number | null>(
-    null
-  );
+  const [activePickerIndex, setActivePickerIndex] = useState<
+    number | string | null
+  >(null);
   const [pickerPosition, setPickerPosition] = useState<{
     top: number;
     left: number;
@@ -48,41 +47,55 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  const handleGoalChange = (goalId: number | undefined, value: string) => {
-    const updatedGoals = goals.map((goal) =>
-      goal.id === goalId ? { ...goal, detail: value } : goal
-    );
+  const handleGoalChange = (
+    goalId: number | string | undefined,
+    value: string
+  ) => {
+    const updatedGoals = goals.map((goal) => {
+      if (goal.id === goalId || goal._tempId === goalId) {
+        return { ...goal, detail: value };
+      }
+      return goal;
+    });
     setGoals(updatedGoals);
   };
 
   const handleColorChange = (
-    goalId: number | undefined,
+    goalId: number | string | undefined,
     color: { hex: string }
   ) => {
     const updatedGoals = goals.map((goal) =>
-      goal.id === goalId ? { ...goal, color: color.hex } : goal
+      goal.id === goalId || goal._tempId === goalId
+        ? { ...goal, color: color.hex }
+        : goal
     );
     setGoals(updatedGoals);
   };
 
   const addGoalItem = () => {
-    setGoals([...goals, { detail: "", color: getRandomColor() }]);
+    setGoals([
+      ...goals,
+      { detail: "", color: getRandomColor(), _tempId: `temp-${Date.now()}` },
+    ]);
   };
 
-  const removeGoalItem = (goalId: number | undefined) => {
-    const removedGoal = goals.find((goal) => goal.id === goalId);
+  const removeGoalItem = (goalId: number | string | undefined) => {
+    const removedGoal = goals.find(
+      (goal) => goal.id === goalId || goal._tempId === goalId
+    );
     if (removedGoal && removedGoal.id !== undefined) {
       setDeleteId((prev) => [...prev, removedGoal.id]);
     }
 
-    // 나머지 로직은 그대로 유지
-    const updatedGoals = goals.filter((goal) => goal.id !== removedGoal?.id);
+    const updatedGoals = goals.filter(
+      (goal) => goal.id !== goalId && goal._tempId !== goalId
+    );
     setGoals(updatedGoals);
     setActivePickerIndex(null);
   };
 
   const toggleColorPicker = (
-    goalId: number | undefined,
+    goalId: number | string | undefined,
     buttonRef: HTMLDivElement | null
   ) => {
     if (activePickerIndex === goalId) {
@@ -90,12 +103,23 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
     } else {
       if (buttonRef) {
         const rect = buttonRef.getBoundingClientRect();
-        setPickerPosition({
-          top: rect.bottom + window.scrollY,
-          left: rect.left + window.scrollX,
-        });
+        const windowWidth = window.innerWidth;
+
+        if (windowWidth <= 768) {
+          setPickerPosition({
+            top: rect.bottom + window.scrollY,
+            left: Math.max(10, rect.left + window.scrollX - 200),
+          });
+        } else {
+          setPickerPosition({
+            top: rect.bottom + window.scrollY,
+            left: rect.left + window.scrollX,
+          });
+        }
       }
-      //setActivePickerIndex(goalId);
+      if (goalId !== undefined) {
+        setActivePickerIndex(goalId);
+      }
     }
   };
 
@@ -113,19 +137,23 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
 
       {goals.map((goal) => (
         <div
-          key={goal.id || `new-${Math.random()}`}
+          key={goal.id || goal._tempId}
           className="w-full flex items-center justify-between mt-[15px]"
         >
           <TextInput
             message={"모임 목표를 입력해주세요."}
             width={80}
             value={goal.detail}
-            onChange={(e) => handleGoalChange(goal.id, e.target.value)}
+            onChange={(e) =>
+              handleGoalChange(goal.id || goal._tempId, e.target.value)
+            }
           />
 
           <div className="mt-[10px] flex items-center gap-[15px] relative">
             <div
-              onClick={(e) => toggleColorPicker(goal.id, e.currentTarget)}
+              onClick={(e) =>
+                toggleColorPicker(goal.id || goal._tempId, e.currentTarget)
+              }
               className="w-[60px] h-[30px] rounded-full cursor-pointer flex items-center justify-center"
               style={{
                 border: "1px solid rgba(0,0,0,0.2)",
@@ -141,12 +169,12 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
               <IoIosArrowDown className="ml-[5px] text-gray-500" />
             </div>
             <IoMdClose
-              onClick={() => removeGoalItem(goal.id)}
+              onClick={() => removeGoalItem(goal.id || goal._tempId)}
               className="cursor-pointer"
             />
           </div>
 
-          {activePickerIndex === goal.id && (
+          {activePickerIndex === (goal.id || goal._tempId) && (
             <div
               style={{
                 position: "absolute",
@@ -157,7 +185,9 @@ function GoalList({ goals, setGoals, setDeleteId, errors }: GoalListProps) {
             >
               <SketchPicker
                 color={goal.color}
-                onChange={(color) => handleColorChange(goal.id, color)}
+                onChange={(color) =>
+                  handleColorChange(goal.id || goal._tempId, color)
+                }
               />
             </div>
           )}

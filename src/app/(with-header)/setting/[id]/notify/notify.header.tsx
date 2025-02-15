@@ -18,7 +18,9 @@ function NotifyHeader() {
   return (
     <>
       <header className="mb-[40px] flex items-center justify-between border-b-[1px] border-gray-400 pb-[20px]">
-        <span className="text-[1.3rem] font-semibold">공지 관리</span>
+        <span className="sm:text-[1.3rem] text-[1.1rem] font-semibold">
+          공지 관리
+        </span>
         <FaPen
           className="text-[20px] text-logoColor cursor-pointer"
           onClick={handleOpenModal}
