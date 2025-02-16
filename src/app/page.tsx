@@ -1,14 +1,19 @@
 "use client";
 
+import { useViewport } from "@/hooks/useViewport";
 import Image from "next/image";
 
 function Page() {
+  useViewport();
   const onClickKLogin = (word: string) => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/${word}`;
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-white">
+    <div
+      className="w-full flex justify-center items-center bg-white"
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+    >
       <div className="flex flex-col justify-between bg-white rounded-xl sm:border sm:border-gray-100 w-full md:w-auto md:min-w-[400px] h-full p-[30px] shadow-xl">
         <header className="text-[1.7rem] font-bold">
           <h1 className="text-[#C9D439] sm:text-[1.8rem] text-[1.5rem]">
