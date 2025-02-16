@@ -15,6 +15,7 @@ import { FaUserFriends } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { Team } from "@/types/dashboard/dashboard";
 import TeamInfoSkeleton from "../skeleton/teamInfoSkelton";
+import { useViewport } from "@/hooks/useViewport";
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -33,6 +34,7 @@ async function fetchTeamInfo(id: string) {
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const { id } = useParams();
+  useViewport();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["teamInfo", id],
@@ -50,7 +52,9 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
     <>
       <div
         className="hidden xl:block w-[300px] bg-white shadow-xl flex-shrink-0"
-        style={{ height: "calc(100vh - 70px)" }}
+        style={{
+          height: "calc(var(--vh, 1vh) * 100 - 70px)",
+        }}
       >
         <Content
           handleOpenModal={handleOpenModal}

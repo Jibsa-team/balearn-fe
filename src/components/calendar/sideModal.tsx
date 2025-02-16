@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import CalendarMission from "./mission";
 import { Mission } from "@/types/calendar/event";
 import { IoMdClose } from "react-icons/io";
+import { useViewport } from "@/hooks/useViewport";
 
 function CanlendarSideModal({
   isOpen,
@@ -45,6 +46,7 @@ function CanlendarSideModal({
   const [missions, setMissions] = useState<Mission[]>([]);
   const [deleteMissions, setDeleteMissions] = useState<number[]>([]);
   const { toast } = useToast();
+  useViewport();
 
   useEffect(() => {
     if (isOpen) {
@@ -88,7 +90,7 @@ function CanlendarSideModal({
         className={`bg-white shadow-lg rounded-lg p-4 w-[85%] z-20 fixed right-0 bottom-0
         sm:w-[400px] lg:z-10`}
         style={{
-          height: "calc(100vh - 70px)",
+          height: "calc(var(--vh, 1vh) * 100 - 70px)",
         }}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}

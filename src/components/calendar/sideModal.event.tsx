@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import CalendarMission from "./mission";
 import DeleteEventModal from "./deleteEventModal";
 import { IoMdClose } from "react-icons/io";
+import { useViewport } from "@/hooks/useViewport";
 
 const fetchEventDetails = async (eventId: number): Promise<CurEventDto> => {
   const response = await fetchWithAuth(
@@ -88,6 +89,7 @@ function SideModalEvent({
   const [deleteMissions, setDeleteMissions] = useState<number[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { id } = useParams();
+  useViewport();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["event", eventId],
@@ -236,7 +238,7 @@ function SideModalEvent({
         className={`bg-white shadow-lg rounded-lg p-4 w-[85%] z-20 fixed right-0 bottom-0
           sm:w-[400px] lg:z-10`}
         style={{
-          height: "calc(100vh - 70px)",
+          height: "calc(var(--vh, 1vh) * 100 - 70px)",
         }}
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
