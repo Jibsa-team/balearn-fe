@@ -39,7 +39,10 @@ const JoinGroupModal: React.FC<JoinGroupModalProps> = ({
             transition={{ duration: 0.2 }}
           >
             <header className="flex justify-between items-center mb-[20px]">
-              <h2 className="text-[1.1rem] font-semibold text-center">
+              <h2
+                className="sm:text-[1.1rem] text-[1rem]
+               font-semibold text-center"
+              >
                 전달받은 코드를 입력해주세요
               </h2>
               <IoMdClose
