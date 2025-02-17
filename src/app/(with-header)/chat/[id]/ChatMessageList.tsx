@@ -185,12 +185,15 @@ function ChatMessageList({
                 />
               </div>
               <div className="flex flex-col items-start">
-                <span className="bg-white px-4 py-2 rounded-2xl shadow-sm max-w-[300px] break-words">
+                <span className="sm:text-[0.8rem] text-[0.7rem]">
+                  {msg.sender.nickname}
+                </span>
+                <span className="bg-white px-4 py-2 rounded-2xl shadow-sm max-w-[300px] break-words sm:text-[0.9rem] text-[0.8rem] border-[1px] border-gray-100">
                   {msg.message}
                 </span>
               </div>
             </div>
-            <span className="text-xs text-gray-500 mt-1 ml-2">
+            <span className="sm:text-[0.8rem] text-[0.7rem] text-[rgba(0,0,0,0.5)] mt-1 ml-2">
               {new Date(msg.createdAt).toLocaleTimeString()}
             </span>
           </div>
@@ -201,7 +204,7 @@ function ChatMessageList({
                 {msg.message}
               </span>
               {msg.createdAt && (
-                <span className="text-xs text-gray-500 mt-1">
+                <span className="sm:text-[0.8rem] text-[0.7rem] text-[rgba(0,0,0,0.5)] text-gray-500 mt-1">
                   {new Date(msg.createdAt).toLocaleTimeString()}
                 </span>
               )}

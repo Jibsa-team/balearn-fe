@@ -55,7 +55,7 @@ export default function ChatMessageInput({
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
         placeholder="메시지를 입력하세요..."
-        className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:sm:text-[1rem] placeholder:text-[0.8rem]"
         disabled={!isConnected}
       />
       <button
