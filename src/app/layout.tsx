@@ -62,7 +62,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className}`}>
         <Providers>
-          <div className="flex w-full">{children}</div>
+          <div className="flex w-full h-full">{children}</div>
           <Toaster />
         </Providers>
       </body>

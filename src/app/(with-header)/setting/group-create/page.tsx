@@ -88,8 +88,8 @@ function Page() {
   return (
     <div className="w-[100%] h-[100%] p-[30px] bg-white">
       <h1 className="text-xl font-semibold mb-[40px]">모임 생성</h1>
-      <div className="flex w-full justify-between">
-        <div className="w-[48%]">
+      <div className="flex w-full flex-col-reverse justify-between ">
+        <div className="sm:w-[48%] w-full">
           <div className="flex flex-col items-start mb-[30px] font-semibold">
             <span>모임명</span>
             <TextInput
@@ -127,7 +127,7 @@ function Page() {
             </button>
           </div>
         </div>
-        <div className="w-[48%]">
+        <div className="sm:w-[48%] w-full">
           <GroupProfile profileImage={image} setProfileImage={setImage} />
         </div>
       </div>
