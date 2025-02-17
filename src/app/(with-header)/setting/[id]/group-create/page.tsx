@@ -87,7 +87,7 @@ function Page() {
 
   return (
     <div className="w-[100%] h-[100%] p-[30px] bg-white">
-      <h1 className="text-xl font-semibold mb-[40px]">모임 생성fsa</h1>
+      <h1 className="text-xl font-semibold mb-[40px]">모임 생성</h1>
       <div className="flex w-full flex-col-reverse justify-between ">
         <div className="sm:w-[48%] w-full">
           <div className="flex flex-col items-start mb-[30px] font-semibold">

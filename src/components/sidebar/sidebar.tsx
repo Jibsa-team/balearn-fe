@@ -71,7 +71,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) {
         transition={{ type: "spring", stiffness: 200, damping: 30 }}
         className="fixed xl:hidden w-[300px] z-40 bg-white shadow-xl"
         style={{
-          height: "calc(100vh - 70px)",
+          height: "calc(100dvh - 70px)",
           top: "70px",
         }}
       >
