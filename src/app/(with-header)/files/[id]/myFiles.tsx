@@ -84,7 +84,7 @@ function MyFiles() {
     <div>
       <div className="w-full bg-white">
         {data?.pages[0].result.length > 0 ? (
-          <div className="relative h-[500px]">
+          <div className="relative h-[calc(10dvh-200px)]">
             <table className="table-fixed w-full border-collapse border border-gray-200">
               <thead className="bg-gray-100 sticky top-0 z-10">
                 <tr>
@@ -105,55 +105,49 @@ function MyFiles() {
                   </th>
                 </tr>
               </thead>
+              <tbody>
+                {data &&
+                  data.pages.map((page) =>
+                    page.result.map((file: FileData) => (
+                      <tr key={file.id} className="hover:bg-gray-50">
+                        <td className="border border-gray-200 md:px-4 md:py-5 px-2 py-4 text-[0.8rem]">
+                          <a
+                            href={file.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline flex items-center max-w-full"
+                            onClick={() => addFile(file, id as string)}
+                          >
+                            <FileIcon type={file.type} />
+                            <span className="truncate w-16 md:w-full">
+                              {file.name}
+                            </span>
+                          </a>
+                        </td>
+                        <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem] text-[0.8rem]">
+                          {fileSize(file.size)}
+                        </td>
+                        <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1">
+                          <span>{file.createdBy.nickname}</span>
+                        </td>
+                        <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem]  text-[0.8rem]">
+                          {new Date(file.modifiedAt).toLocaleDateString()}
+                        </td>
+                        <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 cursor-pointer md:text-[1rem w-[10%]">
+                          <RiDeleteBin6Line
+                            onClick={() => openDeleteModal(file)}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                {hasNextPage &&
+                  [...Array(3)].map((_, index) => <FileSkelton key={index} />)}
+                <tr ref={ref}>
+                  <td colSpan={5} className="p-1" />
+                </tr>
+              </tbody>
             </table>
-            <div className="overflow-y-auto h-[calc(100%-48px)]">
-              <table className="table-fixed w-full border-collapse border border-gray-200 text-[rgba(0,0,0,0.6)]">
-                <tbody>
-                  {data &&
-                    data.pages.map((page) =>
-                      page.result.map((file: FileData) => (
-                        <tr key={file.id} className="hover:bg-gray-50">
-                          <td className="border border-gray-200 md:px-4 md:py-5 px-2 py-4 text-[0.8rem]">
-                            <a
-                              href={file.fileUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:underline flex items-center max-w-full"
-                              onClick={() => addFile(file, id as string)}
-                            >
-                              <FileIcon type={file.type} />
-                              <span className="truncate w-16 md:w-full">
-                                {file.name}
-                              </span>
-                            </a>
-                          </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem] text-[0.8rem]">
-                            {fileSize(file.size)}
-                          </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1">
-                            <span>{file.createdBy.nickname}</span>
-                          </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem]  text-[0.8rem]">
-                            {new Date(file.modifiedAt).toLocaleDateString()}
-                          </td>
-                          <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 cursor-pointer md:text-[1rem w-[10%]">
-                            <RiDeleteBin6Line
-                              onClick={() => openDeleteModal(file)}
-                            />
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  {hasNextPage &&
-                    [...Array(3)].map((_, index) => (
-                      <FileSkelton key={index} />
-                    ))}
-                  <tr ref={ref}>
-                    <td colSpan={5} className="p-1" />
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         ) : (
           <Empty message={"등록된 파일이 없어요."} />
