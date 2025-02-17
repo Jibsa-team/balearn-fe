@@ -86,7 +86,7 @@ function Page() {
   };
 
   return (
-    <div className="w-[100%] h-[100%] p-[30px] bg-white overflow-y-scroll">
+    <div className="w-[100%] h-[100%] sm:p-[30px] p-[15px] bg-white overflow-y-scroll">
       <h1 className="text-xl font-semibold mb-[40px]">모임 생성</h1>
       <div className="flex w-full flex-col-reverse justify-between ">
         <div className="sm:w-[48%] w-full">

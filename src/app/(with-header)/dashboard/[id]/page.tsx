@@ -14,7 +14,7 @@ export default function Home() {
   const { data: weeklyData } = useWeeklyStudy(id as string);
 
   return (
-    <div className="w-full p-[30px] bg-white shadow-md overflow-y-scroll">
+    <div className="w-full sm:p-[30px] p-[15px] bg-white shadow-md overflow-y-scroll">
       <Notify data={data} isLoading={isLoading} isError={isError} />
       <Daliy data={data} isLoading={isLoading} isError={isError} />
       <Member data={data} isLoading={isLoading} isError={isError} />

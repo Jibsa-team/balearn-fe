@@ -63,7 +63,7 @@ function Page() {
   }
 
   return (
-    <div className="w-[95%] p-[30px] overflow-y-scroll">
+    <div className="w-[95%] sm:p-[30px] p-[15px] overflow-y-scroll">
       <h1 className="text-[1.5rem] font-semibold mb-[20px]">설정</h1>
       <div className="flex flex-wrap gap-[20px]">
         {accessibleItems.map((item, i) => (

@@ -68,7 +68,7 @@ function NotifyMain() {
               key={notice.id}
               className="flex flex-col items-start md:items-center border-b-[1px] border-gray-200 mb-[50px] pb-[10px]"
             >
-              <div className="w-full text-[1rem] text-gray-800 font-semibold mb-[10px]">
+              <div className="w-full sm:text-[1rem] text-[0.9rem] text-gray-800 font-semibold mb-[10px]">
                 {NotifyDate(notice.createdAt)}
               </div>
               <div className="w-full flex justify-between sm:items-center items-start">

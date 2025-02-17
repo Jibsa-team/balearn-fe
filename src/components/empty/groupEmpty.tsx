@@ -6,7 +6,7 @@ import GroupLottie from "../lottie/groupEmpty";
 export default function GroupEmpty() {
   const router = useRouter();
   return (
-    <div className="w-full p-[30px] bg-white shadow-md overflow-y-scroll flex flex-col justify-center items-center">
+    <div className="w-full sm:p-[30px] p-[15px] bg-white shadow-md overflow-y-scroll flex flex-col justify-center items-center">
       <GroupLottie />
       <button
         onClick={() => router.push("/setting/group-create")}

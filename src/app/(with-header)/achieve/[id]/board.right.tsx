@@ -34,7 +34,7 @@ function BoardRight() {
     <div className="mt-[30px] md:mt-[0px] w-full md:w-1/2 flex flex-col">
       <table className="w-full rounded-lg overflow-hidden">
         <thead className="bg-gray-100 font-semibold">
-          <tr className="text-[1rem] font-semibold text-[rgba(0,0,0,0.7)] ">
+          <tr className="sm:text-[1rem] text-[0.9rem] font-semibold text-[rgba(0,0,0,0.7)] ">
             <th className="p-4 text-center w-[20%]">순위</th>
             <th className="p-4 text-left w-[40%]">사용자</th>
             <th className="p-4 text-center w-[40%]">포인트</th>
