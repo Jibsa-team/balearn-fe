@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="flex w-full">
       <main className="w-full bg-sidebarBg">
         <Header toggleSidebar={toggleSidebar} />
-        <div className="w-full h-screen flex">
+        <div className="w-full h-full flex">
           <div className="mt-[70px] flex w-full">
             <Sidebar
               isSidebarOpen={isSidebarOpen}
