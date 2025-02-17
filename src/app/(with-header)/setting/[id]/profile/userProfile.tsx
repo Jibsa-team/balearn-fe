@@ -25,9 +25,9 @@ const UserProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
   const profileImageUrl = teamUser?.imgUrl || user?.profileImageUrl;
 
   return (
-    <div className="flex flex-col items-start mb-[20px] font-semibold">
+    <div className="w-full flex flex-col items-start mb-[20px] font-semibold">
       <span>프로필</span>
-      <div className="flex items-center rounded-full">
+      <div className="w-full flex sm:justify-start justify-center items-center rounded-full">
         <label
           htmlFor="profileImage"
           className="cursor-pointer bg-gray-100 p-[10px] rounded-full flex items-center justify-center"

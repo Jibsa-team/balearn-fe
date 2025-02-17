@@ -155,7 +155,7 @@ function Page() {
               </button>
             </div>
           </div>
-          <div className="w-[48%]">
+          <div className="sm:w-[48%] w-full">
             <UserProfile
               profileImage={profileImage}
               setProfileImage={setProfileImage}

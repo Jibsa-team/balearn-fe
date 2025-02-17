@@ -14,7 +14,7 @@ interface GoalItem {
 
 interface GoalListProps {
   goals: GoalItem[];
-  setGoals: React.Dispatch<React.SetStateAction<GoalItem[]>>;
+  setGoals: (goals: { detail: string; color: string }[]) => void;
   errors?: string;
 }
 

@@ -3,12 +3,11 @@
 import Image from "next/image";
 import { BsImageAlt } from "react-icons/bs";
 
-// 프로필 이미지 타입을 명확히 정의
 type ProfileImage = File | null;
 
 interface GroupProfileProps {
   profileImage: ProfileImage;
-  setProfileImage: React.Dispatch<React.SetStateAction<ProfileImage>>;
+  setProfileImage: (newImage: File | null) => void;
 }
 
 const GroupProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
@@ -20,10 +19,9 @@ const GroupProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
   };
 
   return (
-    <div className="flex flex-col items-start mb-[20px] font-semibold">
+    <div className="w-full flex flex-col items-start mb-[20px] font-semibold">
       <span>모임 프로필</span>
-      <div className="flex items-center rounded-full">
-        {/* 이미지 버튼 */}
+      <div className="w-full flex sm:justify-start justify-center items-center rounded-full">
         <label
           htmlFor="profileImage"
           className="cursor-pointer bg-gray-100 p-[10px] rounded-full flex items-center justify-center"
