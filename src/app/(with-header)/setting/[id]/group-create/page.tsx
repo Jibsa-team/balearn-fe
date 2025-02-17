@@ -1,121 +1,118 @@
 "use client";
 
-import TextInput from "@/components/group/input/textInput";
-import React, { useState } from "react";
+import { useState, useCallback } from "react";
 import GroupProfile from "./groupProfile";
 import GoalList from "./goalList";
-import { z } from "zod";
-import GroupAddError from "@/components/error/ErrorMessage";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import useGroupStore from "@/store/useGroupStore";
-import { GroupDTO } from "@/types/group/group";
 import { useRouter } from "next/navigation";
 import { requiredFieldsSchema } from "./schema";
+import GroupInput from "./groupInput";
 
 function Page() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [goals, setGoals] = useState<{ detail: string; color: string }[]>([]);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [image, setImage] = useState<File | null>(null);
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const setGroupId = useGroupStore((state) => state.setGroupId);
   const router = useRouter();
 
-  const isFormValid = () => {
-    const formData = { name, description, goals };
-    if (goals.length === 0) return false;
-    const result = requiredFieldsSchema.safeParse(formData);
-    return result.success;
-  };
+  const handleNameChange = useCallback((value: string) => {
+    setName(value);
+  }, []);
+
+  const handleDescriptionChange = useCallback((value: string) => {
+    setDescription(value);
+  }, []);
+
+  const handleGoalsChange = useCallback(
+    (newGoals: { detail: string; color: string }[]) => {
+      setGoals(newGoals);
+    },
+    []
+  );
+
+  const handleImageChange = useCallback((newImage: File | null) => {
+    setImage(newImage);
+  }, []);
+
+  const isFormValid = useCallback(() => {
+    const validationResult = requiredFieldsSchema.safeParse({
+      name,
+      description,
+      goals,
+    });
+    return validationResult.success && goals.length > 0;
+  }, [name, description, goals]);
 
   const handleCreate = async () => {
     if (!isFormValid() || isLoading) return;
 
     setIsLoading(true);
     try {
-      const formData = new FormData();
-
+      const formDataObj = new FormData();
       const blob = new Blob([JSON.stringify({ name, description, goals })], {
         type: "application/json",
       });
 
-      formData.append("data", blob);
-
+      formDataObj.append("data", blob);
       if (image) {
-        formData.append("image", image);
+        formDataObj.append("image", image);
       }
 
       const response = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_API_URL}/api/team/create`,
         {
           method: "POST",
-          body: formData,
+          body: formDataObj,
         }
       );
 
-      if (!response.ok) {
+      if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
-      }
 
-      const result: GroupDTO = await response.json();
+      const result = await response.json();
       setGroupId(result.result.teamId);
       router.push(`/dashboard/${result.result.teamId}`);
-      setErrors({});
     } catch (err) {
       console.error("Error during group creation:", err);
-
-      if (err instanceof z.ZodError) {
-        const fieldErrors: { [key: string]: string } = {};
-        err.errors.forEach((error) => {
-          const field = error.path.join(".");
-          fieldErrors[field] = error.message;
-        });
-        setErrors(fieldErrors);
-      }
+      setErrors({ submit: "모임 생성에 실패했습니다." });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getButtonStyle = () => {
+  const getButtonStyle = useCallback(() => {
     if (isLoading) return "bg-disabledColor text-gray-200 cursor-not-allowed";
     return isFormValid()
       ? "bg-logoColor text-white cursor-pointer"
       : "bg-disabledColor text-gray-200 cursor-not-allowed";
-  };
+  }, [isLoading, isFormValid]);
 
+  console.log("chekc");
   return (
     <div className="w-[100%] h-[100%] sm:p-[30px] p-[15px] bg-white overflow-y-scroll">
       <h1 className="text-xl font-semibold mb-[40px]">모임 생성</h1>
-      <div className="flex w-full flex-col-reverse justify-between ">
+      <div className="flex w-full flex-col-reverse justify-between">
         <div className="sm:w-[48%] w-full">
-          <div className="flex flex-col items-start mb-[30px] font-semibold">
-            <span>모임명</span>
-            <TextInput
-              message={"모임명을 입력해주세요."}
-              width={100}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            {errors.groupName && <GroupAddError errors={errors.groupName} />}
-          </div>
-
-          <div className="flex flex-col items-start mb-[30px] font-semibold">
-            <span>모임 목적</span>
-            <TextInput
-              message={"모임 목적을 입력해주세요."}
-              width={100}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            {errors.groupPurpose && (
-              <GroupAddError errors={errors.groupPurpose} />
-            )}
-          </div>
-
-          <GoalList goals={goals} setGoals={setGoals} errors={errors.goals} />
-
+          <GroupInput
+            label="모임명"
+            placeholder="모임명을 입력해주세요."
+            onStateChange={handleNameChange}
+          />
+          <GroupInput
+            label="모임 목적"
+            placeholder="모임 목적을 입력해주세요."
+            onStateChange={handleDescriptionChange}
+          />
+          <GoalList
+            goals={goals}
+            setGoals={handleGoalsChange}
+            errors={errors.goals}
+          />
           <div className="w-full flex justify-between mt-[50px]">
             <div></div>
             <button
@@ -128,7 +125,10 @@ function Page() {
           </div>
         </div>
         <div className="sm:w-[48%] w-full">
-          <GroupProfile profileImage={image} setProfileImage={setImage} />
+          <GroupProfile
+            profileImage={image}
+            setProfileImage={handleImageChange}
+          />
         </div>
       </div>
     </div>

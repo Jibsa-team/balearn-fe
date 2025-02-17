@@ -8,7 +8,7 @@ type ProfileImage = File | null;
 
 interface GroupProfileProps {
   profileImage: ProfileImage;
-  setProfileImage: React.Dispatch<React.SetStateAction<ProfileImage>>;
+  setProfileImage: (newImage: File | null) => void;
 }
 
 const GroupProfile = ({ profileImage, setProfileImage }: GroupProfileProps) => {
