@@ -7,6 +7,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onLogout: () => void;
+  isLoggingOut: boolean;
 }
 
 const modalVariants = {
@@ -15,7 +16,7 @@ const modalVariants = {
   exit: { opacity: 0, y: -10 },
 };
 
-const ProfileModal = ({ isOpen, onClose, onLogout }: ModalProps) => {
+const ProfileModal = ({ isOpen, onClose, onLogout, isLoggingOut }: ModalProps) => {
   const router = useRouter();
   const { id } = useParams();
   return (
@@ -37,9 +38,10 @@ const ProfileModal = ({ isOpen, onClose, onLogout }: ModalProps) => {
           </button>
           <button
             onClick={onLogout}
+            disabled={isLoggingOut}
             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           >
-            <span>로그아웃</span>
+            <span>{isLoggingOut ? "로그아웃 중" : "로그아웃"}</span>
           </button>
           <button
             onClick={onClose}

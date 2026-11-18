@@ -10,12 +10,14 @@ interface FileStore {
   recentFiles: FileWithTeam[];
   addFile: (file: FileData, teamId: string) => void;
   removeFile: (fileName: string, teamId: string) => void;
+  clearFiles: () => void;
 }
 
 const useFileStore = create<FileStore>()(
   persist(
     (set, get) => ({
       recentFiles: [],
+      clearFiles: () => set({ recentFiles: [] }),
       addFile: (file, teamId) => {
         const fileWithTeam = { ...file, teamId };
         const addFiles = [

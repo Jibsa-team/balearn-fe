@@ -3,7 +3,7 @@
 import { FileData } from "@/types/file/files";
 import React, { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { fileSize } from "@/utils/file";
+import { downloadLearningFile, fileSize } from "@/utils/file";
 import DeleteFileModal from "@/components/modal/deleteFileModal";
 import Empty from "@/components/empty/empty";
 import { useParams } from "next/navigation";
@@ -111,18 +111,18 @@ function MyFiles() {
                     page.result.map((file: FileData) => (
                       <tr key={file.id} className="hover:bg-gray-50">
                         <td className="border border-gray-200 md:px-4 md:py-5 px-2 py-4 text-[0.8rem]">
-                          <a
-                            href={file.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
                             className="text-blue-600 hover:underline flex items-center max-w-full"
-                            onClick={() => addFile(file, id as string)}
+                            onClick={async () => {
+                              if (await downloadLearningFile(file)) addFile(file, id as string);
+                            }}
                           >
                             <FileIcon type={file.type} />
                             <span className="truncate w-16 md:w-full">
                               {file.name}
                             </span>
-                          </a>
+                          </button>
                         </td>
                         <td className="border border-gray-200 md:px-4 md:py-2 px-2 py-1 md:text-[0.9rem] text-[0.8rem]">
                           {fileSize(file.size)}

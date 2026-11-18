@@ -69,12 +69,12 @@ export default function CreateNotifyModal({
     } catch (err) {
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
-        err.errors.forEach((error) => {
+        err.issues.forEach((error) => {
           const field = error.path.join(".");
           fieldErrors[field] = error.message;
         });
         setErrors(fieldErrors);
-        console.log(err.errors);
+        console.log(err.issues);
       } else {
         toast({
           title: "공지 등록 실패",

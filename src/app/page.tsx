@@ -3,6 +3,9 @@
 import { useViewport } from "@/hooks/useViewport";
 import Image from "next/image";
 
+const loginProviders = (process.env.NEXT_PUBLIC_LOGIN_PROVIDERS ?? "kakao,google")
+  .split(",").map((provider) => provider.trim());
+
 function Page() {
   useViewport();
   const onClickKLogin = (word: string) => {
@@ -30,9 +33,10 @@ function Page() {
         </section>
         <div>
           <div className="text-[1rem] text-gray-600 mx-[5px] flex justify-center">
-            <span className="text-[0.9rem]">SNS 계정으로 간편 가입하기</span>
+            <span className="text-[0.9rem]">계정으로 로그인</span>
           </div>
           <div className="mt-[15px] w-full flex flex-col items-center ">
+            {loginProviders.includes("kakao") && (
             <div
               className="w-full relative bg-[#FEE501] flex justify-center p-[8px] rounded-md mb-[7px] cursor-pointer"
               onClick={() => onClickKLogin("kakao")}
@@ -51,6 +55,8 @@ function Page() {
               </svg>
               <span className="text-[0.9rem]">카카오 로그인</span>
             </div>
+            )}
+            {loginProviders.includes("google") && (
             <div
               className="w-full relative bg-white border border-gray-200 flex justify-center p-[8px] rounded-md mb-[7px] cursor-pointer"
               onClick={() => onClickKLogin("google")}
@@ -84,29 +90,16 @@ function Page() {
               </svg>
               <span className="text-[0.9rem]">구글 로그인</span>
             </div>
+            )}
 
-            <div
-              className="w-full relative bg-[#03C75A] flex justify-center p-[8px] rounded-md mb-[7px] cursor-pointer"
-              onClick={() => onClickKLogin("naver")}
-            >
-              <svg
-                width="16"
-                height="16"
-                className="absolute left-2 top-[10px]"
-                viewBox="0 0 24 24"
-              >
-                <defs>
-                  <symbol id="naver" viewBox="0 0 24 24">
-                    <path
-                      d="M16.273 12.845 7.376 0H0v24h7.726V11.155L16.624 24H24V0h-7.727z"
-                      fill="#FFFFFF"
-                    />
-                  </symbol>
-                </defs>
-                <use href="#naver" />
-              </svg>
-              <span className="text-white text-[0.9rem]">네이버 로그인</span>
-            </div>
+            {loginProviders.includes("github") && (
+              <button type="button" className="mb-2 w-full rounded-md border p-2 text-sm"
+                onClick={() => onClickKLogin("github")}>GitHub 로그인</button>
+            )}
+            {loginProviders.includes("oidc") && (
+              <button type="button" className="mb-2 w-full rounded-md border p-2 text-sm"
+                onClick={() => onClickKLogin("oidc")}>조직 계정으로 로그인</button>
+            )}
           </div>
         </div>
       </div>

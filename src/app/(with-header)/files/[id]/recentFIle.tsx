@@ -1,7 +1,7 @@
 import { FileIcon } from "@/app/lib/fileType";
 import Empty from "@/components/empty/empty";
 import useFileStore from "@/store/useFileStore";
-import { fileSize } from "@/utils/file";
+import { downloadLearningFile, fileSize } from "@/utils/file";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -18,9 +18,9 @@ function RecentFile() {
       </div>
       <div className="mt-[20px] w-full rounded-2xl flex overflow-x-scroll hide-scrollbar">
         {teamFiles.length > 0 ? (
-          teamFiles.map((e, i) => {
+          teamFiles.map((e) => {
             return (
-              <a href={e.fileUrl} target="_blank" key={i}>
+              <button type="button" onClick={() => void downloadLearningFile(e)} key={e.id} className="text-left">
                 <div className="flex items-start justify-between bg-white rounded-xl min-w-[200px] p-[15px] shadow-lg mr-[20px]">
                   <div className="flex flex-col">
                     <span className="flex items-center  mb-[7px]">
@@ -43,7 +43,7 @@ function RecentFile() {
                     />
                   </div>
                 </div>
-              </a>
+              </button>
             );
           })
         ) : (

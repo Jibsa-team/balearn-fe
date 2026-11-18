@@ -2,12 +2,9 @@ import { Metadata } from "next";
 import "./globals.css";
 import Providers from "./lib/provides";
 import { Toaster } from "@/components/ui/toaster";
-import { Prompt } from "next/font/google";
+import localFont from "next/font/local";
 
-const poppins = Prompt({
-  weight: "500",
-  subsets: ["latin", "latin-ext"],
-});
+const geist = localFont({ src: "./fonts/GeistVF.woff", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Balearn",
@@ -23,11 +20,10 @@ export const metadata: Metadata = {
         url: "/icons/logo_bg.png",
         width: 1200,
         height: 630,
-        alt: "depromeet",
+        alt: "Balearn",
       },
     ],
-    url: "https://your-domain.com",
-    siteName: "사이트 이름",
+    siteName: "Balearn",
   },
 
   viewport: {
@@ -48,9 +44,6 @@ export const metadata: Metadata = {
     icon: "/icons/logo_bg.png",
     apple: "/icons/logo_bg.png",
   },
-  other: {
-    preconnect: ["https://be.balearn.o-r.kr"],
-  },
 };
 
 export default function RootLayout({
@@ -60,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.className}`}>
+      <body className={geist.className}>
         <Providers>
           <div className="flex w-full h-full">{children}</div>
           <Toaster />

@@ -112,7 +112,7 @@ function Page() {
     } catch (err) {
       if (err instanceof z.ZodError) {
         const fieldErrors: { [key: string]: string } = {};
-        err.errors.forEach((error) => {
+        err.issues.forEach((error) => {
           const field = error.path.join(".");
           fieldErrors[field] = error.message;
         });

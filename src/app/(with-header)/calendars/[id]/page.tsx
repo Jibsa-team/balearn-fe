@@ -105,7 +105,7 @@ const Page: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenEvent, setIsOpenEvent] = useState<boolean>(false);
   const [selectEventId, setSelectEventId] = useState<number>();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 

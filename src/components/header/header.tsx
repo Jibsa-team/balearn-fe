@@ -6,8 +6,11 @@ import { IoIosMenu } from "react-icons/io";
 import { FaRegBell } from "react-icons/fa";
 import Image from "next/image";
 import { User } from "@/types/user/user";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "@/store/useAuthStore";
+import useGroupStore from "@/store/useGroupStore";
+import useFileStore from "@/store/useFileStore";
+import { toast } from "@/hooks/use-toast";
 import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 import { useParams, useRouter } from "next/navigation";
 import ProfileModal from "../modal/profileModal";
@@ -38,8 +41,9 @@ function Header({ toggleSidebar }: HeaderProps) {
   const accessToken = useAuthStore((state) => state.accessToken);
   const setUser = useAuthStore((state) => state.setUser);
   const setTeamUser = useAuthStore((state) => state.setTeamUser);
-  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
-  const clearUser = useAuthStore((state) => state.clearUser);
+  const clearSession = useAuthStore((state) => state.clearSession);
+  const setGroupId = useGroupStore((state) => state.setGroupId);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { id } = useParams();
 
@@ -58,12 +62,26 @@ function Header({ toggleSidebar }: HeaderProps) {
     },
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth-storage");
-    clearAccessToken();
-    clearUser();
-    router.push("/");
-  };
+  const logout = useMutation({
+    mutationFn: async () => {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
+        { method: "POST" }
+      );
+      if (!response.ok) throw new Error("Logout request failed");
+    },
+    onSuccess: () => {
+      clearSession();
+      setGroupId(0);
+      useFileStore.getState().clearFiles();
+      queryClient.clear();
+      setIsModalOpen(false);
+      router.replace("/");
+    },
+    onError: () => {
+      toast({ title: "로그아웃하지 못했습니다", description: "잠시 후 다시 시도해 주세요." });
+    },
+  });
 
   const handleProfileClick = () => {
     setIsModalOpen((prev) => !prev);
@@ -114,7 +132,8 @@ function Header({ toggleSidebar }: HeaderProps) {
           <ProfileModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
-            onLogout={handleLogout}
+            onLogout={() => logout.mutate()}
+            isLoggingOut={logout.isPending}
           />
         </div>
       </div>

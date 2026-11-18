@@ -12,6 +12,7 @@ interface AuthStore {
   clearAccessToken: () => void;
   setUser: (user: User) => void;
   clearUser: () => void;
+  clearSession: () => void;
   setTeamUser: (user: TeamUser) => void;
 }
 
@@ -27,6 +28,7 @@ const useAuthStore = create<AuthStore>()(
       clearAccessToken: () => set({ accessToken: "", expirationTime: 0 }),
       setUser: (user: User) => set({ user }),
       clearUser: () => set({ user: null }),
+      clearSession: () => set({ accessToken: "", expirationTime: 0, user: null, teamUser: null }),
       setTeamUser: (teamUser: TeamUser) => set({ teamUser }),
     }),
     {
