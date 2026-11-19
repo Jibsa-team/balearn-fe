@@ -9,6 +9,21 @@ import { fetchWithAuth } from "@/app/lib/fetchWithAuth";
 
 const SOCKET_URL = `${process.env.NEXT_PUBLIC_API_URL}/ws`;
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const PAGE_SIZE = 50;
+
+function mergeMessages(existing: ChatDto[], incoming: ChatDto[]) {
+  const messages = new Map([...existing, ...incoming].map((message) => [message.id, message]));
+  return [...messages.values()].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+}
+
+async function loadHistory(teamId: string, cursor?: string, signal?: AbortSignal) {
+  const query = new URLSearchParams({ size: String(PAGE_SIZE) });
+  if (cursor) query.set("cursor", cursor);
+  const response = await fetchWithAuth(`${API_URL}/api/chat/${teamId}?${query}`, { signal });
+  if (!response.ok) throw new Error(`Chat history returned ${response.status}`);
+  const page: { result: { contents: ChatDto[] } } = await response.json();
+  return page.result.contents;
+}
 
 interface ChatMessageListProps {
   setIsConnected: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +44,11 @@ function ChatMessageList({
   const { id } = useParams();
   const scrollHeightBeforeUpdate = useRef<number>(0);
   const isNewMessage = useRef<boolean>(false);
+  const lastSeenMessage = useRef<ChatDto | undefined>(undefined);
+
+  useEffect(() => {
+    lastSeenMessage.current = messages.at(-1);
+  }, [messages]);
 
   const fetchPreviousMessages = async (cursor?: string) => {
     if (isLoading || !hasMore) return;
@@ -41,36 +61,9 @@ function ChatMessageList({
           chatContainerRef.current.scrollHeight;
       }
 
-      let url = `${API_URL}/api/chat/${id}?size=50`;
-      if (cursor) {
-        url += `&cursor=${cursor}`;
-      }
-
-      const response = await fetchWithAuth(url);
-      const newMessages = await response.json();
-      const messages = newMessages.result.contents;
-
-      const sortedMessages = messages.sort(
-        (
-          a: { createdAt: string | number | Date },
-          b: { createdAt: string | number | Date }
-        ) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-
-      setMessages((prevMessages) => {
-        const uniqueMessages = new Set(
-          [...sortedMessages, ...prevMessages].map((msg) => JSON.stringify(msg))
-        );
-
-        return Array.from(uniqueMessages)
-          .map((msg) => JSON.parse(msg))
-          .sort(
-            (a, b) =>
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-      });
-
-      if (messages.length < 10) {
+      const older = await loadHistory(String(id), cursor);
+      setMessages((previous) => mergeMessages(previous, older));
+      if (older.length < PAGE_SIZE) {
         setHasMore(false);
       }
     } catch (error) {
@@ -95,33 +88,68 @@ function ChatMessageList({
     [isLoading, hasMore, messages]
   );
 
-  const connect = useCallback(() => {
-    if (clientRef.current?.active) {
-      return;
-    }
-
+  useEffect(() => {
+    const initial = new AbortController();
+    void loadHistory(String(id), undefined, initial.signal).then((page) => {
+      if (initial.signal.aborted) return;
+      setMessages((previous) => mergeMessages(previous, page));
+      setHasMore(page.length === PAGE_SIZE);
+    }).catch(() => {
+      if (!initial.signal.aborted) setConnectionError("채팅 내역을 불러오는데 실패했습니다.");
+    });
+    let recovery: AbortController | undefined;
     const client = new Client({
       webSocketFactory: () => new SockJS(SOCKET_URL),
+      reconnectDelay: 2000,
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },
-      onConnect: () => {
+      onConnect: async () => {
         console.log("웹소켓 연결 성공!");
         setIsConnected(true);
         setConnectionError(null);
 
         client.subscribe(`/sub/api/chat/${id}`, (message: IMessage) => {
           try {
-            const newMessage = JSON.parse(message.body);
+            const newMessage: ChatDto = JSON.parse(message.body);
             isNewMessage.current = true;
-            setMessages((prev) => [...prev, newMessage]);
+            setMessages((prev) => mergeMessages(prev, [newMessage]));
           } catch (error) {
             console.error("메시지 파싱 에러:", error);
           }
         });
+        recovery?.abort();
+        const request = new AbortController();
+        recovery = request;
+        const lastSeen = lastSeenMessage.current;
+        try {
+          let cursor: string | undefined;
+          while (!request.signal.aborted) {
+            const page = await loadHistory(String(id), cursor, request.signal);
+            if (request.signal.aborted) return;
+            isNewMessage.current = true;
+            setMessages((previous) => mergeMessages(previous, page));
+            const next = page.at(-1)?.createdAt;
+            if (cursor === undefined && lastSeen === undefined) {
+              setHasMore(page.length === PAGE_SIZE);
+            }
+            if (!lastSeen || !next || next === cursor || page.length < PAGE_SIZE ||
+                page.some((message) => message.id === lastSeen.id) || next < lastSeen.createdAt) break;
+            cursor = next;
+          }
+        } catch (error) {
+          if (!request.signal.aborted) {
+            console.error("채팅 내역 복구 실패:", error);
+            setConnectionError("채팅 내역을 불러오는데 실패했습니다.");
+          }
+        }
       },
       onDisconnect: () => {
         console.log("웹소켓 연결 끊김");
+        setIsConnected(false);
+      },
+      onWebSocketClose: () => {
+        recovery?.abort();
         setIsConnected(false);
       },
       onStompError: (frame) => {
@@ -134,18 +162,15 @@ function ChatMessageList({
 
     clientRef.current = client;
     client.activate();
-  }, [id, token]);
-
-  useEffect(() => {
-    connect();
-    fetchPreviousMessages();
 
     return () => {
-      if (clientRef.current?.active) {
-        clientRef.current.deactivate();
-      }
+      initial.abort();
+      recovery?.abort();
+      client.onWebSocketClose = () => {};
+      void client.deactivate();
+      if (clientRef.current === client) clientRef.current = null;
     };
-  }, [connect]);
+  }, [id, token, clientRef, setConnectionError, setIsConnected]);
 
   useEffect(() => {
     if (!chatContainerRef.current) return;
@@ -171,9 +196,9 @@ function ChatMessageList({
       ref={chatContainerRef}
       onScroll={handleScroll}
     >
-      {messages.map((msg, i) =>
+      {messages.map((msg) =>
         msg.sender.id !== teamUser?.id ? (
-          <div key={i} className="flex flex-col gap-1 mb-4 animate-fade-in">
+          <div key={msg.id} className="flex flex-col gap-1 mb-4 animate-fade-in">
             <div className="flex items-start gap-3">
               <div className="w-[30px] h-[30px] relative flex-shrink-0">
                 <Image
@@ -198,7 +223,7 @@ function ChatMessageList({
             </span>
           </div>
         ) : (
-          <div className="flex flex-col items-end mb-4 animate-fade-in" key={i}>
+          <div className="flex flex-col items-end mb-4 animate-fade-in" key={msg.id}>
             <div className="w-full flex flex-col items-end">
               <span className="sm:text-[1rem] text-[0.9rem] bg-logoColor text-white px-4 py-2 rounded-2xl shadow-sm max-w-[80%] break-words">
                 {msg.message}

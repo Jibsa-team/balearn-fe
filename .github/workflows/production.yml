@@ -32,6 +32,7 @@ jobs:
           docker build \
             --build-arg NEXT_PUBLIC_API_URL="$BALEARN_PUBLIC_URL" \
             --build-arg NEXT_PUBLIC_LOGIN_PROVIDERS=kakao \
+            --build-arg BALEARN_DEPLOYMENT_ID="$GITHUB_SHA" \
             --build-arg DIRECT_MEDIA_IMAGES=1 \
             -t "balearn-frontend:$GITHUB_SHA" .
           docker run --rm --entrypoint node "balearn-frontend:$GITHUB_SHA" \

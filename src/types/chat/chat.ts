@@ -1,5 +1,5 @@
 export interface ChatDto {
-  id: number;
+  id: string;
   teamId: number;
   sender: SenderDto;
   message: string;

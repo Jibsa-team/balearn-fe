@@ -25,6 +25,7 @@ function imagePattern(address, pathname) {
 }
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const deploymentId = process.env.BALEARN_DEPLOYMENT_ID;
 const mediaPatterns = [
   imagePattern(apiUrl, "/media/**"),
   ...(process.env.MEDIA_IMAGE_BASE_URLS || "").split(",")
@@ -36,6 +37,7 @@ const mediaPatterns = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  ...(deploymentId && { deploymentId, generateBuildId: async () => deploymentId }),
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
