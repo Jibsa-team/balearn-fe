@@ -5,8 +5,10 @@ import { Client } from "@stomp/stompjs";
 import ChatMessageList from "./ChatMessageList";
 import ChatMessageInput from "./ChatMessageInput";
 import { useViewport } from "@/hooks/useViewport";
+import { useParams } from "next/navigation";
 
 function ChatPage() {
+  const { id } = useParams();
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const clientRef = useRef<Client | null>(null);
@@ -25,6 +27,7 @@ function ChatPage() {
         </div>
       )}
       <ChatMessageList
+        key={String(id)}
         setIsConnected={setIsConnected}
         clientRef={clientRef}
         setConnectionError={setConnectionError}
